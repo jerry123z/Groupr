@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ 	<meta charset="utf-8">
+    <title>Find a user</title>
+    <link rel="stylesheet" type="text/css">
+ </head>
+
+ <body>
+
+	<div>
+		<a href="#">Find</a>
+		<a href="#">School</a>
+		<a href="#">User</a>
+		<a href="#">Logout</a>
+	</div>
+
+	<div>
+		<h1>Find a user</h1>
+	</div>
+	
+	<div>
+		<span>email</span>
+		<form id='userSearchForm'>
+			<input id='userEmail' type="text" placeholder="User Email">
+			<button>Go</button>
+		</form>
+	</div>
+	
+	<div id = 'userDisplay'>
+		<span>Name:</span>
+		<span>Email:</span>
+		<span>Last Active:</span>
+		<div id = 'buttons'>
+			<button>Edit</button>
+			<button>Delete</button>
+		</div>
+	</div>
+	
+	<script type="text/javascript" src="finduser.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+</body>
