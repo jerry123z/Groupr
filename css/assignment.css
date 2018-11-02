@@ -1,0 +1,20 @@
+#page-container {
+    margin: 40px;
+    margin-left: 80px;
+}
+
+.big-container {
+    -webkit-box-shadow: 11px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 11px 10px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 11px 10px 5px 0px rgba(0,0,0,0.75);
+    border: solid 1px black;
+}
+
+#title, #due, #group-header {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.space {
+    height: 50px;
+}
