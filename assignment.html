@@ -8,20 +8,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <div id="page-container" class="container">
-      <!-- page header -->
-      <div class="row">
-          <div class="col-md-6">
-          <div id="header-container" class="big-container container">
-            <div>
-              <div id="title" class="col"> CSC309: Main Project </div>
+    <div class='assignment-block'>
+      <div class='assignment-name'>CSC 309 - Main Project</div>
+      <div class='assignment-date'>Due: Nov. 8</div>
+    </div>
+    <div id="window-container" class="shadow-above">
+      <div id="page-container" class="container">
+        <!-- user group info -->
+        <div class="row">
+          <div class="col-md-2"> </div> <!-- spacing div -->
+          <div class="col-md-8">
+            <div id="group-container" class="big-container card">
+              <!-- group title -->
+              <div id="group-header" class="row">
+                <div class="col">
+                  <h3> Your Group: <span id="group-name">  Bullish Frogs </span> </h3>
+                </div>
+              </div>
+              <!-- group member info -->
+              <div class="row">
+                <div class="col-md-6">
+                  <!-- icons -->
+                  <div id="number-members-container" class="container">
+                    <img class="user-icon" src="content/person_filled.png">
+                    <img class="user-icon" src="content/person_filled.png">
+                    <img class="user-icon" src="content/person_filled.png">
+                    <img class="user-icon" src="content/person_filled.png">
+                    <img class="user-icon" src="content/person_unfilled.png">
+                  </div>
+                </div>
+                <!-- names of members -->
+                <div id="group-members-container" class="col-md-6">
+                  <h4> Members: </h4>
+                  <ul>
+                    <li>Priya</li>
+                    <li>Jerry</li>
+                    <li>Andriy</li>
+                    <li>Brennan (You!)</li>
+                  </ul>
+                </div>
+              </div>
+              <!-- group footer -->
+              <div id="group-footer" class="row">
+                <div id="num-requests-container" class="col-md-6">
+                  New Requests: <span id="num-requests"> 2 </span>
+                </div>
+                <div id="group-button-container" class="col-md-6">
+                  <button id="group-button">Go To Group Page</button>
+                </div>
+              </div>
             </div>
-            <div>
-              <div id="due" class="col"> Due: Nov. 8 </div>
+          </div>
+        </div>
+
+        <div class="space"> </div>
+        <!-- all groups section-->
+        <div id="results-header" class="row">
+          <div class="col">
+            <h3> All Groups </h3>
+          </div>
+        </div>
+        <div class="row">
+          <!-- filter groups area -->
+          <div class="col-md-3">
+            <div id="filter-container" class="card">
+              <h4> Filter </h4>
+              <span> Vacancies within group: <input id="vacancies"> </span>
+            </div>
+          </div>
+          <!-- all groups -->
+          <div class="col-md-9">
+            <div id="all-groups-container" class="container">
+              <div class="row">
+                 <div class="all-groups-entry col-md-3 card">
+                 </div>
+              </row>
+            </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
   </body>
 </html>
