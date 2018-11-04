@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title> Groupr </title>
+    <link rel="stylesheet" type="text/css" href="css/assignment.css">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div class='assignment-block'>
+      <div class='assignment-name'>CSC 309 - Main Project</div>
+      <div class='assignment-date'>Due: Nov. 8</div>
+    </div>
+    <div id="window-container" class="shadow-above">
+      <div id="page-container" class="container">
+        <!-- user group info -->
+        <div class="row">
+          <div class="col-md-2"> </div> <!-- spacing div -->
+          <div class="col-md-8">
+            <div id="group-container" class="big-container card group-entry">
+              <!-- group title -->
+              <div id="group-header" class="row">
+                <div class="col">
+                  <h3> Your Group: <span id="group-name"> <!-- name injected here --> </span> </h3>
+                </div>
+              </div>
+              <!-- group member info -->
+              <div class="row">
+                <div class="col-md-6">
+                  <!-- icons -->
+                  <div id="number-members-container" class="container">
+                    <!-- icons injected here -->
+                  </div>
+                </div>
+                <!-- names of members -->
+                <div id="group-members-container" class="col-md-6">
+                  <h4> Members: </h4>
+                  <ul>
+                    <!-- names of all members injected here -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space"> </div>
+        <!-- all groups section-->
+        <div id="results-header" class="row">
+          <div class="col">
+            <h3> All Groups </h3>
+          </div>
+        </div>
+        <div class="row">
+          <!-- filter groups area -->
+          <div class="col-md-3">
+            <div id="filter-container" class="card">
+              <h4> Filter </h4>
+              <span> <input id="spots-input" type="number" value="0"> or more spots available </span>
+            </div>
+          </div>
+          <!-- all groups -->
+          <div class="col-md-9">
+            <div id="all-groups-container" class="container">
+              <div class="row">
+                <!-- groups injected here -->
+              </row>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/assignment.js"></script>
+  </body>
+</html>
