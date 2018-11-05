@@ -15,20 +15,24 @@
 
 .all-groups-entry {
 	margin: 8px;
-	text-align: center;
 	min-height: 116.5px;
 }
+.all-groups-entry:hover {
+	background-color: #EEEEEE;
+	color: black;
+	cursor: pointer;
+}
 
-.group-entry {
+.notification-entry {
+    margin: 8px;
+    min-height: 100px;
+}
+
+.entry {
 	-webkit-box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
 	-moz-box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
 	box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
 	overflow: hidden;
-}
-.group-entry:hover {
-	background-color: #EEEEEE;
-	color: black;
-	cursor: pointer;
 }
 
 .small-user-icon {
@@ -38,6 +42,32 @@
 	resize: both;
 }
 
-#all-groups-container {
+#all-groups-container, #notifications-container {
     margin-top: 10px;
+}
+
+.join {
+    color: green;
+}
+
+.left {
+    color: red;
+}
+
+.notification-datetime {
+    font-weight: 400;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    margin-right: 10px;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }

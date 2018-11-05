@@ -12,7 +12,7 @@ const $groupsRow = $("#all-groups-container").find(".row");
 // "group" is an object with keys name and numMembers.
 function addGroup(group) {
     const $col = $("<div>", {class: "col-md-4"});
-    const $container = $("<div>", {class: "all-groups-entry group-entry card"});
+    const $container = $("<div>", {class: "all-groups-entry entry card"});
     const $title = $("<h5>").text(`${group.course} ${group.assignment}: ${group.name}`);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
 
