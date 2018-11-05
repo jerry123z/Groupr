@@ -1,8 +1,8 @@
 // hard-coded values
 const allGroups = [
-    {name: "Bullish Frogs", numMembers: 4, maxNumMembers: 5},
-    {name: "Reckless Rhinos", numMembers: 1, maxNumMembers: 3},
-    {name: "Joyful Jaguars", numMembers: 7, maxNumMembers: 7}
+    {course: "CSC309", assignment: "Project", name: "Bullish Frogs", numMembers: 4, maxNumMembers: 5},
+    {course: "CSC369", assignment: "A3", name: "Reckless Rhinos", numMembers: 1, maxNumMembers: 2},
+    {course: "CSC301", assignment: "Project", name: "Joyful Jaguars", numMembers: 7, maxNumMembers: 7}
 ];
 
 // the row which holds all group entries
@@ -13,7 +13,7 @@ const $groupsRow = $("#all-groups-container").find(".row");
 function addGroup(group) {
     const $col = $("<div>", {class: "col-md-4"});
     const $container = $("<div>", {class: "all-groups-entry group-entry card"});
-    const $title = $("<h5>").text(group.name);
+    const $title = $("<h5>").text(`${group.course} ${group.assignment}: ${group.name}`);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
 
     // adding all filled-in icons
