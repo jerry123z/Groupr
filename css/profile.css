@@ -46,7 +46,7 @@
     margin-top: 10px;
 }
 
-.join {
+.joined {
     color: green;
 }
 
@@ -62,11 +62,9 @@
     color: #aaa;
     float: right;
     margin-right: 10px;
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 30px;
 }
-.close:hover,
-.close:focus {
+.close:hover {
     color: black;
     text-decoration: none;
     cursor: pointer;
