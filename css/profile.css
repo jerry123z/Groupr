@@ -69,3 +69,12 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+#save-button {
+    margin: 15px;
+}
+
+.save-success-text {
+    display: none;
+    color: green;
+}

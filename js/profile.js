@@ -12,6 +12,16 @@ const allNotifications = [
     {username: "Brennan", action: "left", group: "Reckless Rhinos", datetime: new Date("October 4, 2018 11:33:12") }
 ];
 
+const schedule = {
+    0: [['09:00', '11:00'], ['13:00', '16:00']],
+    1: [],
+    2: [['10:00', '12:00'], ['16:00', '19:00']],
+    3: [['13:00', '18:00']],
+    4: [['08:00', '11:00'], ['12:00', '13:00'], ['18:00', '20:00']],
+    5: [],
+    6: [['09:00', '12:00']]
+}
+
 // the row which holds all group entries
 const $groupsRow = $("#all-groups-container").find(".row");
 // the row which holds all notification entries
@@ -83,18 +93,22 @@ function formatDate(date) {
     return `${hoursAdjusted}:${date.getMinutes()}${meridiem}, ${month} ${date.getDate()}`;
 }
 
-// Populate page with information on page load
-$(document).ready(function() {
-    for (let i = 0; i < allGroups.length; i++) {
-        addGroup(allGroups[i]);
-    }
-    for (let i = 0; i < allNotifications.length; i++) {
-        addNotification(allNotifications[i]);
-    }
-});
-
-
 function removeNotification(e) {
     const entry = $(this).parent().parent();
     entry.remove();
 }
+
+// On page load
+$(document).ready(function() {
+    // add groups to the page
+    $.each(allGroups, (index, group) => addGroup(group));
+    // add notifiations to the page
+    $.each(allNotifications, (index, n) => addNotification(n));
+    // add schedule to the page
+    $("#schedule").dayScheduleSelector({
+        startTime: '00:00',
+        endTime: '24:00',
+        interval: 60
+    });
+    $("#schedule").data('artsy.dayScheduleSelector').deserialize(schedule);
+});

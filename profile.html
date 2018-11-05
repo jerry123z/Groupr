@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <title> Groupr </title>
     <link rel="stylesheet" type="text/css" href="css/profile.css">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/schedule.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
@@ -56,11 +57,25 @@
           <h3> Availability </h3>
         </div>
       </div>
+      <div class="row">
+        <div class="col">
+          <button id="save-button"> Save Your Changes </button>
+          <span class="save-success-text"> Availability saved! </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div id="schedule">
+            <!-- schedule injected here -->
+          </div>
+        </div>
+      </div>
 
     </div>
 
 
     <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.schedule.js"></script>
     <script src="js/profile.js"></script>
 
   </body>
