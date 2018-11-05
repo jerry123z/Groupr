@@ -26,6 +26,8 @@ const schedule = {
 const $groupsRow = $("#all-groups-container").find(".row");
 // the row which holds all notification entries
 const $notificationsRow = $("#notifications-container").find(".row");
+// the table which holds availability information
+const $availabilityTable = $("#schedule");
 
 // Add group to "All Groups" section of page.
 // "group" is an object with keys name, numMembers, and maxNumMembers.
@@ -93,9 +95,19 @@ function formatDate(date) {
     return `${hoursAdjusted}:${date.getMinutes()}${meridiem}, ${month} ${date.getDate()}`;
 }
 
-function removeNotification(e) {
+// Remove notification 'this' from 'Group Notifications' section.
+function removeNotification() {
     const entry = $(this).parent().parent();
     entry.remove();
+}
+
+// Save availability that the user has created. Occurs when the "Save
+// Availability" button is clicked.
+function saveAvailability() {
+    $("#save-success-text").css({ display: "block"});
+    const data = $availabilityTable.data('artsy.dayScheduleSelector').serialize();
+    console.log(data);
+    // TODO: actually save data (PHASE 2)
 }
 
 // On page load
@@ -111,4 +123,6 @@ $(document).ready(function() {
         interval: 60
     });
     $("#schedule").data('artsy.dayScheduleSelector').deserialize(schedule);
+    // add on-click behaviour to save availability button
+    $("#save-button").click(saveAvailability);
 });
