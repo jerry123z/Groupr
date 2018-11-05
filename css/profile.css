@@ -1,0 +1,14 @@
+#window-container {
+    text-align: center;
+    padding-top:40px;
+    margin: auto;
+}
+
+.space {
+    height: 50px;
+}
+
+.header {
+    border-bottom: 1px solid grey;
+    padding-bottom: 10px;
+}
