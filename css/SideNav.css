@@ -1,81 +1,49 @@
-body {
-  overflow-x: hidden;
-}
-
-#wrapper{
-  padding-left: 250px;
-}
-
-#sidebar-wrapper {
-  z-index: 1000;
-  position: fixed;
-  left: 250px;
-  width: 0;
+html {
+  position: relative;
   height: 100%;
-  margin-left: -250px;
-  overflow-y: auto;
-  background: #000;
 }
 
-#wrapper #sidebar-wrapper {
-  width: 250px;
+body {
+    height: 100%;
 }
 
-#page-content-wrapper {
+#wrapper {
+  display: flex;
+  min-height: 100%;
+}
+
+#wrapper #content-wrapper {
+  overflow-x: hidden;
   width: 100%;
-  position: absolute;
-  padding: 15px;
+  padding-bottom: 80px;
 }
 
-#wrapper #page-content-wrapper {
-  position: absolute;
-  margin-right: -250px;
+.sidebar {
+  width: 225px;
+  background-color: #212529;
+  min-height: 100%;
 }
 
-
-/* Sidebar Styles */
-
-.sidebar-nav {
-  position: absolute;
-  top: 0;
-  width: 250px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.sidebar .nav-item .nav-link {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  width: 90px;
 }
 
-.sidebar-nav li {
-  text-indent: 20px;
-  line-height: 40px;
-}
-
-.sidebar-nav li a {
+.sidebar .nav-item .nav-link span {
+  font-size: 1rem;
   display: block;
-  text-decoration: none;
-  color: #999999;
 }
 
-.sidebar-nav li a:hover {
-  text-decoration: none;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.2);
+/*Remove the bootstrap dropdown arrow*/
+.sidebar .nav-item.dropdown .dropdown-toggle::after {
+  display: none;
 }
 
-.sidebar-nav li a:active, .sidebar-nav li a:focus {
-  text-decoration: none;
+.sidebar .nav-item .nav-link {
+  color: rgba(255, 255, 255, 0.5);
 }
 
-.sidebar-nav>.sidebar-brand {
-  height: 65px;
-  font-size: 18px;
-  line-height: 60px;
-}
-
-.sidebar-nav>.sidebar-brand a {
-  color: #999999;
-}
-
-.sidebar-nav>.sidebar-brand a:hover {
-  color: #fff;
-  background: none;
+.sidebar .nav-item .nav-link:active, .sidebar .nav-item .nav-link:focus, .sidebar .nav-item .nav-link:hover {
+  color: rgba(255, 255, 255, 1);
 }
