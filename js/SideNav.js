@@ -54,13 +54,12 @@ function populate_side_nav(user_courses, assignments){
     for (i = 0; i < user_courses.length; i++ ){
         let listItem = $('<li></li>');
         listItem.addClass("nav-item dropdown");
-        let anchor = $( '<a class="nav-link dropdown-toggle" href="#SubMenu'.concat(user_courses[i],
+        let anchor = $( '<a class="nav-link dropdown-toggle collapsed" href="#SubMenu'.concat(user_courses[i],
             '"  role="button" data-toggle="collapse"  aria-expanded="false"></a>'));
         let id = $('<span>'.concat(user_courses[i], '</span>'));
         anchor.append(id);
         listItem.append(anchor);
-        let ulist = $( '<ul class="collapse list-unstyled dropdown-menu collapse" id="SubMenu'.concat(
-            user_courses[i], '"></ul>'));
+        let ulist = $( '<ul class="list-unstyled dropdown-menu collapse" id="SubMenu'.concat(user_courses[i], '"></ul>'));
         for(j = 0; j < assignments[i].length; j++){
             let listItem = $('<li></li>');
             let anchor = $('<a class="dropdown-item" href="./assignments.html">'.concat(assignments[i][j],'</a>'));
@@ -68,9 +67,20 @@ function populate_side_nav(user_courses, assignments){
             ulist.append(listItem);
         }
         let ending = $('<li><div class="dropdown-divider"></div></li><li>\
-            <a class="dropdown-item" href="#">Add Assignment</a></li>')
+            <a class="dropdown-item" data-toggle="modal" data-target="#addAssignment" data-course="'.concat(user_courses[i],
+                '">Add Assignment</a></li>'));
         ulist.append(ending);
         listItem.append(ulist);
         $("#nav").append(listItem);
     }
 }
+
+$('#addAssignment').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var course = button.data('course') // Extract info from data-* attributes
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this)
+  modal.find('.modal-title').text('Add ' + course + ' Assignment')
+  modal.find('.modal-body input').val(course)
+})
