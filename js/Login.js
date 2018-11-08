@@ -2,14 +2,21 @@ $('document').ready(function () {
 });
 
 $('#login-form').submit(function (e) {
+    e.preventDefault();
     //Check fields
-    if ($('#UserName').val().length == 0) {
-        alert("Username cannot be empty!");
-        e.preventDefault();
+    if ($('#Username').val().length == 0) {
+        throw "Username is empty";
     }
     else if ($('#Password').val().length == 0) {
-        alert('Password cannot be empty!')
-        e.preventDefault();
+        throw "Password is empty";
     }
-    e.preventDefault();
+
+    if ($('#Username').val() === 'admin'){
+        console.log("admin");
+        window.location.replace("./findUser.html");
+    } else{
+        console.log("user");
+        window.location.replace("./profile.html");
+    }
+
 });
