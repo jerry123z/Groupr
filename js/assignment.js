@@ -1,18 +1,19 @@
-// hard-coded values
+// hard-coded values (REQUIRES SERVER CALL TO OBTAIN)
 const allGroups = [
-    {name: "Hip Hippos", numMembers: 2},
-    {name: "Peckish Penguins", numMembers: 1},
-    {name: "Sinewy Centaurs", numMembers: 5},
-    {name: "Diligent Dingos", numMembers: 4},
-    {name: "Witty Walruses", numMembers: 3},
-    {name: "Sagacious Squids", numMembers: 1}
+    {groupId: 1, name: "Hip Hippos", numMembers: 2, maxNumMembers: 5},
+    {groupId: 2, name: "Peckish Penguins", numMembers: 1, maxNumMembers: 5},
+    {groupId: 3, name: "Sinewy Centaurs", numMembers: 5, maxNumMembers: 5},
+    {groupId: 4, name: "Diligent Dingos", numMembers: 4, maxNumMembers: 5},
+    {groupId: 5, name: "Witty Walruses", numMembers: 3, maxNumMembers: 5},
+    {groupId: 6, name: "Sagacious Squids", numMembers: 1, maxNumMembers: 5}
 ]
 const userGroup = {
+    groupId: 7,
     name: "Bullish Frogs",
     numMembers: 4,
-    members: ["Priya", "Jerry", "Andriy", "Brennan"]
+    members: ["Priya", "Jerry", "Andriy", "Brennan"],
+    maxNumMembers: 5
 }
-const maxNumMembers = 5;
 
 // the row which holds all group entries
 const $groupsRow = $("#all-groups-container").find(".row");
@@ -39,6 +40,7 @@ $("#spots-input").keyup(function() {
 function addGroup(group) {
     const $col = $("<div>", {class: "col-md-4"});
     const $container = $("<div>", {class: "all-groups-entry group-entry card"});
+    const $link = $("<a>", {href: `group_page.html?groupId=${group.groupId}`});
     const $title = $("<h5>").text(group.name);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
 
@@ -50,7 +52,7 @@ function addGroup(group) {
         $numMembersContainer.append($icon);
     }
     // adding all unfilled icons
-    for (; i < maxNumMembers; i++) {
+    for (; i < group.maxNumMembers; i++) {
         const $icon = $("<img>", {class: "small-user-icon",
                                   src: "content/person_unfilled.png"});
         $numMembersContainer.append($icon);
@@ -58,7 +60,8 @@ function addGroup(group) {
 
     $container.append($title);
     $container.append($numMembersContainer);
-    $col.append($container);
+    $link.append($container);
+    $col.append($link);
     $groupsRow.append($col);
 }
 
@@ -78,11 +81,13 @@ function setUserGroup(group) {
             $numMembersContainer.append($icon);
         }
         // adding all unfilled icons
-        for (; i < maxNumMembers; i++) {
+        for (; i < group.maxNumMembers; i++) {
             const $icon = $("<img>", {class: "big-user-icon",
                                       src: "content/person_unfilled.png"});
             $numMembersContainer.append($icon);
         }
+        // setting link href appropriately
+        $("#group-link").attr("href", `group_page.html?groupId=${group.groupId}`);
         const membersList = group.members.map(member => `<li> ${member} </li>`);
         $("#group-members-container").find("ul").append(membersList.join(""));
     }
@@ -90,6 +95,7 @@ function setUserGroup(group) {
 
 // Populate page with information on page load
 $(document).ready(function() {
+    // add groups to page (REQUIRES SERVER CALL)
     setUserGroup(userGroup);
     for (let i = 0; i < allGroups.length; i++) {
         addGroup(allGroups[i]);
