@@ -64,7 +64,7 @@ function populate_side_nav(user_courses, assignments){
         let ulist = $( '<ul class="list-unstyled dropdown-menu show"></ul>' );
         for(j = 0; j < assignments[i].length; j++){
             let listItem = $('<li></li>');
-            let anchor = $('<a class="dropdown-item" href="./assignments.html">'.concat(assignments[i][j],'</a>'));
+            let anchor = $('<a class="dropdown-item" href="./assignment.html">'.concat(assignments[i][j],'</a>'));
             listItem.append(anchor);
             ulist.append(listItem);
         }
