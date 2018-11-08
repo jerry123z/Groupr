@@ -1,1 +1,19 @@
 # team13 phase1.txt
+
+Login instructions:
+Use username 'admin' and any password to log in to the admin section of the site.
+Use any other username and any password to log in to the user section of the site.
+
+Features (admin):
+
+Features (user):
+  Profile Page:
+    - View and dismiss notifications, including when people join/leave groups that you are a part of
+    - View the groups you're currently in, including number of members within the group and the number of members you can add
+    - View and change your availability
+  Assignment Page:
+    - View of assignment name and due date
+    - View of your group (if you have one), including number of members within the group, the number of members you can add, and the names of all members
+    - View of all other groups for the assignment
+    - Ability to filter groups based off the number of spots they have available
+  Group Page:
