@@ -11,7 +11,7 @@ html, body {
 	font-size: 25;
 }
 
-.assignment_name {
+#assignment_name {
 	flex: 1 0 auto;
 }
 
@@ -25,6 +25,10 @@ html, body {
 	box-shadow: inset 0px 30px 25px -32px rgba(0,0,0,0.75);
 }
 
+.space {
+    height: 50px;
+}
+
 .group_block {
 	display: flex;
 	flex-direction: row;
@@ -33,7 +37,7 @@ html, body {
 	background-color: #B4869F;
 }
 
-.group_name {
+#group_name {
 	font-size: 30;
 	flex: 0 0 auto;
 	margin-right: 10px;
@@ -43,20 +47,39 @@ html, body {
 	flex: 0 0 auto;
 }
 
-.info_block {
-	padding: 100px;
-	background-color: #A6B1E1;
+.page-container {
+    padding-top:40px;
+    margin: auto;
 }
 
-.info_card {
-	width: 500px;
-	margin-left: auto;
-	margin-right: auto;
+.group-entry {
+	-webkit-box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
+	overflow: hidden;
 }
 
-.slots_list {
-	text-align: center;
-	font-size: 50;
+.group-entry-hover:hover {
+	background-color: #EEEEEE;
+	color: black;
+	cursor: pointer;
+}
+
+#posting {
+	margin: 10px;
+}
+
+.big-container {
+    border: solid 10px grey;
+    padding: 5px;
+}
+
+#group-members-container {
+    border-left: solid 1px black;
+}
+
+#number-members-container {
+	padding: 0px;
 }
 
 .members_bar {
@@ -68,49 +91,38 @@ html, body {
 	border-bottom: 1px solid rgba(86,86,86,.5);	
 }
 
-.member {
-	display: flex;
-	flex-direction: row;
-}
-
-.member_owner {
-	margin-left: 5px;
-}
-
 .member_you {
 	color: blue;
 }
 
-.requests_block {
-	min-width: 300px;
-	max-width: 900px;
-	margin-left: auto;
-	margin-right: auto;
-	padding: 50px;
-}
-
-.request_card {
-	width: 150px;
-	height: 150px;
-	border: 1px solid rgba(86,86,86,.5);	
-	-webkit-box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
-	-moz-box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
-	box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
-	padding: 5px;
-	margin: 10px;
-	color: black;
-}
-.request_card:hover {
-	background-color: #EEEEEE;
-	color: black;
-}
-
-.request_name {
+.header {
+    border-bottom: 1px solid grey;
+    padding-bottom: 10px;
 	text-align: center;
+	margin-bottom: 15px;
 }
 
-.request_members {
-	margin-left: auto;
-	margin-right: auto;
-	font-size: 30;
+.requests-entry {
+	margin: 8px;
+	text-align: center;
+	min-height: 116.5px;
+}
+
+.member_crown {
+	max-height: 25px;
+	max-width: 25px;
+	resize: both;
+}
+
+.big-user-icon {
+    max-height: 80px;
+    max-width: 80px;
+    margin: -9px;
+}
+
+.small-user-icon {
+	max-height: 60px;
+	max-width: 60px;
+	margin: -10px;
+	resize: both;
 }
