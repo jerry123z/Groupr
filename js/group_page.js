@@ -1,11 +1,11 @@
 
 const groupRequests = [
-    {name: "Hip Hippos", groupId: Math.floor(Math.random() * 1000000), numMembers: 2},
-    {name: "Peckish Penguins", groupId: Math.floor(Math.random() * 1000000), numMembers: 1},
-    {name: "Sinewy Centaurs", groupId: Math.floor(Math.random() * 1000000), numMembers: 5},
-    {name: "Diligent Dingos", groupId: Math.floor(Math.random() * 1000000), numMembers: 4},
-    {name: "Witty Walruses", groupId: Math.floor(Math.random() * 1000000), numMembers: 3},
-    {name: "Sagacious Squids", groupId: Math.floor(Math.random() * 1000000), numMembers: 1}
+    {name: "Hip Hippos", groupId: Math.floor(Math.random() * 1000000), numMembers: 2, member: ["Larry", "Velma"]},
+    {name: "Peckish Penguins", groupId: Math.floor(Math.random() * 1000000), numMembers: 1, members: ["Jacob"]},
+    {name: "Sinewy Centaurs", groupId: Math.floor(Math.random() * 1000000), numMembers: 5, members: ["Tyler", "Skyler", "Ashley", "Sassie", "Bessy"]},
+    {name: "Diligent Dingos", groupId: Math.floor(Math.random() * 1000000), numMembers: 4, members: ["Harry", "Berry", "Mary", "Carrie"]},
+    {name: "Witty Walruses", groupId: Math.floor(Math.random() * 1000000), numMembers: 3, members: ["Dawn", "Ron", 'John']},
+    {name: "Sagacious Squids", groupId: Math.floor(Math.random() * 1000000), numMembers: 1, members: ["Tony"]}
 ]
 
 const user = "Andriy";
@@ -86,13 +86,52 @@ function addRequest(group) {
                                   src: "content/person_unfilled.png"});
         $numMembersContainer.append($icon);
     }
+    $container.attr('data-toggle', 'modal');
+    $container.attr('data-target', '#requestModal');
+    $container.attr('data-gid', group.groupId);
 
     $container.append($title);
     $container.append($numMembersContainer);
     $col.append($container);
     $requestsRow.append($col);
-    const url = "group_page.html?gid=" + group.groupId;
-    $container.click(event => { window.location.href=url; });
+}
+
+function setupMergeModal()
+{
+    $('#requestModal').on('show.bs.modal', event => {
+        const button = $(event.relatedTarget);
+        const gid = button.data('gid');
+        openMergeModal(groupRequests.filter(group => group.groupId == gid)[0]);
+    });
+}
+
+function openMergeModal(group) {
+    $("#requestModalLabel").text(group.name);
+    $("#requestModalLabel").attr('href', "group_page.html?gid=" + group.groupId);
+    const $numMembersContainer = $("#request-members-icons");
+    $numMembersContainer.empty();
+    // adding all filled-in icons
+    let i;
+    for (i = 0; i < group.numMembers; i++) {
+        let $icon = $("<img>", {class: "big-user-icon",
+                                    src:"content/person_filled.png"});
+        $numMembersContainer.append($icon);
+    }
+    // adding all unfilled icons
+    for (; i < maxNumMembers; i++) {
+        const $icon = $("<img>", {class: "big-user-icon",
+                                    src: "content/person_unfilled.png"});
+        $numMembersContainer.append($icon);
+    }
+    // Add the member list. Also put a crown next to the owner and make the user blue.
+    const membersList = group.members.map(member => {
+        const crown = member == owner ? `<img class='member_crown' src='content/crown.png'>` : ``;
+        return member == user ? `<li class='member_you'> ${member} ${crown} </li>` : `<li> ${member} ${crown} </li>`;
+    });
+    // Attach the member list.
+    const $memberContainer = $("#request-members").find("ul");
+    $memberContainer.empty();
+    $memberContainer.append(membersList.join(""));
 }
 
 function addAvailability(group)
@@ -113,4 +152,5 @@ $(document).ready(function() {
         addRequest(groupRequests[i]);
     }
     addAvailability(userGroup);
+    setupMergeModal();
 });

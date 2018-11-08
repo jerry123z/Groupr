@@ -126,3 +126,11 @@ html, body {
 	margin: -10px;
 	resize: both;
 }
+
+#request-members-icons {
+	padding: 0px;
+}
+
+#request-members {
+    border-left: solid 1px black;
+}
