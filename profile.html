@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title> Groupr </title>
+    <link rel="stylesheet" type="text/css" href="css/profile.css">
+    <link rel="stylesheet" type="text/css" href="css/schedule.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div id="window-container" class="container">
+      <div class="row">
+        <div id="header" class="col">
+          <h1 id="username"> Andriy Dzikh </h1>
+          <h5 id="school"> University of Toronto </h5>
+        </div>
+      </div>
+
+      <div class="space"> </div>
+
+      <!-- notifications section -->
+      <div class="row header">
+        <div class="col">
+          <h3> Group Notifications </h3>
+        </div>
+      </div>
+      <div class="row">
+        <div id="notifications-container" class="container">
+          <div class="row">
+            <!-- notifications injected here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="space"> </div>
+
+        <!-- groups section -->
+      <div class="row header">
+        <div class="col">
+          <h3> Active Groups </h3>
+        </div>
+      </div>
+      <div class="row">
+        <div id="all-groups-container" class="container">
+          <div class="row">
+            <!-- groups injected here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="space"> </div>
+
+        <!-- availability section -->
+      <div class="row header">
+        <div class="col">
+          <h3> Availability </h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button id="save-button"> Save Availability </button>
+          <span id="save-success-text"> Availability saved! </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div id="schedule">
+            <!-- schedule injected here -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.schedule.js"></script>
+    <script src="js/profile.js"></script>
+
+  </body>
+  </html>

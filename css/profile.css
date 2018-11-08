@@ -1,0 +1,80 @@
+#window-container {
+    text-align: center;
+    padding-top:40px;
+    margin: auto;
+}
+
+.space {
+    height: 50px;
+}
+
+.header {
+    border-bottom: 1px solid grey;
+    padding-bottom: 10px;
+}
+
+.all-groups-entry {
+	margin: 8px;
+	min-height: 116.5px;
+}
+.all-groups-entry:hover {
+	background-color: #EEEEEE;
+	color: black;
+	cursor: pointer;
+}
+
+.notification-entry {
+    margin: 8px;
+    min-height: 100px;
+}
+
+.entry {
+	-webkit-box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
+	overflow: hidden;
+}
+
+.small-user-icon {
+	max-height: 60px;
+	max-width: 60px;
+	margin: -10px;
+	resize: both;
+}
+
+#all-groups-container, #notifications-container {
+    margin-top: 10px;
+}
+
+.joined {
+    color: green;
+}
+
+.left {
+    color: red;
+}
+
+.notification-datetime {
+    font-weight: 400;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    margin-right: 10px;
+    font-size: 30px;
+}
+.close:hover {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#save-button {
+    margin: 15px;
+}
+
+#save-success-text {
+    display: none;
+    color: green;
+}
