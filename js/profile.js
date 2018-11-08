@@ -98,7 +98,7 @@ function formatDate(date) {
 
 // Remove notification 'this' from 'Group Notifications' section.
 function removeNotification() {
-    const entry = $(this).parent().parent();
+    const entry = $(this).parent().parent().parent();
     entry.remove();
 }
 
