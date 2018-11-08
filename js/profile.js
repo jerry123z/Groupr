@@ -1,17 +1,16 @@
 const months = [ 'January', 'February', 'March', 'April', 'May', 'June',
 'July', 'August', 'September', 'October', 'November', 'December'];
 
-// hard-coded values
+// hard-coded values (REQUIRES SERVER CALL TO OBTAIN)
 const allGroups = [
-    {course: "CSC309", assignment: "Project", name: "Bullish Frogs", numMembers: 4, maxNumMembers: 5},
-    {course: "CSC369", assignment: "A3", name: "Reckless Rhinos", numMembers: 1, maxNumMembers: 2},
-    {course: "CSC301", assignment: "Project", name: "Joyful Jaguars", numMembers: 7, maxNumMembers: 7}
+    {groupId: 1, course: "CSC309", assignment: "Project", name: "Bullish Frogs", numMembers: 4, maxNumMembers: 5},
+    {groupId: 2, course: "CSC369", assignment: "A3", name: "Reckless Rhinos", numMembers: 1, maxNumMembers: 2},
+    {groupId: 3, course: "CSC301", assignment: "Project", name: "Joyful Jaguars", numMembers: 7, maxNumMembers: 7}
 ];
 const allNotifications = [
     {username: "Priya", action: "joined", group: "Bullish Frogs", datetime: new Date("October 14, 2018 18:45:12") },
     {username: "Brennan", action: "left", group: "Reckless Rhinos", datetime: new Date("October 4, 2018 11:33:12") }
 ];
-
 const schedule = {
     0: [['09:00', '11:00'], ['13:00', '16:00']],
     1: [],
@@ -34,6 +33,7 @@ const $availabilityTable = $("#schedule");
 function addGroup(group) {
     // create all elements needed
     const $col = $("<div>", {class: "col-md-4"});
+    const $link = $("<a>", {href: `group_page.html?groupId=${group.groupId}`});
     const $container = $("<div>", {class: "all-groups-entry entry card"});
     const $title = $("<h5>").text(`${group.course} ${group.assignment}: ${group.name}`);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
@@ -53,7 +53,8 @@ function addGroup(group) {
     // add all elements to the DOM
     $container.append($title);
     $container.append($numMembersContainer);
-    $col.append($container);
+    $link.append($container);
+    $col.append($link);
     $groupsRow.append($col);
 }
 
@@ -107,16 +108,16 @@ function saveAvailability() {
     $("#save-success-text").css({ display: "block"});
     const data = $availabilityTable.data('artsy.dayScheduleSelector').serialize();
     console.log(data);
-    // TODO: actually save data (PHASE 2)
+    // REQUIRES SERVER CALL TO SAVE DATA
 }
 
 // On page load
 $(document).ready(function() {
-    // add groups to the page
+    // add groups to the page (REQUIRES SERVER CALL)
     $.each(allGroups, (index, group) => addGroup(group));
-    // add notifiations to the page
+    // add notifiations to the page (REQUIRES SERVER CALL)
     $.each(allNotifications, (index, n) => addNotification(n));
-    // add schedule to the page
+    // add schedule to the page (REQUIRES SERVER CALL)
     $("#schedule").dayScheduleSelector({
         startTime: '00:00',
         endTime: '24:00',
