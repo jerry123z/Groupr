@@ -30,6 +30,25 @@ function get_assignments(course){
 }
 
 function populate_side_nav(user_courses, assignments){
+    //logout
+    let listItem = $('<li></li>');
+    listItem.addClass("nav-item");
+    let anchor = $('<a class="nav-link" href="./login.html"></a>');
+    let span = $('<span>Logout</span>');
+    anchor.append(span);
+    listItem.append(anchor);
+    $("#nav").append(listItem);
+
+    //profile
+    listItem = $('<li></li>');
+    listItem.addClass("nav-item");
+    anchor = $('<a class="nav-link" href="./profile.html"></a>');
+    span = $('<span>Profile</span>');
+    anchor.append(span);
+    listItem.append(anchor);
+    $("#nav").append(listItem);
+
+    //courses
     let i;
     let j;
     for (i = 0; i < user_courses.length; i++ ){
@@ -44,7 +63,7 @@ function populate_side_nav(user_courses, assignments){
             user_courses[i], '"></ul>'));
         for(j = 0; j < assignments[i].length; j++){
             let listItem = $('<li></li>');
-            let anchor = $('<a class="dropdown-item" href="#">'.concat(assignments[i][j],'</a>'));
+            let anchor = $('<a class="dropdown-item" href="./assignments.html">'.concat(assignments[i][j],'</a>'));
             listItem.append(anchor);
             ulist.append(listItem);
         }
