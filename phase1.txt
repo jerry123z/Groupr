@@ -5,7 +5,36 @@ Use username 'admin' and any password to log in to the admin section of the site
 Use any other username and any password to log in to the user section of the site.
 
 Features (admin):
+  Navigation:
+    - Sidenav to switch between the school finder and user finder
 
+  Find User:
+    - Finds a user
+	- Users are searched for dynamically upon input
+	- Can click edit to edit that user
+  Find School:
+    - Finds a school
+	- Schools are searched for dynamically upon input
+	- Can click edit to edit that school
+	- Can click find class to find classes within that school
+  Find Class:
+    - Finds a class
+	- Classs are searched for dynamically upon input
+	- Can click edit to edit that class
+
+  Edit Class:
+    - Edit the settings of a class
+	- Can delete the class
+	- Can edit the name, coure code, and number of members
+  Edit School:
+    - Edit the settings of a school
+	- Can delete the school
+	- Can edit the name, last date of activity, and number of members
+  Edit User:
+    - Edit the settings of a user
+	- Can delete the user
+	- Can edit the name, email, and school
+	
 Features (user):
   Navigation:
     - Dynamicaly populates the user's courses and assignments.
