@@ -44,7 +44,7 @@ html, body {
 }
 
 .group_name_edit {
-	flex: 0 0 auto;
+	flex: 1 0 auto;
 }
 
 .page-container {

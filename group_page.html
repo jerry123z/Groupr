@@ -49,6 +49,7 @@
 				<div class='group_name_edit'>
 					<button type='button' class='btn btn-secondary btn-sm'>Edit</button>
 				</div>
+				<button id='requestJoinButton' type='button' class='btn btn-primary'>Request To Join</button>
 			</div>
 			<div class='shadow_above'>
 				<div class='page-container container'>
@@ -118,40 +119,39 @@
 		</div>
 
 		<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel" aria-hidden="true">
-				<div class="modal-dialog" role="document">
-						<div class="modal-content">
-								<div class="modal-header">
-										<h5 class="modal-title"><a id="requestModalLabel"><!-- request group name injected here --></a></h5>
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-										</button>
-								</div>
-								<div class="modal-body">
-									<div class='container'>
-										<div class="row">
-												<div class="col-md-6">
-													<!-- icons -->
-													<div id="request-members-icons" class="container">
-														<!-- icons injected here -->
-													</div>
-												</div>
-												<!-- names of members -->
-												<div id="request-members" class="col-md-3">
-													<h4> Members: </h4>
-													<ul>
-														<!-- names of all members injected here -->
-													</ul>
-												</div>
-											</div>
-										</div>
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title"><a id="requestModalLabel"><!-- request group name injected here --></a></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class='container'>
+							<div class="row">
+								<div class="col-md-6">
+									<!-- icons -->
+									<div id="request-members-icons" class="container">
+										<!-- icons injected here -->
 									</div>
 								</div>
-								<div class="modal-footer">
-										<button type="button" class="btn btn-primary">Merge</button>
-										<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+								<!-- names of members -->
+								<div id="request-members" class="col-md-3">
+									<h4> Members: </h4>
+									<ul>
+										<!-- names of all members injected here -->
+									</ul>
 								</div>
+							</div>
 						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary">Merge</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
 				</div>
+			</div>
 		</div>
 	</div>
 

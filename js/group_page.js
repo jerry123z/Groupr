@@ -1,6 +1,6 @@
 
 const groupRequests = [
-    {name: "Hip Hippos", groupId: Math.floor(Math.random() * 1000000), numMembers: 2, member: ["Larry", "Velma"]},
+    {name: "Hip Hippos", groupId: Math.floor(Math.random() * 1000000), numMembers: 2, members: ["Larry", "Velma"]},
     {name: "Peckish Penguins", groupId: Math.floor(Math.random() * 1000000), numMembers: 1, members: ["Jacob"]},
     {name: "Sinewy Centaurs", groupId: Math.floor(Math.random() * 1000000), numMembers: 5, members: ["Tyler", "Skyler", "Ashley", "Sassie", "Bessy"]},
     {name: "Diligent Dingos", groupId: Math.floor(Math.random() * 1000000), numMembers: 4, members: ["Harry", "Berry", "Mary", "Carrie"]},
@@ -8,7 +8,7 @@ const groupRequests = [
     {name: "Sagacious Squids", groupId: Math.floor(Math.random() * 1000000), numMembers: 1, members: ["Tony"]}
 ]
 
-const user = "Andriy";
+const user = "David";
 const owner = "Brennan";
 
 const userGroup = {
@@ -62,6 +62,18 @@ function setUserGroup(group) {
         // Attach the requirement list.
         const requirementList = group.requirements.map(requirement => `<li>${requirement}</li>`);
         $("#posting_requirements").append(requirementList.join(""));
+        if(group.members.indexOf(user) != -1)
+        {
+            $('#requestJoinButton').remove();
+        }
+        else
+        {
+            $('#requestJoinButton').click(event => {
+                $('#requestJoinButton').removeClass('btn-primary')
+                    .addClass('btn-secondary')
+                    .text('Request sent!');
+            });
+        }
     }
 }
 
