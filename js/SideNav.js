@@ -53,24 +53,27 @@ function populate_side_nav(user_courses, assignments){
     let j;
     for (i = 0; i < user_courses.length; i++ ){
         let listItem = $('<li></li>');
-        listItem.addClass("nav-item dropdown");
-        let anchor = $( '<a class="nav-link dropdown-toggle collapsed" href="#SubMenu'.concat(user_courses[i],
-            '"  role="button" data-toggle="collapse"  aria-expanded="false"></a>'));
+        listItem.addClass("nav-item");
+        listItem.addClass("dropdown")
+        let anchor = $( '<a class="nav-link dropdown-toggle collapsed" href="#SubMenu' + user_courses[i] +
+            '"  role="button" data-toggle="collapse"  aria-expanded="false"></a>');
         let id = $('<span>'.concat(user_courses[i], '</span>'));
         anchor.append(id);
         listItem.append(anchor);
-        let ulist = $( '<ul class="list-unstyled dropdown-menu collapse" id="SubMenu'.concat(user_courses[i], '"></ul>'));
+        const containerDiv = $('<div id="SubMenu' + user_courses[i] + '" class="collapse"></div>');
+        let ulist = $( '<ul class="list-unstyled dropdown-menu show"></ul>' );
         for(j = 0; j < assignments[i].length; j++){
             let listItem = $('<li></li>');
-            let anchor = $('<a class="dropdown-item" href="./assignments.html">'.concat(assignments[i][j],'</a>'));
+            let anchor = $('<a class="dropdown-item" href="./assignment.html">'.concat(assignments[i][j],'</a>'));
             listItem.append(anchor);
             ulist.append(listItem);
         }
+        containerDiv.append(ulist);
         let ending = $('<li><div class="dropdown-divider"></div></li><li>\
             <a class="dropdown-item" data-toggle="modal" data-target="#addAssignment" data-course="'.concat(user_courses[i],
                 '">Add Assignment</a></li>'));
         ulist.append(ending);
-        listItem.append(ulist);
+        listItem.append(containerDiv);
         $("#nav").append(listItem);
     }
 }
