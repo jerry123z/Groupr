@@ -53,3 +53,4 @@ Features (user):
     - View of all requests that groups have put on your group
     - View of availability of all group members.
     - Ability to merge and request merging with another group.
+    - Ability to rename groups.

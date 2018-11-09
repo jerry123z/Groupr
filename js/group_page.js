@@ -157,6 +157,27 @@ function addAvailability(group)
     $("#schedule").data('artsy.dayScheduleSelector').deserialize(group.availability);
 }
 
+function setupEditNameButton(group)
+{
+    const $group_name = $('#group_name');
+    const $group_name_edit = $('.group_name_edit');
+    const $editable_group_name = $('#editable_group_name');
+    $editable_group_name.css('display', 'none');
+    $('#group_name_edit_btn').click(event => {
+        $group_name.css('display', 'none');
+        $group_name_edit.css('display', 'none');
+        $editable_group_name.val($group_name.text());
+        $editable_group_name.css('display', 'inline-block');
+    });
+
+    $editable_group_name.on('change', event => {
+        $group_name.text($editable_group_name.val());
+        $group_name.css('display', 'inline-block');
+        $group_name_edit.css('display', 'inline-block');
+        $editable_group_name.css('display', 'none');
+    });
+}
+
 // Populate page with information on page load
 $(document).ready(function() {
     setUserGroup(userGroup);
@@ -165,4 +186,5 @@ $(document).ready(function() {
     }
     addAvailability(userGroup);
     setupMergeModal();
+    setupEditNameButton(userGroup);
 });

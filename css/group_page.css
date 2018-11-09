@@ -43,6 +43,12 @@ html, body {
 	margin-right: 10px;
 }
 
+#editable_group_name {
+	font-size: 30;
+	flex: 1 0 auto;
+	margin-right: 10px;
+}
+
 .group_name_edit {
 	flex: 1 0 auto;
 }
