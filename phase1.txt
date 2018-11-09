@@ -20,3 +20,6 @@ Features (user):
     - View of all other groups for the assignment
     - Ability to filter groups based off the number of spots they have available
   Group Page:
+    - View of your group's posting, including the slots filled and the slots empty, the requirements for the posting, and ownership of the group.
+    - View of all requests that groups have put on your group
+    - View of availability of all group members.
