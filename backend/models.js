@@ -33,6 +33,16 @@ const User = mongoose.model("User", {
     }
 });
 
+const School = mongoose.model("School", {
+    name: {
+        type: String,
+        required: true
+    },
+    members: [[ObjectId]],
+    courses: [[ObjectId]]
+});
+
 module.exports = {
-    User
+    User,
+    School
 };
