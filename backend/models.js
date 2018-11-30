@@ -55,8 +55,59 @@ const Course = mongoose.model("Course", {
     assignments: [[ObjectId]]
 });
 
+const Assignment = mongoose.model("Assignment", {
+    name: {
+        type: String,
+        required: true
+    },
+    school: {
+        type: ObjectId,
+        required: true
+    },
+    course: {
+        type: ObjectId,
+        required: true
+    },
+    members: [[ObjectId]],
+    groups: [[ObjectId]]
+});
+
+const Group = mongoose.model("Group", {
+    name: {
+        type: String,
+        required: true
+    },
+    school: {
+        type: ObjectId,
+        required: true
+    },
+    course: {
+        type: ObjectId,
+        required: true
+    },
+    assignment: {
+        type: ObjectId,
+        required: true
+    },
+    maxMembers: {
+        type: Number,
+        required: true
+    },
+    owner: {
+        type: ObjectId,
+        required: true
+    },
+    members: [[ObjectId]],
+    requests: [{
+        isUser: Boolean,
+        id: ObjectId
+    }]
+});
+
 module.exports = {
     User,
     School,
-    Course
+    Course,
+    Assignment,
+    Group
 };
