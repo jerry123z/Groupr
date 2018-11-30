@@ -1,5 +1,6 @@
 
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const User = mongoose.model("User", {
     email: {
@@ -28,7 +29,7 @@ const User = mongoose.model("User", {
     courses: [[ObjectId]],
     groups: [[ObjectId]],
     isAdmin: {
-        type: boolean,
+        type: Boolean,
         required: true
     }
 });
