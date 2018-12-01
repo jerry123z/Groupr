@@ -28,6 +28,18 @@ function authenticate(email, password) {
     });
 }
 
+function verifyRequest(req) {
+    if(!req.cookies.auth
+        || !req.cookies.auth.token 
+        || !ObjectID.isValid(req.cookies.auth.user))
+    {
+        return new Promise((resolve, reject) => {
+            reject("Invalid authentication token.");
+        });
+    }
+    return verify(req.cookies.auth.token, req.cookies.auth.user);
+}
+
 function verify(tokenHash, user) {
     return new Promise((resolve, reject) => {
         Token.findOne({tokenHash, user}).then(token => {
@@ -60,6 +72,7 @@ function clearUserTokens(user) {
 
 module.exports = {
     authenticate,
+    verifyRequest,
     verify,
     clearToken,
     clearUserTokens

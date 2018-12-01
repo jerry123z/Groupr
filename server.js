@@ -112,23 +112,16 @@ app.post("/school", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    if(!req.cookies.auth
-        || !req.cookies.auth.token 
-        || !ObjectID.isValid(req.cookies.auth.user))
-    {
-        res.status(400).send("Invalid authentication.");
-        return;
-    }
-    dbLogin.verify(req.cookies.auth.token, req.cookies.auth.user).then(valid => {
+    dbLogin.verifyRequest(req).then(valid => {
         if(valid) {
             return dbGet.getUser(req.cookies.auth.user);
         } else {
-            throw "";
+            throw "Bad token";
         }
     }).then(user => {
         res.send(obfuscateUser(user));
     }).catch(error => {
-        res.status(400).send("Invalid authentication.");
+        res.status(400).send("Invalid authentication: " + error);
     });
 });
 
