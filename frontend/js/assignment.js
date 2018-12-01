@@ -114,13 +114,25 @@ function displayGroupHeader(hasGroup) {
     }
 }
 
+// Display group form on click of 'Create a Group' button.
 function displayGroupForm() {
-    console.log("called");
     const groupOptions = document.querySelector("#group-options-container");
     const groupForm = document.querySelector("#group-form-container");
     groupOptions.style.display = "none";
     groupForm.style.display = "block";
 }
+
+// Action taken when user submits their group form.
+$('#group-form').submit(e => {
+    e.preventDefault();
+    const nameInput = $("#name-input").val();
+    const reqInput = $("#reqs-input").val();
+    const scheduleInput = $("#schedule").data('artsy.dayScheduleSelector').serialize();
+    console.log(nameInput);
+    console.log(reqInput);
+    console.log(scheduleInput);
+});
+
 
 // Populate page with information on page load
 $(document).ready(function() {
