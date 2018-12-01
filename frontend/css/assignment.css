@@ -125,3 +125,15 @@ h2, h3, h4 {
 	color: black;
 	cursor: pointer;
 }
+
+#group-container {
+    display: none;
+}
+
+#group-form-container h3 {
+    text-align: center;
+}
+
+/* #group-form-container {
+    display: none;
+} */

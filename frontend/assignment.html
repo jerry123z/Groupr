@@ -44,6 +44,7 @@
             </div>
 
             <div id="content-wrapper">
+
                 <div class='assignment-block'>
                     <div class='assignment-name'>CSC 309 - Main Project</div>
                     <div class='assignment-date'>Due: Nov. 8</div>
@@ -55,6 +56,7 @@
                             <div class="col-md-2"> </div> <!-- spacing div -->
                             <div class="col-md-8">
                               <a id="group-link">
+                                <!-- if user has group, this div will display -->
                                 <div id="group-container" class="big-container card group-entry">
                                     <!-- group title -->
                                     <div id="group-header" class="row">
@@ -80,6 +82,13 @@
                                     </div>
                                 </div>
                               </a>
+                              <!-- if user does not have a group, this div will display -->
+                              <div id="group-form-container" class="big-container card group-entry">
+                                <h3> Create a Group </h3>
+                                <form id="group-form">
+
+                                </form>
+                              </div>
                             </div>
                         </div>
 
@@ -110,6 +119,10 @@
                     </div>
                 </div>
             </div>
+
+
+
+
         </div>
 
         <script src="js/jquery.min.js"></script>
