@@ -9,21 +9,9 @@ mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
 
 function createUser(email, password, name, school, isAdmin) {
     return new Promise((resolve, reject) => {
-        bcrypt.genSalt(10, (error, salt) => {
-            if(error) {
-                reject(error);
-            }
-            resolve(salt);
-        });
+        return bcrypt.genSalt(10);
     }).then(salt => {
-        return new Promise((resolve, reject) => {
-            bcrypt.hash(password, salt, (error, hash) => {
-                if(error) {
-                    reject(error);
-                }
-                resolve(hash);
-            });
-        });
+        return bcrypt.hash(password, salt);
     }).then(hash => {
         const newUser = new User({ email, passHash: hash, name, school, isAdmin });
         return newUser.save();
