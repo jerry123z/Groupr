@@ -150,7 +150,7 @@ function addAvailability(group)
 {
     // add schedule to the page
     $("#schedule").dayScheduleSelector({
-        startTime: '00:00',
+        startTime: '08:00',
         endTime: '24:00',
         interval: 60
     });

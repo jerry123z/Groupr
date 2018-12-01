@@ -106,7 +106,7 @@ function setUserGroup(group) {
 $(document).ready(function() {
     // add availability to group form
     $("#schedule").dayScheduleSelector({
-        startTime: '00:00',
+        startTime: '08:00',
         endTime: '24:00',
         interval: 60
     });
