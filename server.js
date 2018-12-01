@@ -8,8 +8,8 @@ const mongoose = require('mongoose');
 
 // Import the models.
 const { User, School, Course, Assignment, Group } = require('./models.js');
-const dbGet = require('./dbGet.js');
-const dbCreate = require('./dbCreate.js');
+const dbGet = require('./db/dbGet.js');
+const dbCreate = require('./db/dbCreate.js');
 
 // Start the database.
 const app = express();
