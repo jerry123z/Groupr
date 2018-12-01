@@ -105,22 +105,18 @@ function setUserGroup(group) {
 // Display proper group header. If user has a group, display that group info div.
 // If user does not have a group, display the group 'options' message.
 function displayGroupHeader(hasGroup) {
-    const groupInfo = document.querySelector("#group-info-container");
-    const groupOptions = document.querySelector("#group-options-container");
     if (hasGroup) {
-        groupInfo.style.display = "block";
+        $("#group-info-container").css("display", "block");
     } else {
-        groupOptions.style.display = "block";
+        $("#group-options-container").css("display", "block");
     }
 }
 
 // Display group form on click of 'Create a Group' button.
-function displayGroupForm() {
-    const groupOptions = document.querySelector("#group-options-container");
-    const groupForm = document.querySelector("#group-form-container");
-    groupOptions.style.display = "none";
-    groupForm.style.display = "block";
-}
+$("#display-group-form").click(e => {
+    $("#group-options-container").css("display", "none");
+    $("#group-form-container").css("display", "block");
+});
 
 // Action taken when user submits their group form.
 $('#group-form').submit(e => {
@@ -128,11 +124,7 @@ $('#group-form').submit(e => {
     const nameInput = $("#name-input").val();
     const reqInput = $("#reqs-input").val();
     const scheduleInput = $("#schedule").data('artsy.dayScheduleSelector').serialize();
-    console.log(nameInput);
-    console.log(reqInput);
-    console.log(scheduleInput);
 });
-
 
 // Populate page with information on page load
 $(document).ready(function() {
