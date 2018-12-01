@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 // Import the models.
 const { User, School, Course, Assignment, Group } = require('./models.js');
 const dbGet = require('./dbGet.js');
+const dbCreate = require('./dbCreate.js');
 
 // Start the database.
 const app = express();
@@ -54,6 +55,30 @@ app.get("/group/:id", (req, res) => {
         res.send(user);
     }).catch(error => {
         res.status(400).send(error);
+    });
+});
+
+app.post("/user", (req, res) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password,
+        name: req.body.name,
+        school: req.body.school,
+        isAdmin: false
+    };
+    if(!ObjectID.isValid(user.school)) {
+        res.status(400).send("Invalid school id.");
+        return;
+    }
+    dbGet.getSchool(user.school).then(school => {
+        return dbCreate.createUser(user.email, user.password, user.name, user.school, user.isAdmin);
+    }, error => {
+        res.status(400).send("Invalid school id.");
+        return;
+    }).then(user => {
+        res.send(user);
+    }).catch(error => {
+        res.status(400).send("Failed to create user.");
     });
 });
 
