@@ -5,7 +5,8 @@ const allGroups = [
     {groupId: 3, name: "Sinewy Centaurs", numMembers: 5, maxNumMembers: 5},
     {groupId: 4, name: "Diligent Dingos", numMembers: 4, maxNumMembers: 5},
     {groupId: 5, name: "Witty Walruses", numMembers: 3, maxNumMembers: 5},
-    {groupId: 6, name: "Sagacious Squids", numMembers: 1, maxNumMembers: 5}
+    {groupId: 6, name: "Sagacious Squids", numMembers: 1, maxNumMembers: 5},
+    {groupId: 6, name: "Butyraceous Barnacles", numMembers: 5, maxNumMembers: 5}
 ]
 const userGroup = {
     groupId: 7,
@@ -15,6 +16,7 @@ const userGroup = {
     maxNumMembers: 5
 }
 
+
 // the row which holds all group entries
 const $groupsRow = $("#all-groups-container").find(".row");
 
@@ -22,6 +24,13 @@ const $groupsRow = $("#all-groups-container").find(".row");
 $("#spots-input").keyup(function() {
     const numSpots = parseInt($("#spots-input").val());
     if (numSpots >= 0) {
+        // Determine maxNumMembers
+        let maxNumMembers;
+        if (allGroups.length > 0) {
+            maxNumMembers = allGroups[0].maxNumMembers;
+        } else {
+            maxNumMembers = -1;
+        }
         // remove all group entries
         $groupsRow.empty();
         // add back all groups that have numSpots or more spots available
@@ -93,8 +102,41 @@ function setUserGroup(group) {
     }
 }
 
+// Display proper group header. If user has a group, display that group info div.
+// If user does not have a group, display the group 'options' message.
+function displayGroupHeader(hasGroup) {
+    if (hasGroup) {
+        $("#group-info-container").css("display", "block");
+    } else {
+        $("#group-options-container").css("display", "block");
+    }
+}
+
+// Display group form on click of 'Create a Group' button.
+$("#display-group-form").click(e => {
+    $("#group-options-container").css("display", "none");
+    $("#group-form-container").css("display", "block");
+});
+
+// Action taken when user submits their group form.
+$('#group-form').submit(e => {
+    e.preventDefault();
+    const nameInput = $("#name-input").val();
+    const reqInput = $("#reqs-input").val();
+    const scheduleInput = $("#schedule").data('artsy.dayScheduleSelector').serialize();
+});
+
 // Populate page with information on page load
 $(document).ready(function() {
+    // add availability to group form
+    $("#schedule").dayScheduleSelector({
+        startTime: '08:00',
+        endTime: '24:00',
+        interval: 60
+    });
+    // display appropriate group header
+    displayGroupHeader(false);
+
     // add groups to page (REQUIRES SERVER CALL)
     setUserGroup(userGroup);
     for (let i = 0; i < allGroups.length; i++) {

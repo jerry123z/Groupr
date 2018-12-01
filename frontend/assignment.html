@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title> Groupr </title>
+        <link rel="stylesheet" type="text/css" href="css/schedule.css">
         <link rel="stylesheet" type="text/css" href="css/assignment.css">
         <link href="css/SideNav.css" type="text/css" rel="stylesheet">
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -44,6 +45,7 @@
             </div>
 
             <div id="content-wrapper">
+
                 <div class='assignment-block'>
                     <div class='assignment-name'>CSC 309 - Main Project</div>
                     <div class='assignment-date'>Due: Nov. 8</div>
@@ -54,8 +56,14 @@
                         <div class="row">
                             <div class="col-md-2"> </div> <!-- spacing div -->
                             <div class="col-md-8">
+                              <!-- if user does not have a group, this div will display -->
+                              <div id="group-options-container">
+                                <button id='display-group-form' type='button' class='btn btn-primary'>Create a Group</button>
+                                <span id="group-options-text"> or click on a group below for more information</span>
+                              </div>
                               <a id="group-link">
-                                <div id="group-container" class="big-container card group-entry">
+                                <!-- if user has group, this div will display -->
+                                <div id="group-info-container" class="big-container card group-entry">
                                     <!-- group title -->
                                     <div id="group-header" class="row">
                                         <div class="col">
@@ -80,6 +88,25 @@
                                     </div>
                                 </div>
                               </a>
+                              <!-- if user clicks "create a group", this div will display-->
+                              <div id="group-form-container" class="big-container card group-entry">
+                                <div id="group-form-title-container">
+                                  <h3> Create a Group </h3>
+                                </div>
+                                <form id="group-form">
+                                <label for="name-input"> Group Name: </label>
+                                <input id="name-input" type="text" required> </input>
+                                <label for="reqs-input"> Group Requirements (optional):</label>
+                                <textarea id="reqs-input" rows="5" cols="30"> </textarea>
+                                <label for="schedule"> Group Meeting Schedule (optional): </label>
+                                <div id="schedule">
+                                  <!-- schedule injected here -->
+                                </div>
+                                <div id="submit-btn-container">
+                                  <button id='submit-group' type='button submit' class='btn btn-primary'>Submit</button>
+                                </div>
+                                </form>
+                              </div>
                             </div>
                         </div>
 
@@ -110,9 +137,14 @@
                     </div>
                 </div>
             </div>
+
+
+
+
         </div>
 
         <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.schedule.js"></script>
         <script src="js/bootstrap.bundle.min.js"></script>
         <script src="js/assignment.js"></script>
         <script src="js/SideNav.js"></script>
