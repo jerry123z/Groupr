@@ -104,6 +104,12 @@ function setUserGroup(group) {
 
 // Populate page with information on page load
 $(document).ready(function() {
+    // add availability to group form
+    $("#schedule").dayScheduleSelector({
+        startTime: '00:00',
+        endTime: '24:00',
+        interval: 60
+    });
     // add groups to page (REQUIRES SERVER CALL)
     setUserGroup(userGroup);
     for (let i = 0; i < allGroups.length; i++) {

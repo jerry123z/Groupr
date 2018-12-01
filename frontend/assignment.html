@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title> Groupr </title>
+        <link rel="stylesheet" type="text/css" href="css/schedule.css">
         <link rel="stylesheet" type="text/css" href="css/assignment.css">
         <link href="css/SideNav.css" type="text/css" rel="stylesheet">
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -86,7 +87,17 @@
                               <div id="group-form-container" class="big-container card group-entry">
                                 <h3> Create a Group </h3>
                                 <form id="group-form">
-
+                                <label for="name-input"> Group Name: </label>
+                                <input id="name-input" type="text"> </input>
+                                <label for="reqs-input"> Group Requirements (optional):</label>
+                                <textarea id="reqs-input" rows="5" cols="30"> </textarea>
+                                <label for="schedule"> Group Meeting Schedule (optional): </label>
+                                <div id="schedule">
+                                  <!-- schedule injected here -->
+                                </div>
+                                <div id="submit-btn-container">
+                                  <button id='submit-group' type='button' class='btn btn-primary'>Submit</button>
+                                </div>
                                 </form>
                               </div>
                             </div>
@@ -126,6 +137,7 @@
         </div>
 
         <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.schedule.js"></script>
         <script src="js/bootstrap.bundle.min.js"></script>
         <script src="js/assignment.js"></script>
         <script src="js/SideNav.js"></script>
