@@ -5,7 +5,8 @@ const allGroups = [
     {groupId: 3, name: "Sinewy Centaurs", numMembers: 5, maxNumMembers: 5},
     {groupId: 4, name: "Diligent Dingos", numMembers: 4, maxNumMembers: 5},
     {groupId: 5, name: "Witty Walruses", numMembers: 3, maxNumMembers: 5},
-    {groupId: 6, name: "Sagacious Squids", numMembers: 1, maxNumMembers: 5}
+    {groupId: 6, name: "Sagacious Squids", numMembers: 1, maxNumMembers: 5},
+    {groupId: 6, name: "Butyraceous Barnacles", numMembers: 5, maxNumMembers: 5}
 ]
 const userGroup = {
     groupId: 7,
@@ -15,6 +16,7 @@ const userGroup = {
     maxNumMembers: 5
 }
 
+
 // the row which holds all group entries
 const $groupsRow = $("#all-groups-container").find(".row");
 
@@ -22,6 +24,13 @@ const $groupsRow = $("#all-groups-container").find(".row");
 $("#spots-input").keyup(function() {
     const numSpots = parseInt($("#spots-input").val());
     if (numSpots >= 0) {
+        // Determine maxNumMembers
+        let maxNumMembers;
+        if (allGroups.length > 0) {
+            maxNumMembers = allGroups[0].maxNumMembers;
+        } else {
+            maxNumMembers = -1;
+        }
         // remove all group entries
         $groupsRow.empty();
         // add back all groups that have numSpots or more spots available
