@@ -48,6 +48,9 @@ const School = mongoose.model("School", {
         required: true,
         unique: true
     },
+    owner: {
+        type: ObjectId
+    },
     members: [[ObjectId]],
     courses: [[ObjectId]]
 });

@@ -84,23 +84,26 @@ app.post("/user", (req, res) => {
         res.status(400).send("Invalid school id.");
         return;
     }
-    dbGet.getSchool(user.school).then(school => {
-        return dbCreate.createUser(user.email, user.password, user.name, user.school, user.isAdmin);
-    }, error => {
-        res.status(400).send("Invalid school id.");
-        return;
-    }).then(user => {
+    
+    dbCreate.createUser(user.email, user.password, user.name, user.school, user.isAdmin).then(user => {
         res.send(obfuscateUser(user));
     }).catch(error => {
-        res.status(400).send("Failed to create user.");
+        res.status(400).send("Failed to create user: " + JSON.stringify(error));
     });
 });
 
 app.post("/school", (req, res) => {
     const school = {
-        name: req.body.name
+        name: req.body.name,
+        user: req.body.user
     };
-    dbCreate.createSchool(school.name).then((school) => {
+
+    if(!ObjectID.isValid(school.user)){
+        res.status(400).send("Invalid user id.");
+        return;
+    }
+
+    dbCreate.createSchool(school.name, school.user).then((school) => {
         res.send(school);
     }).catch(error => {
         res.status(400).send(error);
