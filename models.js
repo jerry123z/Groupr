@@ -2,6 +2,18 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
+const Token = mongoose.model("Token", {
+    tokenHash: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    user: {
+        type: ObjectId,
+        required: true
+    }
+});
+
 const User = mongoose.model("User", {
     email: {
         type: String,
@@ -111,6 +123,7 @@ const Group = mongoose.model("Group", {
 });
 
 module.exports = {
+    Token,
     User,
     School,
     Course,
