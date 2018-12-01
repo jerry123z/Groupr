@@ -28,7 +28,7 @@ const owner = {
 const userGroup = {
     _id: "mkanmln89090",
     school: "jnksnv0s9v9823",
-    couse: "nlkajoia882",
+    course: "nlkajoia882",
     assignment: "092hfahoifao",
     name: "Bullish Frogs",
     numMembers: 4,
