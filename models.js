@@ -25,11 +25,6 @@ const User = mongoose.model("User", {
         required: true,
         unique: true
     },
-    passSalt: {
-        type: String,
-        required: true,
-        unique: true
-    },
     name: {
         type: String,
         required: true

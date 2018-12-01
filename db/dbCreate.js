@@ -21,11 +21,11 @@ function createUser(email, password, name, school, isAdmin) {
                 if(error) {
                     reject(error);
                 }
-                resolve({hash, salt});
+                resolve(hash);
             });
         });
-    }).then(pass => {
-        const newUser = new User({ email, passHash: pass.hash, passSalt: pass.salt, name, school, isAdmin });
+    }).then(hash => {
+        const newUser = new User({ email, passHash: hash, name, school, isAdmin });
         return newUser.save();
     });
 }
