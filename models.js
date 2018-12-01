@@ -70,6 +70,10 @@ const Assignment = mongoose.model("Assignment", {
         type: ObjectId,
         required: true
     },
+    maxMembers: {
+        type: Number,
+        required: true
+    },
     members: [[ObjectId]],
     groups: [[ObjectId]]
 });
