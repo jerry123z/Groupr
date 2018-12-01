@@ -37,7 +37,9 @@ function verifyRequest(req) {
             reject("Invalid authentication token.");
         });
     }
-    return verify(req.cookies.auth.token, req.cookies.auth.user);
+    return verify(req.cookies.auth.token, req.cookies.auth.user).then(valid => {
+        return new Promise((resolve, reject) => { resolve(valid ? req.cookies.auth.user : null); });
+    });
 }
 
 function verify(tokenHash, user) {

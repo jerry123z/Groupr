@@ -112,9 +112,9 @@ app.post("/school", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    dbLogin.verifyRequest(req).then(valid => {
-        if(valid) {
-            return dbGet.getUser(req.cookies.auth.user);
+    dbLogin.verifyRequest(req).then(userId => {
+        if(userId) {
+            return dbGet.getUser(userId);
         } else {
             throw "Bad token";
         }
