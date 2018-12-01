@@ -3,6 +3,7 @@
 const express = require('express');
 const port = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const { ObjectID } = require('mongodb');
 const mongoose = require('mongoose');
 
@@ -14,6 +15,7 @@ const dbCreate = require('./db/dbCreate.js');
 // Start the database.
 const app = express();
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Start the front end.
 app.use(express.static(__dirname + "/frontend"));
