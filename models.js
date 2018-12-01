@@ -2,6 +2,18 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
+const Token = mongoose.model("Token", {
+    tokenHash: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    user: {
+        type: ObjectId,
+        required: true
+    }
+});
+
 const User = mongoose.model("User", {
     email: {
         type: String,
@@ -9,11 +21,6 @@ const User = mongoose.model("User", {
         unique: true
     },
     passHash: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    passSalt: {
         type: String,
         required: true,
         unique: true
@@ -27,6 +34,7 @@ const User = mongoose.model("User", {
         required: true
     },
     courses: [[ObjectId]],
+    assignments: [[ObjectId]],
     groups: [[ObjectId]],
     isAdmin: {
         type: Boolean,
@@ -37,7 +45,11 @@ const User = mongoose.model("User", {
 const School = mongoose.model("School", {
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true
+    },
+    owner: {
+        type: ObjectId
     },
     members: [[ObjectId]],
     courses: [[ObjectId]]
@@ -67,6 +79,10 @@ const Assignment = mongoose.model("Assignment", {
     },
     course: {
         type: ObjectId,
+        required: true
+    },
+    maxMembers: {
+        type: Number,
         required: true
     },
     members: [[ObjectId]],
@@ -106,6 +122,7 @@ const Group = mongoose.model("Group", {
 });
 
 module.exports = {
+    Token,
     User,
     School,
     Course,
