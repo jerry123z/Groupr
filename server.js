@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const { User, School, Course, Assignment, Group } = require('./models.js');
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
+const dbLogin = require('./db/dbLogin.js');
 
 // Start the database.
 const app = express();
@@ -84,7 +85,7 @@ app.post("/user", (req, res) => {
         res.status(400).send("Invalid school id.");
         return;
     }
-    
+
     dbCreate.createUser(user.email, user.password, user.name, user.school, user.isAdmin).then(user => {
         res.send(obfuscateUser(user));
     }).catch(error => {
@@ -107,6 +108,42 @@ app.post("/school", (req, res) => {
         res.send(school);
     }).catch(error => {
         res.status(400).send(error);
+    });
+});
+
+app.get("/login", (req, res) => {
+    if(!req.cookies.auth
+        || !req.cookies.auth.token 
+        || !ObjectID.isValid(req.cookies.auth.user))
+    {
+        res.status(400).send("Invalid authentication.");
+        return;
+    }
+    dbLogin.verify(req.cookies.auth.token, req.cookies.auth.user).then(valid => {
+        if(valid) {
+            return dbGet.getUser(req.cookies.auth.user);
+        } else {
+            throw "";
+        }
+    }).then(user => {
+        res.send(obfuscateUser(user));
+    }).catch(error => {
+        res.status(400).send("Invalid authentication.");
+    });
+});
+
+app.post("/login", (req, res) => {
+    const login = {
+        email: req.body.email,
+        password: req.body.password
+    };
+    dbLogin.authenticate(login.email, login.password).then(token => {
+        res.cookie("auth", {token: token.tokenHash, user: token.user});
+        return dbGet.getUser(token.user);
+    }).then(user => {
+        res.send(obfuscateUser(user));
+    }).catch(error => {
+        res.status(400).send("Failed to log in: " + error);
     });
 });
 
