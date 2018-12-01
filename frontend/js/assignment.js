@@ -102,6 +102,26 @@ function setUserGroup(group) {
     }
 }
 
+// Display proper group header. If user has a group, display that group info div.
+// If user does not have a group, display the group 'options' message.
+function displayGroupHeader(hasGroup) {
+    const groupInfo = document.querySelector("#group-info-container");
+    const groupOptions = document.querySelector("#group-options-container");
+    if (hasGroup) {
+        groupInfo.style.display = "block";
+    } else {
+        groupOptions.style.display = "block";
+    }
+}
+
+function displayGroupForm() {
+    console.log("called");
+    const groupOptions = document.querySelector("#group-options-container");
+    const groupForm = document.querySelector("#group-form-container");
+    groupOptions.style.display = "none";
+    groupForm.style.display = "block";
+}
+
 // Populate page with information on page load
 $(document).ready(function() {
     // add availability to group form
@@ -110,6 +130,9 @@ $(document).ready(function() {
         endTime: '24:00',
         interval: 60
     });
+    // display appropriate group header
+    displayGroupHeader(false);
+
     // add groups to page (REQUIRES SERVER CALL)
     setUserGroup(userGroup);
     for (let i = 0; i < allGroups.length; i++) {

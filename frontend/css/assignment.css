@@ -46,6 +46,29 @@ h2, h3, h4 {
     height: 50px;
 }
 
+#group-form-container {
+    display: none; /* invisible by default */
+}
+
+#group-info-container {
+    display: none; /* invisible by default */
+}
+
+#group-options-container {
+    display: none; /* invisible by default */
+    text-align: center;
+}
+
+#display-group-form {
+    font-size: 20px;
+    margin-bottom: 8px;
+    margin-right: 2px;
+}
+
+#group-options-text {
+    font-size: 22px;
+}
+
 #group-header {
     text-align: center;
     margin-bottom: 10px;
@@ -126,14 +149,6 @@ h2, h3, h4 {
 	cursor: pointer;
 }
 
-#group-container {
-    display: none;
-}
-
-#group-form-container h3 {
-    text-align: center;
-}
-
 /* Override group entry hover properties */
 #group-form-container:hover {
     background-color: inherit;
@@ -152,9 +167,9 @@ h2, h3, h4 {
     box-sizing: border-box;
 }
 
-/* #group-form-container {
-    display: none;
-} */
+#group-form-title-container {
+    text-align: center;
+}
 
 #submit-btn-container {
   display: flex;
