@@ -27,6 +27,7 @@ const User = mongoose.model("User", {
         required: true
     },
     courses: [[ObjectId]],
+    assignments: [[ObjectId]],
     groups: [[ObjectId]],
     isAdmin: {
         type: Boolean,

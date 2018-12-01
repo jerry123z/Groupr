@@ -120,6 +120,12 @@ html, body {
 	resize: both;
 }
 
+.member_kick {
+	max-height: 15px;
+	max-width: 15px;
+	resize: both;
+}
+
 .big-user-icon {
     max-height: 80px;
     max-width: 80px;
