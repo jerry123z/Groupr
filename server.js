@@ -20,9 +20,21 @@ app.use(cookieParser());
 // Start the front end.
 app.use(express.static(__dirname + "/frontend"));
 
+function obfuscateUser(user) {
+    const userObj = {
+        _id: user._id,
+        name: user.name,
+        school: user.school,
+        courses: user.courses,
+        assignments: user.assignments,
+        groups: user.groups
+    };
+    return userObj;
+}
+
 app.get("/user/:id", (req, res) => {
     dbGet.getUser(req.params.id).then(user => {
-        res.send(user);
+        res.send(obfuscateUser(user));
     }).catch(error => {
         res.status(400).send(error);
     });
@@ -78,7 +90,7 @@ app.post("/user", (req, res) => {
         res.status(400).send("Invalid school id.");
         return;
     }).then(user => {
-        res.send(user);
+        res.send(obfuscateUser(user));
     }).catch(error => {
         res.status(400).send("Failed to create user.");
     });
