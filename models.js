@@ -50,7 +50,8 @@ const User = mongoose.model("User", {
 const School = mongoose.model("School", {
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     members: [[ObjectId]],
     courses: [[ObjectId]]

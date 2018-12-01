@@ -30,6 +30,11 @@ function createUser(email, password, name, school, isAdmin) {
     });
 }
 
+function createSchool(name) {
+    return new School({name}).save();
+}
+
 module.exports = {
-    createUser
+    createUser,
+    createSchool
 };

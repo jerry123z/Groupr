@@ -84,6 +84,17 @@ app.post("/user", (req, res) => {
     });
 });
 
+app.post("/school", (req, res) => {
+    const school = {
+        name: req.body.name
+    };
+    dbCreate.createSchool(school.name).then((school) => {
+        res.send(school);
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
 app.listen(port, () => {
     console.log("Listening on port " + port);
 });
