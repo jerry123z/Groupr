@@ -140,6 +140,14 @@ app.post("/login", (req, res) => {
     });
 });
 
+app.delete("/login", (req, res) => {
+    dbLogin.clearToken(req, res).then(() => {
+        res.send("Logged out.");
+    }).catch(error => {
+        res.status(400).send(error);
+    })
+});
+
 app.listen(port, () => {
     console.log("Listening on port " + port);
 });

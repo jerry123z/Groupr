@@ -37,7 +37,7 @@ function verifyRequest(req) {
             reject("Invalid authentication token.");
         });
     }
-    return verify(req.cookies.auth.token, req.cookies.auth.user).then(valid => {
+    return verify().then(valid => {
         return new Promise((resolve, reject) => { resolve(valid ? req.cookies.auth.user : null); });
     });
 }
@@ -52,12 +52,22 @@ function verify(tokenHash, user) {
     });
 }
 
-function clearToken(tokenHash, user) {
+function clearToken(req, res) {
+    if(!req.cookies.auth
+        || !req.cookies.auth.token 
+        || !ObjectID.isValid(req.cookies.auth.user))
+    {
+        return new Promise((resolve, reject) => {
+            reject("Invalid authentication token.");
+        });
+    }
+    console.log(req.cookies.auth.token);
     return new Promise((resolve, reject) => {
-        Token.deleteOne({tokenHash, user}).then(() => {
+        Token.deleteOne({tokenHash: req.cookies.auth.token, user: req.cookies.auth.user}).then(() => {
+            res.cookie("auth", {}, {maxAge: 0});
             resolve(true);
         }).catch(error => {
-            resolve(false);
+            reject(error);
         });
     });
 }
