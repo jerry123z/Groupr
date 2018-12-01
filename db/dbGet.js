@@ -1,7 +1,7 @@
 
 const { ObjectID } = require('mongodb');
 const mongoose = require('mongoose');
-const { Token, User, School, Course, Assignment, Group } = require('models.js');
+const { Token, User, School, Course, Assignment, Group } = require('../models.js');
 
 // Connect to mongo database.
 mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});

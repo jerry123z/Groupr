@@ -1,7 +1,7 @@
 
 const { ObjectID } = require('mongodb');
 const mongoose = require('mongoose');
-const { Token, User, School, Course, Assignment, Group } = require('models.js');
+const { Token, User, School, Course, Assignment, Group } = require('../models.js');
 const bcrypt = require('bcryptjs');
 
 // Connect to mongo database.
