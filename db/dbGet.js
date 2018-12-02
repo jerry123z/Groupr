@@ -90,10 +90,15 @@ function getGroup(id) {
     });
 }
 
+function getAllSchools() {
+    return School.find();
+}
+
 module.exports = {
     getUser,
     getSchool,
     getCourse,
     getAssignment,
-    getGroup
+    getGroup,
+    getAllSchools
 };

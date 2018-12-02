@@ -29,12 +29,25 @@ function get_assignments(course){
     return assignments;
 }
 
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
+}
+
 function populate_side_nav(user_courses, assignments){
     //logout
     let listItem = $('<li></li>');
     listItem.addClass("nav-item");
-    let anchor = $('<a class="nav-link" href="./login.html"></a>');
+    let anchor = $('<a class="nav-link" href="#"></a>');
     let span = $('<span>Logout</span>');
+    anchor.click(logout);
     anchor.append(span);
     listItem.append(anchor);
     $("#nav").append(listItem);

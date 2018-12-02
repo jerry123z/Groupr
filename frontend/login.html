@@ -14,30 +14,21 @@
 <body class="mainLogin container-fluid">
     <div class="row h-100">
         <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3 h-100 white-col">
-            <div class="panel-login v-center">
+            <div id="login-block" class="panel-login v-center">
                 <div class="panel-heading">
                     <ul class="nav nav-pills nav-justified">
                         <li class="pill active">
-                            <a>Goupr - Login</a>
+                            <a>Groupr - Login</a>
                         </li>
                     </ul>
                 </div>
                 <div class="panel-body">
-                        <!---
-                            <form class="form-inline">
-                                <div class="form-group" style="margin-bottom:10px;">
-                                    <text style="color:red" >
-                                        ERROR MESSAGE HERE
-                                    </text>
-                                </div>
-                            </form>
-                        --->
                     <form id="login-form" action="#" method="post" role="form">
                         <div class="form-group">
-                            <input type="text" name="Username" id="Username" class="form-control" placeholder="Username">
+                            <input type="text" name="Email" id="login-email" class="form-control" placeholder="Email">
                         </div>
                         <div class="form-group">
-                            <input type="password" name="Password" id="Password" class="form-control" placeholder="Password">
+                            <input type="password" name="Password" id="login-password" class="form-control" placeholder="Password">
                         </div>
                         <div class="form-group text-center">
                             <input type="checkbox" class="" name="remember" id="remember-client">
@@ -48,19 +39,56 @@
                                 <input type="submit" name="login-submit" id="login-submit" class="form-control btn btn-login" value="Login">
                             </div>
                         </div>
-                        </form>
-                        <div class="form-group">
-                            <div class="text-center">
-                                <a href="#" class="login-link">Forgot Password?</a>
-                            </div>
-                            <div class="text-center">
-                                <a href="#" class="login-link">New Registration</a>
-                            </div>
+                    </form>
+                    <div class="form-group">
+                        <div class="text-center">
+                            <a href="#" class="login-link">Forgot Password?</a>
                         </div>
                         <div class="text-center">
-                            © 2018 - priya sucks
+                            <a id="switch-signup" href="#" class="login-link">New Registration</a>
                         </div>
-
+                    </div>
+                    <div class="text-center">
+                        © 2018 - priya sucks
+                    </div>
+                </div>
+            </div>
+            <div id="signup-block" class="panel-login v-center">
+                <div class="panel-heading">
+                    <ul class="nav nav-pills nav-justified">
+                        <li class="pill active">
+                            <a>Groupr - Signup</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <form id="signup-form" action="#" method="post" role="form">
+                        <div class="form-group">
+                            <input type="text" name="Email" id="signup-email" class="form-control" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="Password" id="signup-password" class="form-control" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="Name" id="signup-name" class="form-control" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control" id="signup-school"></select>
+                        </div>
+                        <div class="form-group">
+                            <div class="text-center">
+                                <input type="submit" name="signup-submit" id="signup-submit" class="form-control btn btn-login" value="Sign up">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-group">
+                        <div class="text-center">
+                            <a id="switch-login" href="#" class="login-link">Log in</a>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        © 2018 - priya sucks
+                    </div>
                 </div>
             </div>
         </div>
