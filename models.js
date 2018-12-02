@@ -98,7 +98,13 @@ const Group = mongoose.model("Group", {
         type: String
     },
     schedule: {
-        type: [[String]]
+        0: [[String]],
+        1: [[String]],
+        2: [[String]],
+        3: [[String]],
+        4: [[String]],
+        5: [[String]],
+        6: [[String]]
     },
     school: {
         type: ObjectId,
