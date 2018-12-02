@@ -6,9 +6,10 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { ObjectID } = require('mongodb');
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 // Import the models.
-const { User, School, Course, Assignment, Group } = require('./models.js');
+const { Token, User, School, Course, Assignment, Group } = require('./models.js');
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
@@ -36,6 +37,14 @@ function obfuscateUser(user) {
 app.get("/user/:id", (req, res) => {
     dbGet.getUser(req.params.id).then(user => {
         res.send(obfuscateUser(user));
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
+app.get("/school", (req, res) => {
+    dbGet.getAllSchools().then(schools => {
+        res.send(JSON.stringify(schools));
     }).catch(error => {
         res.status(400).send(error);
     });
@@ -74,7 +83,7 @@ app.get("/group/:id", (req, res) => {
 });
 
 app.post("/user", (req, res) => {
-    const user = {
+    let user = {
         email: req.body.email,
         password: req.body.password,
         name: req.body.name,
@@ -86,7 +95,13 @@ app.post("/user", (req, res) => {
         return;
     }
 
-    dbCreate.createUser(user.email, user.password, user.name, user.school, user.isAdmin).then(user => {
+    dbCreate.createUser(user.email, user.password, user.name, user.school, user.isAdmin).then(userRet => {
+        user = userRet;
+        return bcrypt.genSalt();
+    }).then(token => {
+        return new Token({tokenHash: token, user: user._id}).save();
+    }).then(token => {
+        res.cookie("auth", {token: token.tokenHash, user: token.user});
         res.send(obfuscateUser(user));
     }).catch(error => {
         res.status(400).send("Failed to create user: " + JSON.stringify(error));

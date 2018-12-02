@@ -61,7 +61,6 @@ function clearToken(req, res) {
             reject("Invalid authentication token.");
         });
     }
-    console.log(req.cookies.auth.token);
     return new Promise((resolve, reject) => {
         Token.deleteOne({tokenHash: req.cookies.auth.token, user: req.cookies.auth.user}).then(() => {
             res.cookie("auth", {}, {maxAge: 0});
