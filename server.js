@@ -73,9 +73,40 @@ app.get("/group/:id", (req, res) => {
     });
 });
 
-app.post("/group/:user_id/:assignment_id"), (req, res) => {
+// Route for course creation
+app.post("/course", (req, res) => {
+    const course = {
+        name: req.body.name,
+        school: req.body.schoolId
+    };
+
+    if(!ObjectID.isValid(course.school)) {
+        res.status(400).send("Invalid school id.");
+        return;
+    }
+
+    dbCreate.createCourse(course.name, course.school).then(course => {
+        res.send(course);
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
+// Route for group creation
+app.post("/group/:user_id/:assignment_id", (req, res) => {
     const user_id = req.params.user_id;
     const assignment_id = req.params.assignment_id;
+
+    if(!ObjectID.isValid(user_id)) {
+        res.status(400).send("Invalid user id.");
+        return;
+    }
+
+    if(!ObjectID.isValid(assignment_id)) {
+        res.status(400).send("Invalid assignment id.");
+        return;
+    }
+
     dbGet.getUser(user_id).then(user => {
         db.getAssignment(assignment_id).then(assigment => {
             const group = {
@@ -89,10 +120,10 @@ app.post("/group/:user_id/:assignment_id"), (req, res) => {
                 owner: user._id
             };
             dbCreate.createGroup(group.name, group.description, group.schedule,
-                group.school, group.course, group.assignment, group.maxMembers,
-                group.owner).then(group => {
-                    res.send(group);
-                })
+            group.school, group.course, group.assignment, group.maxMembers,
+            group.owner).then(group => {
+                res.send(group);
+            });
         });
     }).catch(error => {
         res.status(400).send(error);
@@ -107,6 +138,7 @@ app.post("/user", (req, res) => {
         school: req.body.school,
         isAdmin: false
     };
+
     if(!ObjectID.isValid(user.school)) {
         res.status(400).send("Invalid school id.");
         return;
