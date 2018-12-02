@@ -94,6 +94,12 @@ const Group = mongoose.model("Group", {
         type: String,
         required: true
     },
+    description: {
+        type: String
+    },
+    schedule: {
+        type: [[String]]
+    },
     school: {
         type: ObjectId,
         required: true
