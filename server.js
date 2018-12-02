@@ -74,10 +74,12 @@ app.get("/group/:id", (req, res) => {
 });
 
 // Route for course creation
-app.post("/course", (req, res) => {
+app.post("/course/:school_id", (req, res) => {
+    const school_id = req.params.school_id;
+
     const course = {
         name: req.body.name,
-        school: req.body.schoolId
+        school: school_id
     };
 
     if(!ObjectID.isValid(course.school)) {
@@ -92,12 +94,15 @@ app.post("/course", (req, res) => {
     });
 });
 
-// Route for assigment creation
-app.post("/assignment", (req, res) => {
+// Route for assignment creation
+app.post("/assignment/:school_id/:course_id", (req, res) => {
+    const school_id = req.params.school_id;
+    const course_id = req.params.course_id;
+
     const assignment = {
         name: req.body.name,
-        school: req.body.schoolId,
-        course: req.body.courseId,
+        school: school_id,
+        course: course_id,
         maxMembers: req.body.maxMembers
     };
 
@@ -109,8 +114,8 @@ app.post("/assignment", (req, res) => {
         return;
     }
 
-    dbCreate.createAssignment(assignment.name, assigment.school,
-    assigment.course, assigment.maxMembers).then(assignment => {
+    dbCreate.createAssignment(assignment.name, assignment.school,
+    assignment.course, assignment.maxMembers).then(assignment => {
         res.send(assignment);
     }).catch (error => {
         res.status(400).send(error);
@@ -131,14 +136,14 @@ app.post("/group/:user_id/:assignment_id", (req, res) => {
     }
 
     dbGet.getUser(user_id).then(user => {
-        db.getAssignment(assignment_id).then(assigment => {
+        dbGet.getAssignment(assignment_id).then(assignment => {
             const group = {
                 name: req.body.name,
                 description: req.body.description,
                 schedule: req.body.schedule,
                 school: user.school,
-                course: assigment.course,
-                assignment: assigment._id,
+                course: assignment.course,
+                assignment: assignment._id,
                 maxMembers: assignment.maxMembers,
                 owner: user._id
             };

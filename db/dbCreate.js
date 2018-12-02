@@ -29,7 +29,7 @@ function createCourse(name, school) {
     return new Course({name, school}).save();
 }
 
-function createAssignment(name, school) {
+function createAssignment(name, school, course, maxMembers) {
     return new Assignment({name, school, course, maxMembers}).save();
 }
 
@@ -43,5 +43,8 @@ function createGroup(name, description, schedule, school, course, assignment, ma
 
 module.exports = {
     createUser,
-    createSchool
+    createSchool,
+    createCourse,
+    createAssignment,
+    createGroup
 };
