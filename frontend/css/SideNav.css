@@ -47,3 +47,14 @@ body {
 .sidebar .nav-item .nav-link:active, .sidebar .nav-item .nav-link:focus, .sidebar .nav-item .nav-link:hover {
   color: rgba(255, 255, 255, 1);
 }
+
+#course-divider {
+    margin-left: 10px;
+    margin-right: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+#add-course-item, #add-course-link {
+    cursor: pointer;
+    width: 140px;
+}

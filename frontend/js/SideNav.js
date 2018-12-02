@@ -76,6 +76,13 @@ function populate_side_nav(user_courses, assignments){
         listItem.append(containerDiv);
         $("#nav").append(listItem);
     }
+    let divider = $('<li><div id="course-divider" class="dropdown-divider"></div></li>');
+    let addCourseItem = $('<li id="add-course-item" class="nav-item"></li>');
+    let addCourseLink = $('<a id="add-course-link" class="nav-link"></a>');
+    addCourseLink.append($('<span> Add Course </span>'));
+    addCourseItem.append(addCourseLink);
+    $("#nav").append(divider);
+    $("#nav").append(addCourseItem);
 }
 
 $('#addAssignment').on('show.bs.modal', function (event) {
