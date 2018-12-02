@@ -16,7 +16,7 @@ function createUser(email, password, name, schoolId, isAdmin) {
     }).then(salt => {
         return bcrypt.hash(password, salt);
     }).then(hash => {
-        const newUser = new User({ email, passHash: hash, name, school, isAdmin });
+        const newUser = new User({ email, passHash: hash, name, school: schoolId, isAdmin });
         return newUser.save();
     });
 }
