@@ -21,8 +21,8 @@ function createUser(email, password, name, schoolId, isAdmin) {
     });
 }
 
-function createSchool(name, creator) {
-    return new School({name, owner: creator}).save();
+function createSchool(name) {
+    return new School({name}).save();
 }
 
 function createCourse(name, school) {

@@ -181,16 +181,10 @@ app.post("/user", (req, res) => {
 
 app.post("/school", (req, res) => {
     const school = {
-        name: req.body.name,
-        user: req.body.user
+        name: req.body.name
     };
 
-    if(!ObjectID.isValid(school.user)){
-        res.status(400).send("Invalid user id.");
-        return;
-    }
-
-    dbCreate.createSchool(school.name, school.user).then((school) => {
+    dbCreate.createSchool(school.name).then((school) => {
         res.send(school);
     }).catch(error => {
         res.status(400).send(error);
