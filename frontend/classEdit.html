@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Jerry Sucks</title>
+    <link rel="stylesheet" type="text/css">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/SideNav.css" rel="stylesheet">
+    <link href="css/classEdit.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div id="wrapper">
+        <ul id="nav" class="sidebar navbar-nav">
+			<li class="nav-item">
+                <a class="nav-link" href="login.html">
+                    <span>Logout</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="findSchool.html">
+                    <span>School</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="findUser.html">
+                    <span>User</span>
+                </a>
+            </li>
+        </ul>
+
+        <div id="content-wrapper">
+
+            <div id = "header">
+                <h1>Edit Class</h1>
+            </div>
+			<div id = "page">
+				<div id = "varclass">
+			
+                <div id = "displayDelete">
+                    <div id = "allDisplays">
+                    </div>
+
+                    <div id = "deleteClass">
+                        <form id = "deleteClassForm">
+                            <input type = "submit" class = "big-button" class = "button" value = "Delete Class">
+                        </form>
+                    </div>
+                </div>
+
+
+                <div id = "changeForms">
+
+                    <div id = "ChangeCode" class = "editValue">
+                        <p class = "instructions">Enter a new course code</p>
+                        <form id = "changeCodeForm">
+                            <input id = "newCode" type = "text" class = "searchTerm" placeholder = "Course Code">
+                            <input type = "submit" class = "button" value = "Change">
+                        </form>
+                    </div>
+
+                    <div id = "ChangeName" class = "editValue">
+                        <p class = "instructions">Enter a new name</p>
+                        <form id = "changeNameForm">
+                            <input id = "newName" type = "text" class = "searchTerm" placeholder = "New Name">
+                            <input type = "submit" class = "button" value = "Change">
+                        </form>
+                    </div>
+
+                    <div id = "changeMembers" class = "editValue">
+                        <p class = "instructions">Enter a new number</p>
+                        <form id = "changeMembersForm">
+                            <input id = "newMembers" type = "text" class = "searchTerm" placeholder = "Number of Members">
+                            <input type = "submit" class = "button" value = "Change">
+                        </form>
+                    </div>
+
+
+
+                </div>
+            </div>
+			</div>
+
+
+            <script src="js/jquery.min.js"></script>
+            <script src="js/bootstrap.bundle.min.js"></script>
+            <script type="text/javascript" src="js/classEdit.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        </div>
+    </div>
+</body>

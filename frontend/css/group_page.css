@@ -1,0 +1,148 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+.assignment_block {
+	display: flex;
+	flex-direction: row;
+	padding: 5px;
+	background-color: #985F6F;
+	font-size: 25;
+}
+
+#assignment_name {
+	flex: 1 0 auto;
+}
+
+.assignment_date {
+	flex: 0 0 auto;
+}
+
+.shadow_above {
+	-webkit-box-shadow: inset 0px 30px 25px -32px rgba(0,0,0,0.75);
+	-moz-box-shadow: inset 0px 30px 25px -32px rgba(0,0,0,0.75);
+	box-shadow: inset 0px 30px 25px -32px rgba(0,0,0,0.75);
+}
+
+.space {
+    height: 50px;
+}
+
+.group_block {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 5px;
+	background-color: #B4869F;
+}
+
+#group_name {
+	font-size: 30;
+	flex: 0 0 auto;
+	margin-right: 10px;
+}
+
+#editable_group_name {
+	font-size: 30;
+	flex: 1 0 auto;
+	margin-right: 10px;
+}
+
+.group_name_edit {
+	flex: 1 0 auto;
+}
+
+.page-container {
+    padding-top:40px;
+    margin: auto;
+}
+
+.group-entry {
+	-webkit-box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 15px -2px rgba(0,0,0,0.75);
+	overflow: hidden;
+}
+
+.group-entry-hover:hover {
+	background-color: #EEEEEE;
+	color: black;
+	cursor: pointer;
+}
+
+#posting {
+	margin: 10px;
+}
+
+.big-container {
+    border: solid 10px grey;
+    padding: 5px;
+}
+
+#group-members-container {
+    border-left: solid 1px black;
+}
+
+#number-members-container {
+	padding: 0px;
+}
+
+.members_bar {
+	border-left: 1px solid rgba(86,86,86,.4);
+	padding: 20px;
+}
+
+.members_title {
+	border-bottom: 1px solid rgba(86,86,86,.5);	
+}
+
+.member_you {
+	color: blue;
+}
+
+.header {
+    border-bottom: 1px solid grey;
+    padding-bottom: 10px;
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+.requests-entry {
+	margin: 8px;
+	text-align: center;
+	min-height: 116.5px;
+}
+
+.member_crown {
+	max-height: 25px;
+	max-width: 25px;
+	resize: both;
+}
+
+.member_kick {
+	max-height: 15px;
+	max-width: 15px;
+	resize: both;
+}
+
+.big-user-icon {
+    max-height: 80px;
+    max-width: 80px;
+    margin: -9px;
+}
+
+.small-user-icon {
+	max-height: 60px;
+	max-width: 60px;
+	margin: -10px;
+	resize: both;
+}
+
+#request-members-icons {
+	padding: 0px;
+}
+
+#request-members {
+    border-left: solid 1px black;
+}

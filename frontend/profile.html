@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title> Groupr </title>
+    <link rel="stylesheet" type="text/css" href="css/profile.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="css/SideNav.css" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="wrapper">
+        <ul id="nav" class="sidebar navbar-nav">
+        </ul>
+        <div class="modal fade" id="addAssignment" tabindex="-1" role="dialog" aria-labelledby="addAssignmentLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAssignmentLabel">Add Assignment</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="course-name" class="col-form-label">Course:</label>
+                                <input type="text" class="form-control" id="course-name">
+                            </div>
+                            <div class="form-group">
+                                <label for="assignment" class="col-form-label">Assignment:</label>
+                                <input type="text" class="form-control" id="assignment-name">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-wrapper">
+            <div id="window-container" class="container">
+                <div class="row">
+                    <div id="header" class="col">
+                        <h1 id="username"> Andriy Dzikh </h1>
+                        <h5 id="school"> University of Toronto </h5>
+                    </div>
+                </div>
+
+                <div class="space"> </div>
+
+                <!-- notifications section -->
+                <div class="row header">
+                    <div class="col">
+                        <h3> Group Notifications </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="notifications-container" class="container">
+                        <div class="row">
+                            <!-- notifications injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space"> </div>
+
+                <!-- groups section -->
+                <div class="row header">
+                    <div class="col">
+                        <h3> Active Groups </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="all-groups-container" class="container">
+                        <div class="row">
+                            <!-- groups injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.schedule.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/SideNav.js"></script>
+</body>
+</html>

@@ -1,1 +1,56 @@
 # team13 phase1.txt
+
+Login instructions:
+Use username 'admin' and any password to log in to the admin section of the site.
+Use any other username and any password to log in to the user section of the site.
+
+Features (admin):
+  Navigation:
+    - Sidenav to switch between the school finder and user finder
+
+  Find User:
+    - Finds a user
+	- Users are searched for dynamically upon input
+	- Can click edit to edit that user
+  Find School:
+    - Finds a school
+	- Schools are searched for dynamically upon input
+	- Can click edit to edit that school
+	- Can click find class to find classes within that school
+  Find Class:
+    - Finds a class
+	- Classs are searched for dynamically upon input
+	- Can click edit to edit that class
+
+  Edit Class:
+    - Edit the settings of a class
+	- Can delete the class
+	- Can edit the name, coure code, and number of members
+  Edit School:
+    - Edit the settings of a school
+	- Can delete the school
+	- Can edit the name, last date of activity, and number of members
+  Edit User:
+    - Edit the settings of a user
+	- Can delete the user
+	- Can edit the name, email, and school
+	
+Features (user):
+  Navigation:
+    - Dynamicaly populates the user's courses and assignments.
+    - Modal popup to add new assignments to a specified course.
+  Profile Page:
+    - View and dismiss notifications, including when people join/leave groups that you are a part of
+    - View the groups you're currently in, including number of members within the group and the number of members you can add
+    - View and change your availability
+  Assignment Page:
+    - View of assignment name and due date
+    - View of your group (if you have one), including number of members within the group, the number of members you can add, and the names of all members
+    - View of all other groups for the assignment
+    - Ability to filter groups based off the number of spots they have available
+  Group Page:
+    - View of your group's posting, including the slots filled and the slots empty, the requirements for the posting, and ownership of the group.
+    - View of all requests that groups have put on your group
+    - View of availability of all group members.
+    - Ability to merge and request merging with another group.
+    - Ability to rename groups.
