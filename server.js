@@ -92,6 +92,31 @@ app.post("/course", (req, res) => {
     });
 });
 
+// Route for assigment creation
+app.post("/assignment", (req, res) => {
+    const assignment = {
+        name: req.body.name,
+        school: req.body.schoolId,
+        course: req.body.courseId,
+        maxMembers: req.body.maxMembers
+    };
+
+    if(!ObjectID.isValid(assignment.school)) {
+        res.status(400).send("Invalid school id.");
+        return;
+    } else if(!ObjectID.isValid(assignment.course)) {
+        res.status(400).send("Invalid course id.");
+        return;
+    }
+
+    dbCreate.createAssignment(assignment.name, assigment.school,
+    assigment.course, assigment.maxMembers).then(assignment => {
+        res.send(assignment);
+    }).catch (error => {
+        res.status(400).send(error);
+    });
+});
+
 // Route for group creation
 app.post("/group/:user_id/:assignment_id", (req, res) => {
     const user_id = req.params.user_id;
@@ -100,9 +125,7 @@ app.post("/group/:user_id/:assignment_id", (req, res) => {
     if(!ObjectID.isValid(user_id)) {
         res.status(400).send("Invalid user id.");
         return;
-    }
-
-    if(!ObjectID.isValid(assignment_id)) {
+    } else if(!ObjectID.isValid(assignment_id)) {
         res.status(400).send("Invalid assignment id.");
         return;
     }
