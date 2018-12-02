@@ -25,6 +25,14 @@ function createSchool(name, creator) {
     return new School({name, owner: creator}).save();
 }
 
+function createGroup(name, description, schedule, school, course, assignment, maxMembers, owner) {
+    return new Group({
+        name, description, schedule, school, course, assignment, maxMembers, owner,
+        members: [[]],
+        requests: []
+    }).save();
+}
+
 module.exports = {
     createUser,
     createSchool
