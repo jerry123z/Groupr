@@ -73,6 +73,32 @@ app.get("/group/:id", (req, res) => {
     });
 });
 
+app.post("/group/:user_id/:assignment_id"), (req, res) => {
+    const user_id = req.params.user_id;
+    const assignment_id = req.params.assignment_id;
+    dbGet.getUser(user_id).then(user => {
+        db.getAssignment(assignment_id).then(assigment => {
+            const group = {
+                name: req.body.name,
+                description: req.body.description,
+                schedule: req.body.schedule,
+                school: user.school,
+                course: assigment.course,
+                assignment: assigment._id,
+                maxMembers: assignment.maxMembers,
+                owner: user._id
+            };
+            dbCreate.createGroup(group.name, group.description, group.schedule,
+                group.school, group.course, group.assignment, group.maxMembers,
+                group.owner).then(group => {
+                    res.send(group);
+                })
+        });
+    }).catch(error => {
+        res.status(400).send(error);
+    })
+});
+
 app.post("/user", (req, res) => {
     const user = {
         email: req.body.email,
