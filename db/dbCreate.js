@@ -25,6 +25,10 @@ function createSchool(name, creator) {
     return new School({name, owner: creator}).save();
 }
 
+function createCourse(name, school) {
+    return new Course({name, school}).save();
+}
+
 function createGroup(name, description, schedule, school, course, assignment, maxMembers, owner) {
     return new Group({
         name, description, schedule, school, course, assignment, maxMembers, owner,
