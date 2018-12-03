@@ -9,6 +9,7 @@ function create_signup_schools(schools) {
 }
 
 $('document').ready(function () {
+
     fetch('/login', {
         method: "GET"
     }).then((response) => {
@@ -49,6 +50,7 @@ $('document').ready(function () {
         $('#signup-block').show();
         $('#login-block').hide();
     });
+
 });
 
 $('#login-form').submit(function (e) {
@@ -113,3 +115,22 @@ $('#signup-form').submit(function (e) {
         console.log(error);
     });
 });
+
+$('#register-form').submit(function (e) {
+    e.preventDefault();
+    //Check fields
+    if ($('#EmailReg').val().length == 0) {
+        throw "Email is empty";
+    }
+    else if ($('#PasswordReg').val().length == 0) {
+        throw "Password is empty";
+    }
+});
+
+$.urlParam = function(name){
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null) {
+       return null;
+    }
+    return decodeURI(results[1]) || 0;
+}

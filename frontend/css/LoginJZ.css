@@ -1,5 +1,5 @@
 html, body.mainLogin {
-    background-image: url('../content/desktop.jpg');
+    background-image: url('../content/Login.png');
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -46,7 +46,7 @@ html, body.mainLogin {
 }
 
 .panel-login>.panel-heading>.nav-pills>li.active>a{
-    background-color: rgb(244,200,5);
+    background-color: rgb(255,229,0);
     color: #000;
 	font-size: 18px;
 }
@@ -81,14 +81,14 @@ html, body.mainLogin {
 	font-weight: normal;
 	padding: 14px 0;
 	text-transform: uppercase;
-	border-color: rgb(244,200,5) !important;
+	border-color: rgb(255,229,0) !important;
     max-width:100% !important;
 }
 
 .btn-login:hover,
 .btn-login:focus {
 	color: #fff;
-	background-color: rgb(244,200,5);
+	background-color: rgb(255,229,0);
 }
 
 .login-link {
@@ -132,6 +132,14 @@ html, body.mainLogin {
   -webkit-transform: translateY(-230px);
   -ms-transform: translateY(-230px);
   transform: translateY(-230px);
+}
+
+form{
+    -webkit-transition: 3s;
+      -moz-transition: 3s;
+      -ms-transition: 3s;
+      -o-transition: 3s;
+      transition: 3s;
 }
 
 @media (min-width: 768px){
