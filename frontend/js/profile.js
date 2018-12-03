@@ -102,10 +102,41 @@ function removeNotification() {
     entry.remove();
 }
 
+function parseBody(response) {
+    if(response.status === 200) {
+        return response.json();
+    } else {
+        console.error(response.body);
+        return new Promise(resolve => {
+            resolve(null);
+        });
+    }
+}
+
+function getData(user) {
+    let userData;
+    return fetch("/full/user/" + user, {
+        method: "GET"
+    }).then(parseBody);
+}
+
 // On page load
-$(document).ready(function() {
-    // add groups to the page (REQUIRES SERVER CALL)
-    $.each(allGroups, (index, group) => addGroup(group));
-    // add notifiations to the page (REQUIRES SERVER CALL)
-    $.each(allNotifications, (index, n) => addNotification(n));
+$(document).on("loggedin", function(event, user) {
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results==null) {
+           return null;
+        }
+        return decodeURI(results[1]) || 0;
+    }
+
+    getData($.urlParam('user') || user._id).then(userData => {
+        console.log(userData);
+        // add groups to the page (REQUIRES SERVER CALL)
+        $.each(allGroups, (index, group) => addGroup(group));
+        // add notifiations to the page (REQUIRES SERVER CALL)
+        $.each(allNotifications, (index, n) => addNotification(n));
+    }).catch(error => {
+        console.error(error);
+    });
 });

@@ -42,6 +42,61 @@ app.get("/user/:id", (req, res) => {
     });
 });
 
+function getArrData(arr, itemFunction) {
+    let promise;
+    if(arr.length == 0) {
+        promise = new Promise(resolve => { resolve(arr); });
+    }
+    else
+    {
+        for(let i = 0; i < arr.length; i++) {
+            if(i == 0) {
+                promise = itemFunction(arr[0]);
+                continue;
+            }
+            promise.then(data => {
+                arr[i - 1] = data;
+                return itemFunction(arr[i]);
+            });
+        }
+        if(!promise) {
+            console.log(arr);
+        }
+        promise.then(data => {
+            arr[arr.length - 1] = data;
+            return new Promise(resolve => { resolve(arr); });
+        });
+    }
+    return promise;
+}
+
+app.get("/full/user/:id", (req, res) => {
+    let user;
+    dbGet.getUser(req.params.id).then(userData => {
+        user = userData._doc;
+        return dbGet.getSchool(user.school);
+    }).then(school => {
+        user.school = school;
+        return getArrData(user.courses, dbGet.getCourse);
+    }).then(courses => {
+        user.courses = courses;
+        return getArrData(user.assignments, dbGet.getAssignment);
+    }).then(assignments => {
+        user.assignments = assignments;
+        return getArrData(user.groups, dbGet.getGroup);
+    }).then(groups => {
+        return getArrData(groups, (group) => {
+            return getArrData(group.members, dbGet.getUser);
+        });
+    }).then(groups => {
+        user.groups = groups;
+        res.send(obfuscateUser(user));
+    }).catch(error => {
+        console.log(error);
+        res.status(400).send(error);
+    });
+});
+
 app.get("/school", (req, res) => {
     dbGet.getAllSchools().then(schools => {
         res.send(JSON.stringify(schools));
