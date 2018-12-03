@@ -83,20 +83,38 @@ function populate_side_nav(user_courses, assignments){
         }
         containerDiv.append(ulist);
         let ending = $('<li><div class="dropdown-divider"></div></li><li>\
-            <a class="dropdown-item" data-toggle="modal" data-target="#addAssignment" data-course="'.concat(user_courses[i],
+            <a class="dropdown-item" data-toggle="modal" data-target="#addModal" data-course="'.concat(user_courses[i],
                 '">Add Assignment</a></li>'));
         ulist.append(ending);
         listItem.append(containerDiv);
         $("#nav").append(listItem);
     }
+    let divider = $('<li><div id="course-divider" class="dropdown-divider"></div></li>');
+    let addCourseItem = $('<li id="add-course-item" class="nav-item"></li>');
+    let addCourseLink = $('<a id="add-course-link" class="nav-link" data-toggle="modal" data-target="#addModal"></a>');
+    addCourseLink.append($('<span> Add Course </span>'));
+    addCourseItem.append(addCourseLink);
+    $("#nav").append(divider);
+    $("#nav").append(addCourseItem);
 }
 
-$('#addAssignment').on('show.bs.modal', function (event) {
-  var button = $(event.relatedTarget) // Button that triggered the modal
-  var course = button.data('course') // Extract info from data-* attributes
-  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-  var modal = $(this)
-  modal.find('.modal-title').text('Add ' + course + ' Assignment')
-  modal.find('.modal-body input').val(course)
+$('#addModal').on('show.bs.modal', function (event) {
+  let button = $(event.relatedTarget) // Button that triggered the modal
+  let course = button.data('course') // Extract info from data-* attributes
+  let modal = $(this)
+  if (course) {     // User is adding an assigment
+      // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+      // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+      modal.find('#assignment-form-group').css("display", "block")  // Display assignment form group
+      modal.find('.modal-title').text('Add ' + course + ' Assignment')
+  } else {          // User is adding a course
+      modal.find('#course-form-group').css("display", "block")  // Display course form group
+      modal.find('.modal-title').text('Add Course')
+  }
+})
+
+$('#addModal').on('hidden.bs.modal', function (event) {
+    // Make form groups invisible on modal close, as preparation for the next
+    // time the modal opens
+    $(this).find('.form-group').css("display", "none");
 })
