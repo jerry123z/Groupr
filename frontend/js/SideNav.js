@@ -1,38 +1,49 @@
 $( document ).ready(function() {
-    /*Some shit with cookies*/
+    let url = getUserIdFromURL();
+    getUserData(url).then(userData => {
+        console.log(userData);
+    }).catch(error => {
+        console.error(error);
+    });
 
-    let user_courses = get_courses();
+    /*let user_courses = get_courses();
     let assignments = [];
     let i;
     for (i = 0; i < user_courses.length; i++){
         assignments[i] = get_assignments(user_courses[i]);
     }
-    populate_side_nav(user_courses, assignments);
+    populate_side_nav(user_courses, assignments);*/
 
 });
 
-/*Returns a list of courses*/
-function get_courses(){
-    let courses = ["CSC343", "CSC369"]
-    return courses;
+function parseBody(response) {
+    if(response.status === 200) {
+        return response.json();
+    } else {
+        console.error(response.body);
+        return new Promise(resolve => {
+            resolve(null);
+        });
+    }
 }
 
-/*return a list of assignments*/
-function get_assignments(course){
-    let assignments;
-    if (course === "CSC369"){
-        assignments = ["e1", "e2", "e3"];
-    }
-    else{
-        assignments = ["A1", "A2", "A3"];
-    }
-    return assignments;
+function getUserData(userId) {
+    let userData;
+    return fetch("/user/full/" + userId, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function getUserIdFromURL() {
+    let url = new URL(window.location.href);
+    return url.searchParams.get("user");
 }
 
 function logout() {
     fetch("/login", {
         method: "DELETE"
     }).then(response => {
+        console.log(response)
         if(response.status == 200) {
             window.location.replace("./login.html");
         }
