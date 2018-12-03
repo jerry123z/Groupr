@@ -16,16 +16,35 @@ function createUser(email, password, name, schoolId, isAdmin) {
     }).then(salt => {
         return bcrypt.hash(password, salt);
     }).then(hash => {
-        const newUser = new User({ email, passHash: hash, name, school, isAdmin });
+        const newUser = new User({ email, passHash: hash, name, school: schoolId, isAdmin });
         return newUser.save();
     });
 }
 
-function createSchool(name, creator) {
-    return new School({name, owner: creator}).save();
+function createSchool(name) {
+    return new School({name}).save();
+}
+
+function createCourse(name, school) {
+    return new Course({name, school}).save();
+}
+
+function createAssignment(name, school, course, maxMembers) {
+    return new Assignment({name, school, course, maxMembers}).save();
+}
+
+function createGroup(name, description, schedule, school, course, assignment, maxMembers, owner) {
+    return new Group({
+        name, description, schedule, school, course, assignment, maxMembers, owner,
+        members: [[]],
+        requests: []
+    }).save();
 }
 
 module.exports = {
     createUser,
-    createSchool
+    createSchool,
+    createCourse,
+    createAssignment,
+    createGroup
 };
