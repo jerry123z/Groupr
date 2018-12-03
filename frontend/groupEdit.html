@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ 	<meta charset="utf-8">
+    <title>Edit a group</title>
+    <link rel="stylesheet" type="text/css">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/AdminSideNav.css" rel="stylesheet">
+	<link href="css/groupEdit.css" rel="stylesheet">
+ </head>
+
+<body>
+
+	<div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="nav-item">
+                <a class="nav-link" href="login.html">
+                    <span>Logout</span>
+                </a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="findSchool.html">
+						<span>School</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="findUser.html">
+						<span>User</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="findGroup.html">
+						<span>Group</span>
+					</a>
+				</li>
+			</ul>
+        </div>
+	</div>
+	
+	<div id="page">
+		<div id = "header">
+			<h1>Edit Group</h1>
+		</div>
+		
+		<div id = "group">
+		
+			<div id = "displayDelete">
+				<div id = "allDisplays">
+				</div>
+				
+				<div id = "deleteGroup">
+					<form id = "deleteGroupForm">
+						<input type = "submit" class = "big-button" class = "button" value = "Delete Group">
+					</form>
+				</div>
+				
+				
+			
+				<div id = "membersDisplay">
+					
+					<h3> Member List </h3>
+
+					
+				</div>
+			</div>
+			
+			
+			<div id = "changeForms">
+								
+				<div id = "ChangeName" class = "editValue">
+					<p class = "instructions">Enter a new group name</p>
+					<form id = "changeNameForm">
+						<input id = "newName" type = "text" class = "searchTerm" placeholder = "New Name">
+						<input type = "submit" class = "button" value = "Change">
+					</form>
+				</div>
+
+				<div id = "AddMember" class = "editValue">
+					<p class = "instructions">Enter a new member name</p>
+					<form id = "addMemberForm">
+						<input id = "newMember" type = "text" class = "searchTerm" placeholder = "New Name">
+						<input type = "submit" class = "button" value = "Change">
+					</form>
+				</div>
+
+			</div>
+			
+		</div>
+	
+
+		
+
+		<script src="js/jquery.min.js"></script>
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script type="text/javascript" src="js/groupEdit.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	</div>
+</body>

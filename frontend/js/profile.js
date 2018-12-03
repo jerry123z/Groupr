@@ -102,28 +102,41 @@ function removeNotification() {
     entry.remove();
 }
 
-// Save availability that the user has created. Occurs when the "Save
-// Availability" button is clicked.
-function saveAvailability() {
-    $("#save-success-text").css({ display: "block"});
-    const data = $availabilityTable.data('artsy.dayScheduleSelector').serialize();
-    console.log(data);
-    // REQUIRES SERVER CALL TO SAVE DATA
+function parseBody(response) {
+    if(response.status === 200) {
+        return response.json();
+    } else {
+        console.error(response.body);
+        return new Promise(resolve => {
+            resolve(null);
+        });
+    }
+}
+
+function getData(user) {
+    let userData;
+    return fetch("/full/user/" + user, {
+        method: "GET"
+    }).then(parseBody);
 }
 
 // On page load
-$(document).ready(function() {
-    // add groups to the page (REQUIRES SERVER CALL)
-    $.each(allGroups, (index, group) => addGroup(group));
-    // add notifiations to the page (REQUIRES SERVER CALL)
-    $.each(allNotifications, (index, n) => addNotification(n));
-    // add schedule to the page (REQUIRES SERVER CALL)
-    $("#schedule").dayScheduleSelector({
-        startTime: '00:00',
-        endTime: '24:00',
-        interval: 60
+$(document).on("loggedin", function(event, user) {
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results==null) {
+           return null;
+        }
+        return decodeURI(results[1]) || 0;
+    }
+
+    getData($.urlParam('user') || user._id).then(userData => {
+        console.log(userData);
+        // add groups to the page (REQUIRES SERVER CALL)
+        $.each(allGroups, (index, group) => addGroup(group));
+        // add notifiations to the page (REQUIRES SERVER CALL)
+        $.each(allNotifications, (index, n) => addNotification(n));
+    }).catch(error => {
+        console.error(error);
     });
-    $("#schedule").data('artsy.dayScheduleSelector').deserialize(schedule);
-    // add on-click behaviour to save availability button
-    $("#save-button").click(saveAvailability);
 });

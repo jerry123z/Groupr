@@ -48,9 +48,6 @@ const School = mongoose.model("School", {
         required: true,
         unique: true
     },
-    owner: {
-        type: ObjectId
-    },
     members: [[ObjectId]],
     courses: [[ObjectId]]
 });
@@ -93,6 +90,18 @@ const Group = mongoose.model("Group", {
     name: {
         type: String,
         required: true
+    },
+    description: {
+        type: String
+    },
+    schedule: {
+        0: [[String]],
+        1: [[String]],
+        2: [[String]],
+        3: [[String]],
+        4: [[String]],
+        5: [[String]],
+        6: [[String]]
     },
     school: {
         type: ObjectId,

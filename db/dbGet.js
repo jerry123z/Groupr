@@ -10,12 +10,12 @@ function getUser(id) {
     return new Promise((resolve, reject) => {
         if(!ObjectID.isValid(id))
         {
-            reject("Invalid id provided.");
+            reject("getUser: Invalid id provided: " + id);
         }
         User.findById(id).then(user => {
             resolve(user);
         }).catch(error => {
-            reject(error);
+            reject("getUser: " + JSON.stringify(error));
         });
     });
 }
@@ -24,12 +24,12 @@ function getSchool(id) {
     return new Promise((resolve, reject) => {
         if(!ObjectID.isValid(id))
         {
-            reject("Invalid id provided.");
+            reject("getSchool: Invalid id provided: " + id);
         }
         School.findById(id).then(user => {
             resolve(user);
         }).catch(error => {
-            reject(error);
+            reject("getSchool: " + JSON.stringify(error));
         });
     });
 }
@@ -38,12 +38,12 @@ function getCourse(id) {
     return new Promise((resolve, reject) => {
         if(!ObjectID.isValid(id))
         {
-            reject("Invalid id provided.");
+            reject("getCourse: Invalid id provided: " + id);
         }
         Course.findById(id).then(user => {
             resolve(user);
         }).catch(error => {
-            reject(error);
+            reject("getCourse: " + JSON.stringify(error));
         });
     });
 }
@@ -52,12 +52,12 @@ function getAssignment(id) {
     return new Promise((resolve, reject) => {
         if(!ObjectID.isValid(id))
         {
-            reject("Invalid id provided.");
+            reject("getAssignment: Invalid id provided: " + id);
         }
         Assignment.findById(id).then(user => {
             resolve(user);
         }).catch(error => {
-            reject(error);
+            reject("getAssignment: " + JSON.stringify(error));
         });
     });
 }
@@ -66,28 +66,18 @@ function getGroup(id) {
     return new Promise((resolve, reject) => {
         if(!ObjectID.isValid(id))
         {
-            reject("Invalid id provided.");
+            reject("getGroup: Invalid id provided: " + id);
         }
         Group.findById(id).then(user => {
             resolve(user);
         }).catch(error => {
-            reject(error);
+            reject("getGroup: " + JSON.stringify(error));
         });
     });
 }
 
-function getGroup(id) {
-    return new Promise((resolve, reject) => {
-        if(!ObjectID.isValid(id))
-        {
-            reject("Invalid id provided.");
-        }
-        Group.findById(id).then(user => {
-            resolve(user);
-        }).catch(error => {
-            reject(error);
-        });
-    });
+function getAllSchools() {
+    return School.find();
 }
 
 module.exports = {
@@ -95,5 +85,6 @@ module.exports = {
     getSchool,
     getCourse,
     getAssignment,
-    getGroup
+    getGroup,
+    getAllSchools
 };
