@@ -34,17 +34,15 @@ app.use('/group', group)
 app.use('/login', login)
 app.use('/user', user)
 
-function obfuscateUser(user) {
-    const userObj = {
-        _id: user._id,
-        name: user.name,
-        school: user.school,
-        courses: user.courses,
-        assignments: user.assignments,
-        groups: user.groups
-    };
-    return userObj;
-}
+app.use(express.static(__dirname + "/frontend"));
+
+app.get('/', function(req, res){
+    res.sendfile('login.html', { root: __dirname + "/frontend" } );
+});
+
+app.get('/', function(req, res){
+    res.sendfile('login.html', { root: __dirname + "/frontend" } );
+});
 
 app.listen(port, () => {
     console.log("Listening on port " + port);
