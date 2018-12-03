@@ -28,6 +28,11 @@
 	color: black;
 	cursor: pointer;
 }
+.no-groups-entry {
+	margin: 8px;
+    min-height: 116.5px;
+    padding: 30px;
+}
 
 .notification-entry {
     margin: 8px;
