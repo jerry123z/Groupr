@@ -102,28 +102,12 @@ function removeNotification() {
     entry.remove();
 }
 
-// Save availability that the user has created. Occurs when the "Save
-// Availability" button is clicked.
-function saveAvailability() {
-    $("#save-success-text").css({ display: "block"});
-    const data = $availabilityTable.data('artsy.dayScheduleSelector').serialize();
-    console.log(data);
-    // REQUIRES SERVER CALL TO SAVE DATA
-}
-
 // On page load
 $(document).ready(function() {
     // add groups to the page (REQUIRES SERVER CALL)
     $.each(allGroups, (index, group) => addGroup(group));
     // add notifiations to the page (REQUIRES SERVER CALL)
     $.each(allNotifications, (index, n) => addNotification(n));
-    // add schedule to the page (REQUIRES SERVER CALL)
-    $("#schedule").dayScheduleSelector({
-        startTime: '00:00',
-        endTime: '24:00',
-        interval: 60
-    });
-    $("#schedule").data('artsy.dayScheduleSelector').deserialize(schedule);
     // add on-click behaviour to save availability button
     $("#save-button").click(saveAvailability);
 });
