@@ -102,15 +102,6 @@ function removeNotification() {
     entry.remove();
 }
 
-// Save availability that the user has created. Occurs when the "Save
-// Availability" button is clicked.
-function saveAvailability() {
-    $("#save-success-text").css({ display: "block"});
-    const data = $availabilityTable.data('artsy.dayScheduleSelector').serialize();
-    console.log(data);
-    // REQUIRES SERVER CALL TO SAVE DATA
-}
-
 function parseBody(response) {
     if(response.status === 200) {
         return response.json();
