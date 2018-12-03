@@ -115,7 +115,7 @@ function parseBody(response) {
 
 function getData(user) {
     let userData;
-    return fetch("/full/user/" + user, {
+    return fetch("/user/full/" + user, {
         method: "GET"
     }).then(parseBody);
 }

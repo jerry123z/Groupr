@@ -89,14 +89,6 @@ router.post("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
-    dbGet.getUser(req.params.id).then(user => {
-        res.send(obfuscateUser(user));
-    }).catch(error => {
-        res.status(400).send(error);
-    });
-});
-
 router.get("/full/:id", (req, res) => {
     let user;
     dbGet.getUser(req.params.id).then(userData => {
@@ -120,6 +112,14 @@ router.get("/full/:id", (req, res) => {
         res.send(obfuscateUser(user));
     }).catch(error => {
         console.log(error);
+        res.status(400).send(error);
+    });
+});
+
+router.get("/:id", (req, res) => {
+    dbGet.getUser(req.params.id).then(user => {
+        res.send(obfuscateUser(user));
+    }).catch(error => {
         res.status(400).send(error);
     });
 });
