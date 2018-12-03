@@ -14,11 +14,11 @@
 <body class="mainLogin container-fluid">
     <div class="row h-100">
         <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3 h-100 white-col">
-            <div class="panel-login v-center">
+            <div class="panel-login v-center" id="login-panel">
                 <div class="panel-heading">
                     <ul class="nav nav-pills nav-justified">
                         <li class="pill active">
-                            <a>Goupr - Login</a>
+                            <a>Groupr Login</a>
                         </li>
                     </ul>
                 </div>
@@ -34,7 +34,7 @@
                         --->
                     <form id="login-form" action="#" method="post" role="form">
                         <div class="form-group">
-                            <input type="text" name="Username" id="Username" class="form-control" placeholder="Username">
+                            <input type="text" name="Email" id="Email" class="form-control" placeholder="Email">
                         </div>
                         <div class="form-group">
                             <input type="password" name="Password" id="Password" class="form-control" placeholder="Password">
@@ -48,18 +48,62 @@
                                 <input type="submit" name="login-submit" id="login-submit" class="form-control btn btn-login" value="Login">
                             </div>
                         </div>
-                        </form>
                         <div class="form-group">
                             <div class="text-center">
-                                <a href="#" class="login-link">Forgot Password?</a>
+                                <a href="./login.html?register=1" class="login-link">New Registration</a>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="text-center">
+                        © 2018 - priya sucks
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="panel-login v-center" id="register-panel">
+                <div class="panel-heading">
+                    <ul class="nav nav-pills nav-justified">
+                        <li class="pill active">
+                            <a>Groupr Register</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                        <!---
+                            <form class="form-inline">
+                                <div class="form-group" style="margin-bottom:10px;">
+                                    <text style="color:red" >
+                                        ERROR MESSAGE HERE
+                                    </text>
+                                </div>
+                            </form>
+                        --->
+                    <form id="register-form" action="#" method="post" role="form">
+                        <div class="form-group">
+                            <input type="text" name="EmailReg" id="EmailReg" class="form-control" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="PasswordReg" id="PasswordReg" class="form-control" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <div class="text-center">
+                                <input type="submit" name="Register-submit" id="Register-submit" class="form-control btn btn-login" value="Register">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="text-center">
+                                Already Registered?
                             </div>
                             <div class="text-center">
-                                <a href="#" class="login-link">New Registration</a>
+                                <a href="./login.html" class="login-link">Login</a>
                             </div>
                         </div>
-                        <div class="text-center">
-                            © 2018 - priya sucks
-                        </div>
+                    </form>
+
+                    <div class="text-center">
+                        © 2018 - priya sucks
+                    </div>
 
                 </div>
             </div>
