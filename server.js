@@ -34,6 +34,8 @@ app.use('/group', group)
 app.use('/login', login)
 app.use('/user', user)
 
+app.use(express.static(__dirname + "/frontend"));
+
 app.get('/', function(req, res){
     res.sendfile('login.html', { root: __dirname + "/frontend" } );
 });
