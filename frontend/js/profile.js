@@ -145,15 +145,6 @@ $(document).on("loggedin", function(event, user) {
         $.each(allGroups, (index, group) => addGroup(group));
         // add notifiations to the page (REQUIRES SERVER CALL)
         $.each(allNotifications, (index, n) => addNotification(n));
-        // add schedule to the page (REQUIRES SERVER CALL)
-        $("#schedule").dayScheduleSelector({
-            startTime: '00:00',
-            endTime: '24:00',
-            interval: 60
-        });
-        $("#schedule").data('artsy.dayScheduleSelector').deserialize(schedule);
-        // add on-click behaviour to save availability button
-        $("#save-button").click(saveAvailability);
     }).catch(error => {
         console.error(error);
     });
