@@ -9,14 +9,7 @@ function create_signup_schools(schools) {
 }
 
 $('document').ready(function () {
-<<<<<<< HEAD
-    console.log($.urlParam('register'))
-    if ($.urlParam('register')){
-        document.getElementById("login-panel").style.display = "none";
-    } else {
-        document.getElementById("register-panel").style.display = "none";
-    }
-=======
+
     fetch('/login', {
         method: "GET"
     }).then((response) => {
@@ -57,21 +50,16 @@ $('document').ready(function () {
         $('#signup-block').show();
         $('#login-block').hide();
     });
->>>>>>> c57b62e4a57b56a8e82aa385d6cd682c644720d4
+
 });
 
 $('#login-form').submit(function (e) {
     e.preventDefault();
     //Check fields
-<<<<<<< HEAD
-    if ($('#Email').val().length == 0) {
-        throw "Email is empty";
-=======
     const email = $('#login-email').val();
     const password = $('#login-password').val();
     if (!email_regex.test(email)) {
         throw "Email is invalid";
->>>>>>> c57b62e4a57b56a8e82aa385d6cd682c644720d4
     }
     else if (password.length == 0) {
         throw "Password is empty";
