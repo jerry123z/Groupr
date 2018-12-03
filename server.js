@@ -73,12 +73,10 @@ function getArrData(arr, itemFunction) {
 app.get("/full/user/:id", (req, res) => {
     let user;
     dbGet.getUser(req.params.id).then(userData => {
-        user = userData;
+        user = userData._doc;
         return dbGet.getSchool(user.school);
     }).then(school => {
-        console.log(school);
         user.school = school;
-        console.log(JSON.stringify(user.school));
         return getArrData(user.courses, dbGet.getCourse);
     }).then(courses => {
         user.courses = courses;
