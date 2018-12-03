@@ -108,6 +108,4 @@ $(document).ready(function() {
     $.each(allGroups, (index, group) => addGroup(group));
     // add notifiations to the page (REQUIRES SERVER CALL)
     $.each(allNotifications, (index, n) => addNotification(n));
-    // add on-click behaviour to save availability button
-    $("#save-button").click(saveAvailability);
 });
