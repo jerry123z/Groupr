@@ -40,10 +40,6 @@ app.get('/', function(req, res){
     res.sendfile('login.html', { root: __dirname + "/frontend" } );
 });
 
-app.get('/', function(req, res){
-    res.sendfile('login.html', { root: __dirname + "/frontend" } );
-});
-
 app.listen(port, () => {
     console.log("Listening on port " + port);
 });
