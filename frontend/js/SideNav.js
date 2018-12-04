@@ -108,24 +108,3 @@ function populate_side_nav(user_courses, assignments){
     $("#nav").append(divider);
     $("#nav").append(addCourseItem);
 }
-
-$('#addModal').on('show.bs.modal', function (event) {
-  let button = $(event.relatedTarget) // Button that triggered the modal
-  let course = button.data('course') // Extract info from data-* attributes
-  let modal = $(this)
-  if (course) {     // User is adding an assignment
-      // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-      // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-      modal.find('#assignment-form-group').css("display", "block")  // Display assignment form group
-      modal.find('.modal-title').text('Add ' + course + ' Assignment')
-  } else {          // User is adding a course
-      modal.find('#course-form-group').css("display", "block")  // Display course form group
-      modal.find('.modal-title').text('Add Course')
-  }
-})
-
-$('#addModal').on('hidden.bs.modal', function (event) {
-    // Make form groups invisible on modal close, as preparation for the next
-    // time the modal opens
-    $(this).find('.form-group').css("display", "none");
-})
