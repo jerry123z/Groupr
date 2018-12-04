@@ -41,6 +41,10 @@ router.post("/:school_id/:course_id", (req, res) => {
 
     dbCreate.createAssignment(assignment.name, assignment.school,
     assignment.course, assignment.maxMembers).then(assignment => {
+        dbGet.getCourse(assignment.course).then(course => {
+            course.assignments.push(assignment._id);
+            course.save();
+        });
         res.send(assignment);
     }).catch (error => {
         res.status(400).send(error);
