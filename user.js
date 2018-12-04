@@ -84,6 +84,12 @@ router.post("/", (req, res) => {
     }).then(token => {
         res.cookie("auth", {token: token.tokenHash, user: token.user});
         res.send(obfuscateUser(user));
+        dbGet.getSchool(user.school).then(school => {
+            school.members.push(token.user);
+            school.save();
+        }).catch(error => {
+            res.status(404).send(error);
+        });
     }).catch(error => {
         res.status(400).send("Failed to create user: " + JSON.stringify(error));
     });
@@ -173,10 +179,10 @@ router.patch("/course/:user_id/:course_id", (req, res) => {
             user.save();
             res.send(user);
         }).catch(error => {
-            res.status(404).send("No such course");
+            res.status(404).send(error);
         });
     }).catch(error => {
-        res.status(404).send("No such user.");
+        res.status(404).send(error);
     });
 });
 
