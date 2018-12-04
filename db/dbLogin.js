@@ -58,9 +58,9 @@ function verifyAdminRequest(req) {
         }
         return new Promise((resolve, reject) => {
             User.findById(req.cookies.auth.user).then(user => {
-                resolve(user.isAdmin);
+                resolve(user.isAdmin ? req.cookies.auth.user : null);
             }).catch(error => {
-                resolve(false);
+                resolve(null);
             });
         });
     });
