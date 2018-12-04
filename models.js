@@ -33,9 +33,9 @@ const User = mongoose.model("User", {
         type: ObjectId,
         required: true
     },
-    courses: [[ObjectId]],
-    assignments: [[ObjectId]],
-    groups: [[ObjectId]],
+    courses: [ObjectId],
+    assignments: [ObjectId],
+    groups: [ObjectId],
     isAdmin: {
         type: Boolean,
         required: true
@@ -48,8 +48,8 @@ const School = mongoose.model("School", {
         required: true,
         unique: true
     },
-    members: [[ObjectId]],
-    courses: [[ObjectId]]
+    members: [ObjectId],
+    courses: [ObjectId]
 });
 
 const Course = mongoose.model("Course", {
@@ -61,8 +61,8 @@ const Course = mongoose.model("Course", {
         type: ObjectId,
         required: true
     },
-    members: [[ObjectId]],
-    assignments: [[ObjectId]]
+    members: [ObjectId],
+    assignments: [ObjectId]
 });
 
 const Assignment = mongoose.model("Assignment", {
@@ -82,8 +82,8 @@ const Assignment = mongoose.model("Assignment", {
         type: Number,
         required: true
     },
-    members: [[ObjectId]],
-    groups: [[ObjectId]]
+    members: [ObjectId],
+    groups: [ObjectId]
 });
 
 const Group = mongoose.model("Group", {
@@ -123,7 +123,7 @@ const Group = mongoose.model("Group", {
         type: ObjectId,
         required: true
     },
-    members: [[ObjectId]],
+    members: [ObjectId],
     requests: [{
         isUser: Boolean,
         id: ObjectId
