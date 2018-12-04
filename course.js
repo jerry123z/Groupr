@@ -79,4 +79,24 @@ router.get("/:id", (req, res) => {
     });
 });
 
+//TODO NOT DONE
+//deleting
+router.delete("/:id", (req, res) =>{
+    const id = req.params.id;
+    if(!ObjectID.isValid(id)) {
+        res.status(400).send("Invalid course id.");
+        return;
+    }
+})
+
+
+router.get("/name/:name", (req, res) => {
+	console.log(req.params.name);
+	dbGet.getCourseByPartialName(req.params.name).then((courses) => {
+		res.send(courses);
+	}).catch((error) => {
+		res.status(400).send(error);
+	});
+});
+
 module.exports = router
