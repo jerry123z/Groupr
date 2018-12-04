@@ -186,4 +186,32 @@ router.patch("/course/:user_id/:course_id", (req, res) => {
     });
 });
 
+// Route for adding a user to a group
+router.patch("/group/:user_id/:group_id", (req, res) => {
+    const user_id = req.params.user_id;
+    const group_id = req.params.group_id;
+
+    if(!ObjectID.isValid(user_id)) {
+        res.status(400).send("Invalid user id.");
+        return;
+    } else if (!ObjectID.isValid(group_id)) {
+        res.status(400).send("Invalid group id.");
+        return;
+    }
+
+    dbGet.getUser(user_id).then(user => {
+        dbGet.getGroup(group_id).then(group => {
+            group.members.push(user._id);
+            user.groups.push(group._id);
+            group.save();
+            user.save();
+            res.send(user);
+        }).catch(error => {
+            res.status(404).send(error);
+        });
+    }).catch(error => {
+        res.status(404).send(error);
+    });
+});
+
 module.exports = router
