@@ -12,6 +12,8 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 
+const {getArrData, obfuscateUser} = require("./routeUtil.js");
+
 const router = express.Router();
 router.use(bodyParser.json());
 router.use(cookieParser());
@@ -40,6 +42,26 @@ router.post("/:school_id", (req, res) => {
         })
         res.send(course);
     }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
+router.get("/full/:id", (req, res) => {
+    let course;
+    dbGet.getCourse(req.params.id).then(courseData => {
+        course = courseData._doc;
+        return dbGet.getSchool(course.school);
+    }).then(school => {
+        course.school = school;
+        return getArrData(course.assignments, dbGet.getAssignment);
+    }).then(assignments => {
+        course.assignments = assignments;
+        return getArrData(course.members, dbGet.getUser);
+    }).then(members => {
+        course.members = members.map(member => obfuscateUser(member));
+        res.send(course);
+    }).catch(error => {
+        console.log(error);
         res.status(400).send(error);
     });
 });

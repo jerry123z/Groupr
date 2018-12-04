@@ -14,6 +14,8 @@ const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 const dbEdit = require('./db/dbEdit.js');
 
+const {getArrData, obfuscateUser} = require("./routeUtil.js");
+
 const router = express.Router();
 router.use(bodyParser.json());
 router.use(cookieParser());
@@ -21,6 +23,7 @@ router.use(cookieParser());
 // Start the front end.
 router.use(express.static(__dirname + "/frontend"));
 
+<<<<<<< HEAD
 function getArrData(arr, itemFunction) {
     let promise;
     if(arr.length == 0) {
@@ -65,6 +68,8 @@ function obfuscateUser(user) {
 }
 
 
+=======
+>>>>>>> dea9696133ff418deb3d45e098cfa7361ed1e707
 router.post("/", (req, res) => {
     let user = {
         email: req.body.email,
@@ -109,12 +114,12 @@ router.get("/full/:id", (req, res) => {
     }).then(courses => {
         user.courses = courses;
         return getArrData(user.assignments, dbGet.getAssignment);
-    }).then(assignments => {
-        user.assignments = assignments;
-        return getArrData(user.groups, dbGet.getGroup);
     }).then(groups => {
         return getArrData(groups, (group) => {
-            return getArrData(group.members, dbGet.getUser);
+            return getArrData(group.members, dbGet.getUser).then(members => {
+                group._doc.members = members.map(el => obfuscateUser(el));
+                return Promise.resolve(group._doc);
+            });
         });
     }).then(groups => {
         user.groups = groups;

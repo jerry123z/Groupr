@@ -13,6 +13,8 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 
+const {getArrData, obfuscateUser} = require("./routeUtil.js");
+
 const router = express.Router();
 router.use(bodyParser.json());
 router.use(cookieParser());
@@ -34,30 +36,53 @@ router.post("/:user_id/:assignment_id", (req, res) => {
     }
 
     dbGet.getUser(user_id).then(user => {
-        dbGet.getAssignment(assignment_id).then(assignment => {
-            const group = {
-                name: req.body.name,
-                description: req.body.description,
-                schedule: req.body.schedule,
-                school: user.school,
-                course: assignment.course,
-                assignment: assignment._id,
-                maxMembers: assignment.maxMembers,
-                owner: user._id
-            };
-            dbCreate.createGroup(group.name, group.description, group.schedule,
-            group.school, group.course, group.assignment, group.maxMembers,
-            group.owner).then(group => {
-                user.groups.push(group._id);
-                assignment.groups.push(group._id);
-                user.save();
-                assignment.save();
-                res.send(group);
-            });
-        });
+        return dbGet.getAssignment(assignment_id);
+    }).then(assignment => {
+        const group = {
+            name: req.body.name,
+            description: req.body.description,
+            schedule: req.body.schedule,
+            school: user.school,
+            course: assignment.course,
+            assignment: assignment._id,
+            maxMembers: assignment.maxMembers,
+            owner: user._id
+        };
+        return dbCreate.createGroup(group.name, group.description, group.schedule,
+        group.school, group.course, group.assignment, group.maxMembers,
+        group.owner);
+    }).then(group => {
+        user.groups.push(group._id);
+        assignment.groups.push(group._id);
+        user.save();
+        assignment.save();
+        res.send(group);
     }).catch(error => {
         res.status(400).send(error);
     })
+});
+
+router.get("/full/:id", (req, res) => {
+    let group;
+    dbGet.getGroup(req.params.id).then(groupData => {
+        group = groupData._doc;
+        return dbGet.getSchool(group.school);
+    }).then(school => {
+        group.school = school;
+        return dbGet.getCourse(group.course);
+    }).then(course => {
+        group.course = course;
+        return dbGet.getAssignment(group.assignment);
+    }).then(assignment => {
+        group.assignment = assignment;
+        return getArrData(group.members, dbGet.getUser);
+    }).then(members => {
+        group.members = members.map(member => obfuscateUser(member));
+        res.send(group);
+    }).catch(error => {
+        console.log(error);
+        res.status(400).send(error);
+    });
 });
 
 router.get("/:id", (req, res) => {
