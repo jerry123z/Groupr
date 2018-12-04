@@ -12,6 +12,9 @@ const { Token, User, School, Course, Assignment, Group } = require('./models.js'
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
+const dbEdit = require('./db/dbEdit.js');
+
+const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -19,46 +22,6 @@ router.use(cookieParser());
 
 // Start the front end.
 router.use(express.static(__dirname + "/frontend"));
-
-function getArrData(arrIn, itemFunction) {
-    let promise;
-    let arr = arrIn;
-    if(arr.length == 0) {
-        promise = new Promise(resolve => { resolve(arr); });
-    }
-    else
-    {
-        for(let i = 0; i < arr.length; i++) {
-            if(i == 0) {
-                promise = itemFunction(arr[0]);
-                continue;
-            }
-            promise = promise.then(data => {
-                arr[i - 1] = data;
-                return itemFunction(arr[i]);
-            });
-        }
-        promise = promise.then(data => {
-            arr[arr.length - 1] = data;
-            return Promise.resolve(arr);
-        });
-    }
-    return promise;
-}
-
-
-function obfuscateUser(user) {
-    const userObj = {
-        _id: user._id,
-        name: user.name,
-        school: user.school,
-        courses: user.courses,
-        assignments: user.assignments,
-        groups: user.groups
-    };
-    return userObj;
-}
-
 
 router.post("/", (req, res) => {
     let user = {
@@ -104,12 +67,12 @@ router.get("/full/:id", (req, res) => {
     }).then(courses => {
         user.courses = courses;
         return getArrData(user.assignments, dbGet.getAssignment);
-    }).then(assignments => {
-        user.assignments = assignments;
-        return getArrData(user.groups, dbGet.getGroup);
     }).then(groups => {
         return getArrData(groups, (group) => {
-            return getArrData(group.members, dbGet.getUser);
+            return getArrData(group.members, dbGet.getUser).then(members => {
+                group._doc.members = members.map(el => obfuscateUser(el));
+                return Promise.resolve(group._doc);
+            });
         });
     }).then(groups => {
         user.groups = groups;
@@ -197,19 +160,86 @@ router.patch("/group/:user_id/:group_id", (req, res) => {
         return;
     }
 
-    dbGet.getUser(user_id).then(user => {
-        dbGet.getGroup(group_id).then(group => {
-            group.members.push(user._id);
-            user.groups.push(group._id);
-            group.save();
-            user.save();
-            res.send(user);
-        }).catch(error => {
-            res.status(404).send(error);
-        });
+    let userLogin;
+    let user;
+    dbLogin.verifyRequest(req).then(loggedInUser => {
+        if(!loggedInUser) {
+            throw "Owner not logged in!";
+        }
+        userLogin = loggedInUser;
+        return dbGet.getUser(user_id);
+    }).then(userGet => {
+        user = userGet;
+        return dbGet.getGroup(group_id);
+    }).then(group => {
+        if(group.owner != userLogin) {
+            throw "Owner not logged in!";
+        }
+        group.members.push(user._id);
+        user.groups.push(group._id);
+        group.save();
+        user.save();
+        res.send(user);
     }).catch(error => {
         res.status(404).send(error);
     });
 });
+
+//route for changing a user's name
+//returns the old user object
+router.patch("/name/:id", (req, res) => {
+    const id = req.params.id
+    const name = req.body.name
+
+    dbGet.getUser(req.params.id).then(user => {
+        const obuser = obfuscateUser(user);
+        return dbEdit.editUser(obuser._id, obuser.email, name, obuser.schoolId, obuser.isAdmin)
+    }).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+//route for changing a user's email
+//returns the old user object
+router.patch("/email/:id", (req, res) => {
+    const id = req.params.id
+    const email = req.body.email
+
+    dbGet.getUser(req.params.id).then(user => {
+        const obuser = obfuscateUser(user);
+        return dbEdit.editUser(obuser._id, email, obuser.name, obuser.schoolId, obuser.isAdmin)
+    }).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+//route for a user
+router.patch("/school/:id", (req, res) => {
+    const id = req.params.id
+    const school = req.body.school
+
+
+    //TODO:Wait for priya to push dbget school by name
+})
+
+//route for changing a user's admin status
+//returns the old user object
+router.patch("/admin/:id", (req, res) => {
+    const id = req.params.id
+    const isAdmin = req.body.isAdmin
+
+    dbGet.getUser(req.params.id).then(user => {
+        const obuser = obfuscateUser(user);
+        return dbEdit.editUser(obuser._id, obuser.email, obuser.name, obuser.schoolId, isAdmin)
+    }).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
 
 module.exports = router

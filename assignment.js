@@ -11,6 +11,9 @@ const bcrypt = require('bcryptjs');
 const { Token, User, School, Course, Assignment, Group } = require('./models.js');
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
+const dbLogin = require('./db/dbLogin.js');
+
+const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -39,14 +42,40 @@ router.post("/:school_id/:course_id", (req, res) => {
         return;
     }
 
-    dbCreate.createAssignment(assignment.name, assignment.school,
-    assignment.course, assignment.maxMembers).then(assignment => {
+    dbLogin.verifyAdminRequest(req).then(valid => {
+        if(!valid) {
+            throw "Admin not logged in!";
+        }
+        return dbCreate.createAssignment(assignment.name, assignment.school,
+            assignment.course, assignment.maxMembers)
+    })
+    .then(assignment => {
         dbGet.getCourse(assignment.course).then(course => {
             course.assignments.push(assignment._id);
             course.save();
         });
         res.send(assignment);
     }).catch (error => {
+        res.status(400).send(error);
+    });
+});
+
+router.get("/full/:id", (req, res) => {
+    let assignment;
+    dbGet.getAssignment(req.params.id).then(assignmentData => {
+        assignment = assignmentData._doc;
+        return dbGet.getSchool(assignment.school);
+    }).then(school => {
+        assignment.school = school;
+        return dbGet.getCourse(assignment.course);
+    }).then(course => {
+        assignment.course = course;
+        return getArrData(assignment.groups, dbGet.getGroup);
+    }).then(groups => {
+        assignment.groups = groups;
+        res.send(assignment);
+    }).catch(error => {
+        console.log(error);
         res.status(400).send(error);
     });
 });

@@ -13,6 +13,8 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 
+const {getArrData, obfuscateUser} = require("./routeUtil.js");
+
 const router = express.Router();
 router.use(bodyParser.json());
 router.use(cookieParser());
@@ -28,9 +30,26 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get("/full/:id", (req, res) => {
+    let school;
+    dbGet.getSchool(req.params.id).then(schoolData => {
+        school = schoolData._doc;
+        return getArrData(school.courses, dbGet.getCourse);
+    }).then(courses => {
+        school.courses = courses;
+        return getArrData(school.members, dbGet.getUser);
+    }).then(members => {
+        school.members = members.map(member => obfuscateUser(member));
+        res.send(school);
+    }).catch(error => {
+        console.log(error);
+        res.status(400).send(error);
+    });
+});
+
 router.get("/:id", (req, res) => {
-    dbGet.getSchool(req.params.id).then(user => {
-        res.send(user);
+    dbGet.getSchool(req.params.id).then(school => {
+        res.send(school);
     }).catch(error => {
         res.status(400).send(error);
     });
@@ -41,11 +60,18 @@ router.post("/", (req, res) => {
         name: req.body.name
     };
 
-    dbCreate.createSchool(school.name).then((school) => {
+    dbLogin.verifyAdminRequest(req).then(valid => {
+        if(!valid)
+        {
+            throw "Admin not logged in!";
+        }
+        return dbCreate.createSchool(school.name);
+    }).then((school) => {
         res.send(school);
     }).catch(error => {
         res.status(400).send(error);
     });
 });
+
 
 module.exports = router

@@ -12,6 +12,8 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 
+const {getArrData, obfuscateUser} = require("./routeUtil.js");
+
 const router = express.Router();
 router.use(bodyParser.json());
 router.use(cookieParser());
@@ -33,13 +35,38 @@ router.post("/:school_id", (req, res) => {
         return;
     }
 
-    dbCreate.createCourse(course.name, course.school).then(course => {
+    dbLogin.verifyAdminRequest(req).then(valid => {
+        if(!valid) {
+            throw "Admin not logged in!";
+        }
+        return dbCreate.createCourse(course.name, course.school);
+    }).then(course => {
         dbGet.getSchool(course.school).then(school => {
             school.courses.push(course._id);
             school.save();
         })
         res.send(course);
     }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
+router.get("/full/:id", (req, res) => {
+    let course;
+    dbGet.getCourse(req.params.id).then(courseData => {
+        course = courseData._doc;
+        return dbGet.getSchool(course.school);
+    }).then(school => {
+        course.school = school;
+        return getArrData(course.assignments, dbGet.getAssignment);
+    }).then(assignments => {
+        course.assignments = assignments;
+        return getArrData(course.members, dbGet.getUser);
+    }).then(members => {
+        course.members = members.map(member => obfuscateUser(member));
+        res.send(course);
+    }).catch(error => {
+        console.log(error);
         res.status(400).send(error);
     });
 });
@@ -51,5 +78,15 @@ router.get("/:id", (req, res) => {
         res.status(400).send(error);
     });
 });
+
+//TODO NOT DONE
+//deleting
+router.delete("/:id", (req, res) =>{
+    const id = req.params.id;
+    if(!ObjectID.isValid(id)) {
+        res.status(400).send("Invalid course id.");
+        return;
+    }
+})
 
 module.exports = router
