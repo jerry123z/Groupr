@@ -84,6 +84,12 @@ router.post("/", (req, res) => {
     }).then(token => {
         res.cookie("auth", {token: token.tokenHash, user: token.user});
         res.send(obfuscateUser(user));
+        dbGet.getSchool(user.school).then(school => {
+            school.members.push(token.user);
+            school.save();
+        }).catch(error => {
+            res.status(404).send(error);
+        });
     }).catch(error => {
         res.status(400).send("Failed to create user: " + JSON.stringify(error));
     });
@@ -121,6 +127,90 @@ router.get("/:id", (req, res) => {
         res.send(obfuscateUser(user));
     }).catch(error => {
         res.status(400).send(error);
+    });
+});
+
+// Route for adding an assignment to a user
+router.patch("/assignment/:user_id/:assignment_id", (req, res) => {
+    const user_id = req.params.user_id;
+    const assignment_id = req.params.assignment_id;
+
+    if(!ObjectID.isValid(user_id)) {
+        res.status(400).send("Invalid user id.");
+        return;
+    } else if (!ObjectID.isValid(assignment_id)) {
+        res.status(400).send("Invalid assignment id.");
+        return;
+    }
+
+    dbGet.getUser(user_id).then(user => {
+        dbGet.getAssignment(assignment_id).then(assignment => {
+            assignment.members.push(user._id);
+            user.assignments.push(assignment._id);
+            assignment.save();
+            user.save();
+            res.send(user);
+        }).catch(error => {
+            res.status(404).send("No such assignment");
+        });
+    }).catch(error => {
+        res.status(404).send("No such user.");
+    });
+});
+
+// Route for adding a course to a user
+router.patch("/course/:user_id/:course_id", (req, res) => {
+    const user_id = req.params.user_id;
+    const course_id = req.params.course_id;
+
+    if(!ObjectID.isValid(user_id)) {
+        res.status(400).send("Invalid user id.");
+        return;
+    } else if (!ObjectID.isValid(course_id)) {
+        res.status(400).send("Invalid course id.");
+        return;
+    }
+
+    dbGet.getUser(user_id).then(user => {
+        dbGet.getCourse(course_id).then(course => {
+            course.members.push(user._id);
+            user.courses.push(course._id);
+            course.save();
+            user.save();
+            res.send(user);
+        }).catch(error => {
+            res.status(404).send(error);
+        });
+    }).catch(error => {
+        res.status(404).send(error);
+    });
+});
+
+// Route for adding a user to a group
+router.patch("/group/:user_id/:group_id", (req, res) => {
+    const user_id = req.params.user_id;
+    const group_id = req.params.group_id;
+
+    if(!ObjectID.isValid(user_id)) {
+        res.status(400).send("Invalid user id.");
+        return;
+    } else if (!ObjectID.isValid(group_id)) {
+        res.status(400).send("Invalid group id.");
+        return;
+    }
+
+    dbGet.getUser(user_id).then(user => {
+        dbGet.getGroup(group_id).then(group => {
+            group.members.push(user._id);
+            user.groups.push(group._id);
+            group.save();
+            user.save();
+            res.send(user);
+        }).catch(error => {
+            res.status(404).send(error);
+        });
+    }).catch(error => {
+        res.status(404).send(error);
     });
 });
 
