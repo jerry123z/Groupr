@@ -71,7 +71,7 @@ router.get("/full/:id", (req, res) => {
         group.school = school;
         return dbGet.getCourse(group.course);
     }).then(course => {
-        group.assignments = assignments;
+        group.course = course;
         return dbGet.getAssignment(group.assignment);
     }).then(assignment => {
         group.assignment = assignment;
