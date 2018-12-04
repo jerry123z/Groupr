@@ -85,17 +85,18 @@ function populate_side_nav(user_courses, assignments){
         listItem.append(anchor);
         const containerDiv = $('<div id="SubMenu' + user_courses[i] + '" class="collapse"></div>');
         let ulist = $( '<ul class="list-unstyled dropdown-menu show"></ul>' );
-        for(j = 0; j < assignments[i].length; j++){
-            let listItem = $('<li></li>');
-            let anchor = $('<a class="dropdown-item" href="./assignment.html">'.concat(assignments[i][j],'</a>'));
-            listItem.append(anchor);
-            ulist.append(listItem);
+        if (assignments[i].length == 0) {
+            let noAssignmentsMessage = $('<li><a class="dropdown-item"> No Assignments Yet!</a></li>');
+            ulist.append(noAssignmentsMessage);
+        } else {
+            for(j = 0; j < assignments[i].length; j++){
+                let listItem = $('<li></li>');
+                let anchor = $('<a class="dropdown-item" href="./assignment.html">'.concat(assignments[i][j],'</a>'));
+                listItem.append(anchor);
+                ulist.append(listItem);
+            }
         }
         containerDiv.append(ulist);
-        let ending = $('<li><div class="dropdown-divider"></div></li><li>\
-            <a class="dropdown-item" data-toggle="modal" data-target="#addModal" data-course="'.concat(user_courses[i],
-                '">Add Assignment</a></li>'));
-        ulist.append(ending);
         listItem.append(containerDiv);
         $("#nav").append(listItem);
     }
