@@ -72,6 +72,16 @@ router.post("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
     let userId;
     let requestor;
     let target;
+
+    if(!ObjectID.isValid(req.params.mergeRequestor)) {
+        res.status(400).send("Invalid requestor id.");
+        return;
+    }
+    if(!ObjectID.isValid(req.params.mergeTarget)) {
+        res.status(400).send("Invalid target id.");
+        return;
+    }
+
     dbLogin.verifyRequest(req).then(user => {
         if(!user) {
             throw "Owner not logged in!";
@@ -105,6 +115,16 @@ router.delete("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
     let userId;
     let requestor;
     let target;
+
+    if(!ObjectID.isValid(req.params.mergeRequestor)) {
+        res.status(400).send("Invalid requestor id.");
+        return;
+    }
+    if(!ObjectID.isValid(req.params.mergeTarget)) {
+        res.status(400).send("Invalid target id.");
+        return;
+    }
+
     dbLogin.verifyRequest(req).then(user => {
         if(!user) {
             throw "Owner not logged in!";
@@ -132,6 +152,16 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
     let userId;
     let requestor;
     let target;
+
+    if(!ObjectID.isValid(req.params.mergeRequestor)) {
+        res.status(400).send("Invalid requestor id.");
+        return;
+    }
+    if(!ObjectID.isValid(req.params.mergeTarget)) {
+        res.status(400).send("Invalid target id.");
+        return;
+    }
+    
     dbLogin.verifyRequest(req).then(user => {
         if(!user) {
             throw "Owner not logged in!";
