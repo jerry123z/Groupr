@@ -12,6 +12,7 @@ const { Token, User, School, Course, Assignment, Group } = require('./models.js'
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
+const dbEdit = require('./db/dbEdit.js');
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
@@ -183,5 +184,62 @@ router.patch("/group/:user_id/:group_id", (req, res) => {
         res.status(404).send(error);
     });
 });
+
+//route for changing a user's name
+//returns the old user object
+router.patch("/name/:id", (req, res) => {
+    const id = req.params.id
+    const name = req.body.name
+
+    dbGet.getUser(req.params.id).then(user => {
+        const obuser = obfuscateUser(user);
+        return dbEdit.editUser(obuser._id, obuser.email, name, obuser.schoolId, obuser.isAdmin)
+    }).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+//route for changing a user's email
+//returns the old user object
+router.patch("/email/:id", (req, res) => {
+    const id = req.params.id
+    const email = req.body.email
+
+    dbGet.getUser(req.params.id).then(user => {
+        const obuser = obfuscateUser(user);
+        return dbEdit.editUser(obuser._id, email, obuser.name, obuser.schoolId, obuser.isAdmin)
+    }).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+//route for a user
+router.patch("/school/:id", (req, res) => {
+    const id = req.params.id
+    const school = req.body.school
+
+
+    //TODO:Wait for priya to push dbget school by name
+})
+
+//route for changing a user's admin status
+//returns the old user object
+router.patch("/admin/:id", (req, res) => {
+    const id = req.params.id
+    const isAdmin = req.body.isAdmin
+
+    dbGet.getUser(req.params.id).then(user => {
+        const obuser = obfuscateUser(user);
+        return dbEdit.editUser(obuser._id, obuser.email, obuser.name, obuser.schoolId, isAdmin)
+    }).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
 
 module.exports = router
