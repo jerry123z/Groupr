@@ -34,6 +34,10 @@ router.post("/:school_id", (req, res) => {
     }
 
     dbCreate.createCourse(course.name, course.school).then(course => {
+        dbGet.getSchool(course.school).then(school => {
+            school.courses.push(course._id);
+            school.save();
+        })
         res.send(course);
     }).catch(error => {
         res.status(400).send(error);
