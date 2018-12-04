@@ -20,8 +20,9 @@ router.use(cookieParser());
 // Start the front end.
 router.use(express.static(__dirname + "/frontend"));
 
-function getArrData(arr, itemFunction) {
+function getArrData(arrIn, itemFunction) {
     let promise;
+    let arr = arrIn;
     if(arr.length == 0) {
         promise = new Promise(resolve => { resolve(arr); });
     }
@@ -32,17 +33,14 @@ function getArrData(arr, itemFunction) {
                 promise = itemFunction(arr[0]);
                 continue;
             }
-            promise.then(data => {
+            promise = promise.then(data => {
                 arr[i - 1] = data;
                 return itemFunction(arr[i]);
             });
         }
-        if(!promise) {
-            console.log(arr);
-        }
-        promise.then(data => {
+        promise = promise.then(data => {
             arr[arr.length - 1] = data;
-            return new Promise(resolve => { resolve(arr); });
+            return Promise.resolve(arr);
         });
     }
     return promise;
