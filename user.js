@@ -109,7 +109,10 @@ router.get("/full/:id", (req, res) => {
         return getArrData(user.groups, dbGet.getGroup);
     }).then(groups => {
         return getArrData(groups, (group) => {
-            return getArrData(group.members, dbGet.getUser);
+            return getArrData(group.members, dbGet.getUser).then(members => {
+                group._doc.members = members;
+                return Promise.resolve(group._doc);
+            });
         });
     }).then(groups => {
         user.groups = groups;
