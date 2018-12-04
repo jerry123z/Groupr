@@ -60,10 +60,14 @@ router.get("/full/:id", (req, res) => {
     let user;
     dbGet.getUser(req.params.id).then(userData => {
         user = userData._doc;
-        return dbGet.getSchool(user.school);
-    }).then(school => {
-        user.school = school;
-        return getArrData(user.courses, dbGet.getCourse);
+        if(user.school) {
+            return dbGet.getSchool(user.school).then(school => {
+                user.school = school;
+                return getArrData(user.courses, dbGet.getCourse);
+            });
+        } else {
+            return getArrData(user.courses, dbGet.getCourse);
+        }
     }).then(courses => {
         user.courses = courses;
         return getArrData(user.groups, dbGet.getGroup);
