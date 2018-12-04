@@ -89,6 +89,9 @@ router.post("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         if(target._doc.requests.find(el => el == requestor._id)) {
             throw "This group has already requested to join target group!";
         }
+        if(target.assignment != requestor.assignment) {
+            throw "Groups cannot merge as they are not part of the same assignment!";
+        }
         target._doc.requests.push(requestor._id);
         return target.save();
     }).then(() => {
@@ -140,10 +143,25 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         if(target.owner != userId) {
             throw "Owner not logged in!";
         }
+        if(!target._doc.requests.find(el => el == req.params.mergeRequestor)) {
+            throw "Requesting group has not requested to join you!";
+        }
         return dbGet.getGroup(req.params.mergeRequestor);
     }).then(group => {
         requestor = group;
         // TODO: Do merge.
+        if(target.members.length + requestor.members.length > target.maxMembers) {
+            throw "Too many members in group!";
+        }
+        target._doc.members.concat(requestor.members);
+        target._doc.requests = target._doc.requests.filter(el => el != requestor._id);
+        return Group.deleteOne({_id: requestor._id});
+    }).then(del => {
+        return target.save({new: true});
+    }).then(save => {
+        res.send(save);
+    }).catch(error => {
+        res.status(400).send(error);
     });
 });
 
