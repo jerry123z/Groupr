@@ -34,27 +34,27 @@ router.post("/:user_id/:assignment_id", (req, res) => {
     }
 
     dbGet.getUser(user_id).then(user => {
-        dbGet.getAssignment(assignment_id).then(assignment => {
-            const group = {
-                name: req.body.name,
-                description: req.body.description,
-                schedule: req.body.schedule,
-                school: user.school,
-                course: assignment.course,
-                assignment: assignment._id,
-                maxMembers: assignment.maxMembers,
-                owner: user._id
-            };
-            dbCreate.createGroup(group.name, group.description, group.schedule,
-            group.school, group.course, group.assignment, group.maxMembers,
-            group.owner).then(group => {
-                user.groups.push(group._id);
-                assignment.groups.push(group._id);
-                user.save();
-                assignment.save();
-                res.send(group);
-            });
-        });
+        return dbGet.getAssignment(assignment_id);
+    }).then(assignment => {
+        const group = {
+            name: req.body.name,
+            description: req.body.description,
+            schedule: req.body.schedule,
+            school: user.school,
+            course: assignment.course,
+            assignment: assignment._id,
+            maxMembers: assignment.maxMembers,
+            owner: user._id
+        };
+        return dbCreate.createGroup(group.name, group.description, group.schedule,
+        group.school, group.course, group.assignment, group.maxMembers,
+        group.owner);
+    }).then(group => {
+        user.groups.push(group._id);
+        assignment.groups.push(group._id);
+        user.save();
+        assignment.save();
+        res.send(group);
     }).catch(error => {
         res.status(400).send(error);
     })
