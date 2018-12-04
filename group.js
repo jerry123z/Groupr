@@ -86,9 +86,6 @@ router.post("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         return dbGet.getGroup(req.params.mergeTarget);
     }).then(group => {
         target = group;
-        if(target.members.length + requestor.members.length > target.maxMembers) {
-            throw "Too many members in group!";
-        }
         target._doc.requests.push(requestor._id);
         return target.save();
     }).then(() => {
