@@ -13,7 +13,7 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 
-const {getArrData, obfuscateUser} = require("./routeUtil.js");
+const {getArrData, obfuscateUser, forEach} = require("./routeUtil.js");
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -149,14 +149,23 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         return dbGet.getGroup(req.params.mergeRequestor);
     }).then(group => {
         requestor = group;
-        // TODO: Do merge.
         if(target.members.length + requestor.members.length > target.maxMembers) {
             throw "Too many members in group!";
         }
         target._doc.members.concat(requestor.members);
         target._doc.requests = target._doc.requests.filter(el => el != requestor._id);
-        return Group.deleteOne({_id: requestor._id});
-    }).then(del => {
+        // For every member in the requesting team, find the idea of the requestor in their groups list
+        // then replace it with the target team id.
+        return forEach(requestor.members, (memberId) => {
+            return dbGet.getUser(memberId).then(member => {
+                member._doc.groups = member._doc.groups.map(el => el == requestor._id ? target._id : el);
+                return member.save();
+            });
+        }).then(() => {
+            // Delete the requesting group.
+            return Group.deleteOne({_id: requestor._id});
+        });
+    }).then(() => {
         return target.save({new: true});
     }).then(save => {
         res.send(save);
