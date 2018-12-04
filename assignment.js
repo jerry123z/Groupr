@@ -11,6 +11,7 @@ const bcrypt = require('bcryptjs');
 const { Token, User, School, Course, Assignment, Group } = require('./models.js');
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
+const dbLogin = require('./db/dbLogin.js');
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -39,8 +40,14 @@ router.post("/:school_id/:course_id", (req, res) => {
         return;
     }
 
-    dbCreate.createAssignment(assignment.name, assignment.school,
-    assignment.course, assignment.maxMembers).then(assignment => {
+    dbLogin.verifyAdminRequest(req).then(valid => {
+        if(!valid) {
+            throw "Admin not logged in!";
+        }
+        return dbCreate.createAssignment(assignment.name, assignment.school,
+            assignment.course, assignment.maxMembers)
+    })
+    .then(assignment => {
         dbGet.getCourse(assignment.course).then(course => {
             course.assignments.push(assignment._id);
             course.save();
