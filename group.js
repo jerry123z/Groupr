@@ -89,8 +89,61 @@ router.post("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         if(target.members.length + requestor.members.length > target.maxMembers) {
             throw "Too many members in group!";
         }
+        target._doc.requests.push(requestor._id);
+        return target.save();
+    }).then(() => {
+        res.send("Request sent!");
     }).catch(error => {
         res.status(400).send(error);
+    });
+});
+
+router.delete("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
+    let userId;
+    let requestor;
+    let target;
+    dbLogin.verifyRequest(req).then(user => {
+        if(!user) {
+            throw "Owner not logged in!";
+        }
+        userId = user;
+        return dbGet.getGroup(req.params.mergeRequestor);
+    }).then(group => {
+        requestor = group;
+        return dbGet.getGroup(req.params.mergeTarget);
+    }).then(group => {
+        target = group;
+        if(target.owner != userId && requestor.owner != userId) {
+            throw "Owner not logged in!";
+        }
+        target._doc.requests = target._doc.requests.filter(el => el != requestor._id);
+        return target.save();
+    }).then(() => {
+        res.send("Request deleted!");
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
+router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
+    let userId;
+    let requestor;
+    let target;
+    dbLogin.verifyRequest(req).then(user => {
+        if(!user) {
+            throw "Owner not logged in!";
+        }
+        userId = user;
+        return dbGet.getGroup(req.params.mergeTarget);
+    }).then(group => {
+        target = group;
+        if(target.owner != userId) {
+            throw "Owner not logged in!";
+        }
+        return dbGet.getGroup(req.params.mergeRequestor);
+    }).then(group => {
+        requestor = group;
+        // TODO: Do merge.
     });
 });
 
