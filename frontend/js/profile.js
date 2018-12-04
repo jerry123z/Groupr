@@ -122,7 +122,7 @@ function getData(user) {
     }).then(parseBody);
 }
 
-function addNoGroupsMessage(message, row) {
+function addMessageCard(message, row) {
     const $col = $("<div>", {class: "col-md-4"});
     const $container = $("<div>", {class: "no-groups-entry entry card"});
     $container.text(message);
