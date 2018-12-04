@@ -242,4 +242,15 @@ router.patch("/admin/:id", (req, res) => {
     });
 })
 
+
+
+router.get("/email/:email", (req, res) => {
+	console.log(req.params.email);
+	dbGet.getUserByPartialEmail(req.params.email).then((users) => {
+		res.send(users);
+	}).catch((error) => {
+		res.status(400).send(error);
+	});
+});
+
 module.exports = router

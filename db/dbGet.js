@@ -20,6 +20,17 @@ function getUser(id) {
     });
 }
 
+function getUserByPartialEmail(email) {
+	var val = new RegExp(".*"+email+".*");
+	return new Promise((resolve, reject) => {
+		User.find({email : val}).then(users => {
+			resolve(users);
+		}).catch(error => {
+			reject("getUser: " + JSON.stringify(error));
+		});
+	});	
+}
+
 function getSchool(id) {
     return new Promise((resolve, reject) => {
         if(!ObjectID.isValid(id))
@@ -28,6 +39,17 @@ function getSchool(id) {
         }
         School.findById(id).then(user => {
             resolve(user);
+        }).catch(error => {
+            reject("getSchool: " + JSON.stringify(error));
+        });
+    });
+}
+
+function getSchoolByPartialName(name){
+	var val = new RegExp(".*"+name+".*");
+	return new Promise((resolve, reject) => {
+        School.find({name: val}).then(schools => {
+            resolve(schools);
         }).catch(error => {
             reject("getSchool: " + JSON.stringify(error));
         });
@@ -47,6 +69,18 @@ function getCourse(id) {
         });
     });
 }
+
+function getCourseByPartialName(name){
+	var val = new RegExp(".*"+name+".*");
+	return new Promise((resolve, reject) => {
+		Course.find({name: val}).then(courses => {
+			resolve(courses);
+		}).catch(error => {
+			reject("getCourse: " + JSON.stringify(error));
+		});
+    });
+}
+
 
 function getAssignment(id) {
     return new Promise((resolve, reject) => {
@@ -76,15 +110,30 @@ function getGroup(id) {
     });
 }
 
+function getGroupByPartialName(name){
+	var val = new RegExp(".*"+name+".*");
+	return new Promise((resolve, reject) => {
+		Group.find({name: val}).then(courses => {
+			resolve(courses);
+		}).catch(error => {
+			reject("getGroup: " + JSON.stringify(error));
+		});
+    });
+}
+
 function getAllSchools() {
     return School.find();
 }
 
 module.exports = {
     getUser,
+	getUserByPartialEmail,
     getSchool,
+	getSchoolByPartialName,
     getCourse,
+	getCourseByPartialName,
     getAssignment,
     getGroup,
+	getGroupByPartialName,
     getAllSchools
 };
