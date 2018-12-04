@@ -152,4 +152,32 @@ router.patch("/assignment/:user_id/:assignment_id", (req, res) => {
     });
 });
 
+// Route for adding a course to a user
+router.patch("/course/:user_id/:course_id", (req, res) => {
+    const user_id = req.params.user_id;
+    const course_id = req.params.course_id;
+
+    if(!ObjectID.isValid(user_id)) {
+        res.status(400).send("Invalid user id.");
+        return;
+    } else if (!ObjectID.isValid(course_id)) {
+        res.status(400).send("Invalid course id.");
+        return;
+    }
+
+    dbGet.getUser(user_id).then(user => {
+        dbGet.getCourse(course_id).then(course => {
+            course.members.push(user._id);
+            user.courses.push(course._id);
+            course.save();
+            user.save();
+            res.send(user);
+        }).catch(error => {
+            res.status(404).send("No such course");
+        });
+    }).catch(error => {
+        res.status(404).send("No such user.");
+    });
+});
+
 module.exports = router
