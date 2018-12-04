@@ -67,6 +67,33 @@ router.post("/:assignment_id", (req, res) => {
     })
 });
 
+// Create merge request.
+router.post("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
+    let userId;
+    let requestor;
+    let target;
+    dbLogin.verifyRequest(req).then(user => {
+        if(!user) {
+            throw "Owner not logged in!";
+        }
+        userId = user;
+        return dbGet.getGroup(req.params.mergeRequestor);
+    }).then(group => {
+        requestor = group;
+        if(group.owner != userId) {
+            throw "Owner not logged in!";
+        }
+        return dbGet.getGroup(req.params.mergeTarget);
+    }).then(group => {
+        target = group;
+        if(target.members.length + requestor.members.length > target.maxMembers) {
+            throw "Too many members in group!";
+        }
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
 router.get("/full/:id", (req, res) => {
     let group;
     dbGet.getGroup(req.params.id).then(groupData => {
