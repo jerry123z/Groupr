@@ -66,7 +66,7 @@ router.get("/full/:id", (req, res) => {
         return getArrData(user.courses, dbGet.getCourse);
     }).then(courses => {
         user.courses = courses;
-        return getArrData(user.assignments, dbGet.getAssignment);
+        return getArrData(user.groups, dbGet.getGroup);
     }).then(groups => {
         return getArrData(groups, (group) => {
             return getArrData(group.members, dbGet.getUser).then(members => {
