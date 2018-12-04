@@ -74,4 +74,13 @@ router.post("/", (req, res) => {
 });
 
 
+router.get("/name/:name", (req, res) => {
+	console.log(req.params.name);
+	dbGet.getSchoolByPartialName(req.params.name).then((names) => {
+		res.send(names);
+	}).catch((error) => {
+		res.status(400).send(error);
+	});
+});
+
 module.exports = router

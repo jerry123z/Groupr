@@ -89,4 +89,14 @@ router.delete("/:id", (req, res) =>{
     }
 })
 
+
+router.get("/name/:name", (req, res) => {
+	console.log(req.params.name);
+	dbGet.getCourseByPartialName(req.params.name).then((courses) => {
+		res.send(courses);
+	}).catch((error) => {
+		res.status(400).send(error);
+	});
+});
+
 module.exports = router
