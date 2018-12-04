@@ -1,19 +1,23 @@
-$( document ).ready(function() {
-    let url = getUserIdFromURL();
-    getUserData(url).then(userData => {
-        console.log(userData);
+$(document).on("loggedin", function(event, user) {
+    getUserData(user._id).then(userData => {
+        let assignments = [];
+        let courses = [];
+        let i = 0;
+        for (let i = 0; i < userData.courses.length; i++) {
+            let course = userData.courses[i];
+            courses.push(course.name);
+            assignments[i] = [];
+            for (let j = 0; j < userData.assignments.length; j++) {
+                let assignment = userData.assignments[j];
+                if (course._id == assignment.course) {
+                    assignments[i].push(assignment.name);
+                }
+            }
+        }
+        populate_side_nav(courses, assignments);
     }).catch(error => {
         console.error(error);
     });
-
-    /*let user_courses = get_courses();
-    let assignments = [];
-    let i;
-    for (i = 0; i < user_courses.length; i++){
-        assignments[i] = get_assignments(user_courses[i]);
-    }
-    populate_side_nav(user_courses, assignments);*/
-
 });
 
 function parseBody(response) {
@@ -32,11 +36,6 @@ function getUserData(userId) {
     return fetch("/user/full/" + userId, {
         method: "GET"
     }).then(parseBody);
-}
-
-function getUserIdFromURL() {
-    let url = new URL(window.location.href);
-    return url.searchParams.get("user");
 }
 
 function logout() {
@@ -113,7 +112,7 @@ $('#addModal').on('show.bs.modal', function (event) {
   let button = $(event.relatedTarget) // Button that triggered the modal
   let course = button.data('course') // Extract info from data-* attributes
   let modal = $(this)
-  if (course) {     // User is adding an assigment
+  if (course) {     // User is adding an assignment
       // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
       // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
       modal.find('#assignment-form-group').css("display", "block")  // Display assignment form group
