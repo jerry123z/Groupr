@@ -98,33 +98,6 @@ router.get("/:id", (req, res) => {
     });
 });
 
-// Route for adding an assignment to a user
-router.patch("/assignment/:user_id/:assignment_id", (req, res) => {
-    const user_id = req.params.user_id;
-    const assignment_id = req.params.assignment_id;
-
-    if(!ObjectID.isValid(user_id)) {
-        res.status(400).send("Invalid user id.");
-        return;
-    } else if (!ObjectID.isValid(assignment_id)) {
-        res.status(400).send("Invalid assignment id.");
-        return;
-    }
-
-    dbGet.getUser(user_id).then(user => {
-        dbGet.getAssignment(assignment_id).then(assignment => {
-            assignment.members.push(user._id);
-            user.assignments.push(assignment._id);
-            assignment.save();
-            user.save();
-            res.send(user);
-        }).catch(error => {
-            res.status(404).send("No such assignment");
-        });
-    }).catch(error => {
-        res.status(404).send("No such user.");
-    });
-});
 
 // Route for adding a course to a user
 router.patch("/course/:user_id/:course_id", (req, res) => {
@@ -141,11 +114,17 @@ router.patch("/course/:user_id/:course_id", (req, res) => {
 
     dbGet.getUser(user_id).then(user => {
         dbGet.getCourse(course_id).then(course => {
-            course.members.push(user._id);
-            user.courses.push(course._id);
-            course.save();
-            user.save();
-            res.send(user);
+            // Only add the course if it is not already being taken by user
+            if (checkCourseAgainstUser(user, course)) {
+                course.members.push(user._id);
+                user.courses.push(course._id);
+                course.save();
+                user.save();
+                res.send(user);
+            } else {
+                res.status(400).send("User is already taking course.")
+                return;
+            }
         }).catch(error => {
             res.status(404).send(error);
         });
@@ -153,6 +132,14 @@ router.patch("/course/:user_id/:course_id", (req, res) => {
         res.status(404).send(error);
     });
 });
+
+// Returns true iff user is not currently taking the course, false if the user
+// is taking the course.
+function checkCourseAgainstUser(user, course) {
+    return user.courses.every((userCourseId) => {
+        return userCourseId.toString() != course._id.toString();
+    });
+}
 
 // Route for adding a user to a group
 router.patch("/group/:user_id/:group_id", (req, res) => {
