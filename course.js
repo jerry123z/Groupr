@@ -52,6 +52,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
+//TODO NOT DONE
 //deleting
 router.delete("/:id", (req, res) =>{
     const id = req.params.id;
