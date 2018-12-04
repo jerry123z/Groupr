@@ -159,16 +159,26 @@ router.patch("/group/:user_id/:group_id", (req, res) => {
         return;
     }
 
-    dbGet.getUser(user_id).then(user => {
-        dbGet.getGroup(group_id).then(group => {
-            group.members.push(user._id);
-            user.groups.push(group._id);
-            group.save();
-            user.save();
-            res.send(user);
-        }).catch(error => {
-            res.status(404).send(error);
-        });
+    let userLogin;
+    let user;
+    dbLogin.verifyRequest(req).then(loggedInUser => {
+        if(!loggedInUser) {
+            throw "Owner not logged in!";
+        }
+        userLogin = loggedInUser;
+        return dbGet.getUser(user_id);
+    }).then(userGet => {
+        user = userGet;
+        return dbGet.getGroup(group_id);
+    }).then(group => {
+        if(group.owner != userLogin) {
+            throw "Owner not logged in!";
+        }
+        group.members.push(user._id);
+        user.groups.push(group._id);
+        group.save();
+        user.save();
+        res.send(user);
     }).catch(error => {
         res.status(404).send(error);
     });

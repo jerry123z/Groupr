@@ -60,7 +60,13 @@ router.post("/", (req, res) => {
         name: req.body.name
     };
 
-    dbCreate.createSchool(school.name).then((school) => {
+    dbLogin.verifyAdminRequest(req).then(valid => {
+        if(!valid)
+        {
+            throw "Admin not logged in!";
+        }
+        return dbCreate.createSchool(school.name);
+    }).then((school) => {
         res.send(school);
     }).catch(error => {
         res.status(400).send(error);

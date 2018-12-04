@@ -35,7 +35,12 @@ router.post("/:school_id", (req, res) => {
         return;
     }
 
-    dbCreate.createCourse(course.name, course.school).then(course => {
+    dbLogin.verifyAdminRequest(req).then(valid => {
+        if(!valid) {
+            throw "Admin not logged in!";
+        }
+        return dbCreate.createCourse(course.name, course.school);
+    }).then(course => {
         dbGet.getSchool(course.school).then(school => {
             school.courses.push(course._id);
             school.save();

@@ -23,21 +23,26 @@ router.use(cookieParser());
 router.use(express.static(__dirname + "/frontend"));
 
 // Route for group creation
-router.post("/:user_id/:assignment_id", (req, res) => {
-    const user_id = req.params.user_id;
+router.post("/:assignment_id", (req, res) => {
     const assignment_id = req.params.assignment_id;
 
-    if(!ObjectID.isValid(user_id)) {
-        res.status(400).send("Invalid user id.");
-        return;
-    } else if(!ObjectID.isValid(assignment_id)) {
+    if(!ObjectID.isValid(assignment_id)) {
         res.status(400).send("Invalid assignment id.");
         return;
     }
 
-    dbGet.getUser(user_id).then(user => {
+    let user;
+    let assignment;
+    dbLogin.verifyRequest(req).then(user_id => {
+        if(!user_id) {
+            throw "User not logged in!";
+        }
+        return dbGet.getUser(user_id);
+    }).then(userGet => {
+        user = userGet;
         return dbGet.getAssignment(assignment_id);
-    }).then(assignment => {
+    }).then(assignmentGet => {
+        assignment = assignmentGet;
         const group = {
             name: req.body.name,
             description: req.body.description,

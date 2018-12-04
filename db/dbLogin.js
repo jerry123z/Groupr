@@ -42,6 +42,30 @@ function verifyRequest(req) {
     });
 }
 
+function verifyAdminRequest(req) {
+    if(!req.cookies.auth
+        || !req.cookies.auth.token 
+        || !ObjectID.isValid(req.cookies.auth.user))
+    {
+        return new Promise((resolve, reject) => {
+            reject("Invalid authentication token.");
+        });
+    }
+    return verify().then(valid => {
+        if(!valid)
+        {
+            return Promise.resolve(null);
+        }
+        return new Promise((resolve, reject) => {
+            User.findById(req.cookies.auth.user).then(user => {
+                resolve(user.isAdmin ? req.cookies.auth.user : null);
+            }).catch(error => {
+                resolve(null);
+            });
+        });
+    });
+}
+
 function verify(tokenHash, user) {
     return new Promise((resolve, reject) => {
         Token.findOne({tokenHash, user}).then(token => {
@@ -85,6 +109,7 @@ module.exports = {
     authenticate,
     verifyRequest,
     verify,
+    verifyAdminRequest,
     clearToken,
     clearUserTokens
 };
