@@ -86,6 +86,9 @@ router.post("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         return dbGet.getGroup(req.params.mergeTarget);
     }).then(group => {
         target = group;
+        if(target._doc.requests.find(el => el == requestor._id)) {
+            throw "This group has already requested to join target group!";
+        }
         target._doc.requests.push(requestor._id);
         return target.save();
     }).then(() => {
