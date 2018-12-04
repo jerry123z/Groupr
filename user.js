@@ -124,4 +124,32 @@ router.get("/:id", (req, res) => {
     });
 });
 
+// Route for adding an assignment to a user
+router.patch("/assignment/:user_id/:assignment_id", (req, res) => {
+    const user_id = req.params.user_id;
+    const assignment_id = req.params.assignment_id;
+
+    if(!ObjectID.isValid(user_id)) {
+        res.status(400).send("Invalid user id.");
+        return;
+    } else if (!ObjectID.isValid(assignment_id)) {
+        res.status(400).send("Invalid assignment id.");
+        return;
+    }
+
+    dbGet.getUser(user_id).then(user => {
+        dbGet.getAssignment(assignment_id).then(assignment => {
+            assignment.members.push(user._id);
+            user.assignments.push(assignment._id);
+            assignment.save();
+            user.save();
+            res.send(user);
+        }).catch(error => {
+            res.status(404).send("No such assignment");
+        });
+    }).catch(error => {
+        res.status(404).send("No such user.");
+    });
+});
+
 module.exports = router
