@@ -13,52 +13,14 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 
+const {getArrData, obfuscateUser} = require("./routeUtil.js");
+
 const router = express.Router();
 router.use(bodyParser.json());
 router.use(cookieParser());
 
 // Start the front end.
 router.use(express.static(__dirname + "/frontend"));
-
-function getArrData(arrIn, itemFunction) {
-    let promise;
-    let arr = arrIn;
-    if(arr.length == 0) {
-        promise = new Promise(resolve => { resolve(arr); });
-    }
-    else
-    {
-        for(let i = 0; i < arr.length; i++) {
-            if(i == 0) {
-                promise = itemFunction(arr[0]);
-                continue;
-            }
-            promise = promise.then(data => {
-                arr[i - 1] = data;
-                return itemFunction(arr[i]);
-            });
-        }
-        promise = promise.then(data => {
-            arr[arr.length - 1] = data;
-            return Promise.resolve(arr);
-        });
-    }
-    return promise;
-}
-
-
-function obfuscateUser(user) {
-    const userObj = {
-        _id: user._id,
-        name: user.name,
-        school: user.school,
-        courses: user.courses,
-        assignments: user.assignments,
-        groups: user.groups
-    };
-    return userObj;
-}
-
 
 router.post("/", (req, res) => {
     let user = {
@@ -104,13 +66,10 @@ router.get("/full/:id", (req, res) => {
     }).then(courses => {
         user.courses = courses;
         return getArrData(user.assignments, dbGet.getAssignment);
-    }).then(assignments => {
-        user.assignments = assignments;
-        return getArrData(user.groups, dbGet.getGroup);
     }).then(groups => {
         return getArrData(groups, (group) => {
             return getArrData(group.members, dbGet.getUser).then(members => {
-                group._doc.members = members;
+                group._doc.members = members.map(el => obfuscateUser(el));
                 return Promise.resolve(group._doc);
             });
         });
