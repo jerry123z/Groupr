@@ -98,4 +98,12 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.get("/name/:name", (req, res) => {
+	dbGet.getGroupByPartialName(req.params.name).then(groups =>{
+		res.send(groups);
+	}).catch((error) => {
+		res.status(400).send(error);
+	});
+});
+
 module.exports = router
