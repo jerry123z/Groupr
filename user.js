@@ -12,6 +12,7 @@ const { Token, User, School, Course, Assignment, Group } = require('./models.js'
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
+const dbEdit = require('./db/dbEdit.js');
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -53,10 +54,12 @@ function obfuscateUser(user) {
     const userObj = {
         _id: user._id,
         name: user.name,
+        email: user.email,
         school: user.school,
         courses: user.courses,
         assignments: user.assignments,
-        groups: user.groups
+        groups: user.groups,
+        isAdmin: user.isAdmin
     };
     return userObj;
 }
@@ -213,5 +216,40 @@ router.patch("/group/:user_id/:group_id", (req, res) => {
         res.status(404).send(error);
     });
 });
+
+//route for a user
+router.patch("/name/:id", (req, res) => {
+    const id = req.params.id
+    const name = req.body.name
+
+    dbGet.getUser(req.params.id).then(user => {
+        const obuser = obfuscateUser(user);
+        return dbEdit.editUser(obuser._id, obuser.email, name, obuser.schoolId, obuser.isAdmin)
+    }).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+//route for a user
+router.patch("/email/:id", (req, res) => {
+    const id = req.params.id
+    const email = req.body.email
+})
+
+//route for a user
+router.patch("/school/:id", (req, res) => {
+    const id = req.params.id
+    const school = req.body.school
+})
+
+//route for a user
+router.patch("/admin/:id", (req, res) => {
+    const id = req.params.id
+    const isAdmin = req.body.isAdmin
+
+
+})
 
 module.exports = router

@@ -52,4 +52,13 @@ router.get("/:id", (req, res) => {
     });
 });
 
+//deleting
+router.delete("/:id", (req, res) =>{
+    const id = req.params.id;
+    if(!ObjectID.isValid(id)) {
+        res.status(400).send("Invalid course id.");
+        return;
+    }
+})
+
 module.exports = router
