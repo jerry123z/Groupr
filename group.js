@@ -49,7 +49,7 @@ router.post("/:user_id/:assignment_id", (req, res) => {
             group.school, group.course, group.assignment, group.maxMembers,
             group.owner).then(group => {
                 user.groups.push(group._id);
-                assignment.groups.push(assignment._id);
+                assignment.groups.push(group._id);
                 user.save();
                 assignment.save();
                 res.send(group);
