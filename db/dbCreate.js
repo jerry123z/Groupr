@@ -36,7 +36,7 @@ function createAssignment(name, school, course, maxMembers) {
 function createGroup(name, description, schedule, school, course, assignment, maxMembers, owner) {
     return new Group({
         name, description, schedule, school, course, assignment, maxMembers, owner,
-        members: [[]],
+        members: [owner],
         requests: []
     }).save();
 }

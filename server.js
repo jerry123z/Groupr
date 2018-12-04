@@ -29,7 +29,7 @@ const user = require('./user')
 // Start the front end.
 app.use('/school', school)
 app.use('/course', course)
-app.use('/asignment', assignment)
+app.use('/assignment', assignment)
 app.use('/group', group)
 app.use('/login', login)
 app.use('/user', user)

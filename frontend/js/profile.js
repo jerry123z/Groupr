@@ -30,22 +30,24 @@ const $availabilityTable = $("#schedule");
 
 // Add group to "All Groups" section of page.
 // "group" is an object with keys name, numMembers, and maxNumMembers.
-function addGroup(group) {
+function addGroup(user, group) {
+    const course = user.courses.find(elem => elem._id == group.course);
+    const assignment = user.assignments.find(elem => elem._id == group.assignment);
     // create all elements needed
     const $col = $("<div>", {class: "col-md-4"});
-    const $link = $("<a>", {href: `group_page.html?groupId=${group.groupId}`});
+    const $link = $("<a>", {href: `group_page.html?groupId=${group._id}`});
     const $container = $("<div>", {class: "all-groups-entry entry card"});
-    const $title = $("<h5>").text(`${group.course} ${group.assignment}: ${group.name}`);
+    const $title = $("<h5>").text(`${course.name} ${assignment.name}: ${group.name}`);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
     // adding all filled-in icons
     let i;
-    for (i = 0; i < group.numMembers; i++) {
+    for (i = 0; i < group.members.length; i++) {
         const $icon = $("<img>", {class: "small-user-icon",
                                   src: "content/person_filled.png"});
         $numMembersContainer.append($icon);
     }
     // adding all unfilled icons
-    for (; i < group.maxNumMembers; i++) {
+    for (; i < group.maxMembers; i++) {
         const $icon = $("<img>", {class: "small-user-icon",
                                   src: "content/person_unfilled.png"});
         $numMembersContainer.append($icon);
@@ -120,6 +122,14 @@ function getData(user) {
     }).then(parseBody);
 }
 
+function addNoGroupsMessage(message, row) {
+    const $col = $("<div>", {class: "col-md-4"});
+    const $container = $("<div>", {class: "no-groups-entry entry card"});
+    $container.text(message);
+    $col.append($container);
+    row.append($col);
+}
+
 // On page load
 $(document).on("loggedin", function(event, user) {
     $.urlParam = function(name){
@@ -132,10 +142,18 @@ $(document).on("loggedin", function(event, user) {
 
     getData($.urlParam('user') || user._id).then(userData => {
         console.log(userData);
-        // add groups to the page (REQUIRES SERVER CALL)
-        $.each(allGroups, (index, group) => addGroup(group));
+        $('#username').text(userData.name);
+        $('#school').text(userData.school.name);
+        // add groups to the page
+        $.each(userData.groups, (index, group) => addGroup(user, group));
+        if(userData.groups.length == 0){
+            addMessageCard("No groups!", $groupsRow);
+        }
         // add notifiations to the page (REQUIRES SERVER CALL)
         $.each(allNotifications, (index, n) => addNotification(n));
+        if(allNotifications.length == 0){
+            addMessageCard("No notifications!", $notificationsRow);
+        }
     }).catch(error => {
         console.error(error);
     });
