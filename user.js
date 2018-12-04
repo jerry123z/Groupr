@@ -23,53 +23,6 @@ router.use(cookieParser());
 // Start the front end.
 router.use(express.static(__dirname + "/frontend"));
 
-<<<<<<< HEAD
-function getArrData(arr, itemFunction) {
-    let promise;
-    if(arr.length == 0) {
-        promise = new Promise(resolve => { resolve(arr); });
-    }
-    else
-    {
-        for(let i = 0; i < arr.length; i++) {
-            if(i == 0) {
-                promise = itemFunction(arr[0]);
-                continue;
-            }
-            promise.then(data => {
-                arr[i - 1] = data;
-                return itemFunction(arr[i]);
-            });
-        }
-        if(!promise) {
-            console.log(arr);
-        }
-        promise.then(data => {
-            arr[arr.length - 1] = data;
-            return new Promise(resolve => { resolve(arr); });
-        });
-    }
-    return promise;
-}
-
-
-function obfuscateUser(user) {
-    const userObj = {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        school: user.school,
-        courses: user.courses,
-        assignments: user.assignments,
-        groups: user.groups,
-        isAdmin: user.isAdmin
-    };
-    return userObj;
-}
-
-
-=======
->>>>>>> dea9696133ff418deb3d45e098cfa7361ed1e707
 router.post("/", (req, res) => {
     let user = {
         email: req.body.email,
