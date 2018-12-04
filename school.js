@@ -31,22 +31,16 @@ router.get("/", (req, res) => {
 });
 
 router.get("/full/:id", (req, res) => {
-    let assignment;
+    let school;
     dbGet.getSchool(req.params.id).then(schoolData => {
-        assignment = assignmentData._doc;
-        return dbGet.getSchool(assignment.school);
-    }).then(school => {
-        assignment.school = school;
-        return dbGet.getCourse(assignment.course);
-    }).then(course => {
-        assignment.course = course;
-        return getArrData(assignment.groups, dbGet.getGroup);
-    }).then(groups => {
-        assignment.groups = groups;
-        return getArrData(assignment.members, dbGet.getUser);
+        school = schoolData._doc;
+        return getArrData(school.courses, dbGet.getCourse);
+    }).then(courses => {
+        school.courses = courses;
+        return getArrData(school.members, dbGet.getUser);
     }).then(members => {
-        assignment.members = members.map(member => obfuscateUser(member));
-        res.send(assignment);
+        school.members = members.map(member => obfuscateUser(member));
+        res.send(school);
     }).catch(error => {
         console.log(error);
         res.status(400).send(error);
