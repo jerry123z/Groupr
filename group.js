@@ -13,6 +13,7 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 const dbEdit = require('./db/dbEdit.js');
+const dbDelete = require('./db/dbDelte.js')
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
@@ -132,4 +133,14 @@ router.patch("/description/:id", (req, res) => {
         res.status(400).send(error);
     });
 })
+
+router.delete("/:id", (req, res) => {
+    const id = req.params.id
+    dbDelete.deleteGroup(req.params.id).then(group => {
+        res.send(group)
+    }).catch((error) => {
+        res.status(400).send(error)
+    })
+})
+
 module.exports = router
