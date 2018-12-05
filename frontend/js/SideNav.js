@@ -1,4 +1,9 @@
+// Information about the user currently logged in
+let currentUser;
+
 $(document).on("loggedin", function(event, user) {
+    currentUser = user;
+    // Populate side nav with user data
     getUserData(user._id).then(userData => {
         let assignments = [];
         let courses = [];
@@ -32,8 +37,13 @@ function parseBody(response) {
 }
 
 function getUserData(userId) {
-    let userData;
     return fetch("/user/full/" + userId, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function getAllCourseData() {
+    return fetch("/course", {
         method: "GET"
     }).then(parseBody);
 }
@@ -108,3 +118,57 @@ function populate_side_nav(user_courses, assignments){
     $("#nav").append(divider);
     $("#nav").append(addCourseItem);
 }
+
+function displayErrorMessage(message) {
+    console.log(message);
+}
+
+function displaySuccessMessage() {
+    console.log("success");
+}
+
+function hideMessages() {
+
+}
+
+function findCourseIdByName(courses, name) {
+    for (let i = 0; i < courses.length; i++) {
+        if (courses[i].name == name) {
+            return courses[i]._id;
+        }
+    };
+    return null;
+}
+
+function addUserToCourse(userId, courseId) {
+    return fetch("/user/course/" + userId + "/" + courseId, {
+        method: "PATCH"
+    }).then((response) => {
+        if(response.status === 200) {
+            return response.json();
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(null);
+    });
+}
+
+$("#submit-btn").click((e) => {
+    const name = $("#course-name").val().trim();
+
+    getUserData(currentUser._id).then(user => {
+        getAllCourseData().then(courses => {
+            let courseId = findCourseIdByName(courses, name);
+            if (courseId) {
+                addUserToCourse(user._id, courseId).then(response => {
+                    displaySuccessMessage();
+                }).catch(error => {
+                    displayErrorMessage("User already enrolled in " + name);
+                });
+            } else {
+                displayErrorMessage("Course " + name + " not found");
+            }
+        });
+    });
+});
