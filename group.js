@@ -272,6 +272,11 @@ function mergeUser(req, res, target, promise) {
         if(target.members.length + 1 > target.maxMembers) {
             throw "Too many members in group!";
         }
+        return dbGet.getAssignment(target.assignment);
+    }).then(assignment => {
+        if(assignment.groups.find(el => user.groups.find(el2 => el.toString() == el2.toString()))) {
+            throw "User cannot be merged because they are already in a group!";
+        }
         target._doc.members.push(requestor._id);
         target.requests = target._doc.requests.filter(el => el.id.toString() != requestor._id.toString());
         // For every member in the requesting team, find the idea of the requestor in their groups list
