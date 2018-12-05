@@ -3,8 +3,14 @@ let currentUser;
 
 $(document).on("loggedin", function(event, user) {
     currentUser = user;
-    // Populate side nav with user data
+    populateSideNav(user);
+});
+
+// Popualte side nav bar with data
+function populateSideNav(user) {
     getUserData(user._id).then(userData => {
+        // Extract courses and assignments associated with user into the format
+        // expected by insertNavHTML
         let assignments = [];
         let courses = [];
         let i = 0;
@@ -19,11 +25,11 @@ $(document).on("loggedin", function(event, user) {
                 }
             }
         }
-        populate_side_nav(courses, assignments);
+        insertNavHTML(courses, assignments);
     }).catch(error => {
         console.error(error);
     });
-});
+}
 
 function parseBody(response) {
     if(response.status === 200) {
@@ -61,7 +67,8 @@ function logout() {
     });
 }
 
-function populate_side_nav(user_courses, assignments){
+// given courses and assingments, create the HTML of the navbar
+function insertNavHTML(user_courses, assignments){
     //logout
     let listItem = $('<li></li>');
     listItem.addClass("nav-item");
@@ -119,6 +126,10 @@ function populate_side_nav(user_courses, assignments){
     $("#nav").append(addCourseItem);
 }
 
+function eraseNavHTML() {
+    $("#nav li").remove();
+}
+
 // Display error/success message to user
 function displayMessage(message, color) {
     $("#message").css("color", color);
@@ -162,6 +173,9 @@ $("#submit-btn").click((e) => {
             if (courseId) {
                 addUserToCourse(user._id, courseId).then(response => {
                     displayMessage("Successfully enrolled in " + name, "green");
+                    // Update the navbar to reflect change
+                    eraseNavHTML();
+                    populateSideNav(currentUser);
                 }).catch(error => {
                     displayMessage("User already enrolled in " + name, "red");
                 });
