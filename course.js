@@ -11,6 +11,7 @@ const { Token, User, School, Course, Assignment, Group } = require('./models.js'
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
+const dbEdit = require('./db/dbEdit.js');
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 

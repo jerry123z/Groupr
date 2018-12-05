@@ -41,13 +41,13 @@ function editCourse(id, name, schoolId){
         }
         const properties = {
             name:name,
-            schoolId:schoolId,
+            school:schoolId,
         }
 
-        School.findByIdAndUpdate(id, {$set: properties}, {new: true}).then((school) => {
-            resolve(school);
+        Course.findByIdAndUpdate(id, {$set: properties}, {new: true}).then((course) => {
+            resolve(course);
         }).catch(error => {
-            reject("editSchool: " + JSON.stringify(error));
+            reject("editCourse: " + JSON.stringify(error));
         });
     })
 }
@@ -58,9 +58,10 @@ function editGroup(id, name, description, maxMembers){
         {
             reject("editGroup: Invalid id provided: " + id);
         }
+        console.log(description)
         const properties = {
             name:name,
-            description:description
+            description:description,
             maxMembers:maxMembers
         }
 
@@ -73,5 +74,7 @@ function editGroup(id, name, description, maxMembers){
 }
 
 module.exports = {
-    editUser
+    editUser,
+    editCourse,
+    editGroup
 }
