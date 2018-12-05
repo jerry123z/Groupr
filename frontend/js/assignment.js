@@ -188,6 +188,23 @@ function displayGroupHeader(hasGroup) {
     }
 }
 
+function sendCreateGroupRequest(name, description, schedule) {
+    return fetch("/group/" + assignmentId, {
+        method: "POST",
+        headers: { 'Content-Type': "application/json" },
+        body: JSON.stringify({ name, description, schedule })
+    }).then((response) => {
+        if(response.status === 200) {
+            return response.json();
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(null);
+    });
+}
+
+
 // Display group form on click of 'Create a Group' button.
 $("#display-group-form").click(e => {
     $("#group-options-container").css("display", "none");
@@ -198,6 +215,12 @@ $("#display-group-form").click(e => {
 $('#group-form').submit(e => {
     e.preventDefault();
     const nameInput = $("#name-input").val();
-    const reqInput = $("#reqs-input").val();
+    const descInput = $("#desc-input").val();
     const scheduleInput = $("#schedule").data('artsy.dayScheduleSelector').serialize();
+    sendCreateGroupRequest(nameInput, descInput, scheduleInput).then(res => {
+        // refresh page on success
+        location.reload();
+    }).catch(error => {
+        console.error("Error creating group");
+    });
 });
