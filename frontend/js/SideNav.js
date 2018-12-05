@@ -146,6 +146,8 @@ $("#submit-btn").click((e) => {
     });
 });
 
+$("#logout-btn").click(logout);
+
 // Hide error/success messages on modal close
 $('#addModal').on('hidden.bs.modal', () => {
     hideMessage();
