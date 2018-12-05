@@ -111,7 +111,7 @@ function requestMergeGroup(req, res, userId, promise) {
         return dbGet.getGroup(req.params.mergeTarget);
     }).then(group => {
         target = group;
-        if(target.assignment != requestor.assignment) {
+        if(target.assignment.toString() != requestor.assignment.toString()) {
             throw "Groups cannot merge as they are not part of the same assignment!";
         }
         if(target._doc.requests.find(el => el.id.toString() == requestor._id.toString())) {
@@ -132,7 +132,7 @@ function requestMergeUser(req, res, userId, promise) {
         return dbGet.getGroup(req.params.mergeTarget);
     }).then(group => {
         target = group;
-        if(requestor.courses.find(el => el == target.course)) {
+        if(requestor.courses.find(el => el.toString() == target.course.toString())) {
             throw "User cannot join group as they are not in this course!";
         }
         if(target._doc.requests.find(el => el.id.toString() == userId)) {
@@ -220,15 +220,12 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         if(target.owner != userId) {
             throw "Owner not logged in!";
         }
-        const request = target._doc.requests.find(el => el._id.toString() == req.params.mergeRequestor.toString());
+        const request = target._doc.requests.find(el => el.id.toString() == req.params.mergeRequestor);
         if(!request) {
             throw "Requesting group has not requested to join you!";
         }
         if(request.isUser) {
-            if(userId != req.params.mergeRequestor) {
-                throw "Cannot request merge as non user!";
-            }
-            return mergeUser(req, res, target, dbGet.getUser(userId));
+            return mergeUser(req, res, target, dbGet.getUser(req.params.mergeRequestor));
         } else {
             return mergeGroups(req, res, target, dbGet.getGroup(req.params.mergeRequestor));
         }
@@ -244,13 +241,13 @@ function mergeGroups(req, res, target, promise) {
         if(target.members.length + requestor.members.length > target.maxMembers) {
             throw "Too many members in group!";
         }
-        target._doc.members.concat(requestor.members);
-        target._doc.requests = target._doc.requests.filter(el => el._id != requestor._id);
+        target.members = target._doc.members.concat(requestor._doc.members);
+        target.requests = target._doc.requests.filter(el => el.id.toString() != requestor._id.toString());
         // For every member in the requesting team, find the idea of the requestor in their groups list
         // then replace it with the target team id.
         return forEach(requestor.members, (memberId) => {
             return dbGet.getUser(memberId).then(member => {
-                member._doc.groups = member._doc.groups.map(el => el == requestor._id ? target._id : el);
+                member.groups = member._doc.groups.map(el => el.toString() == requestor._id.toString() ? target._id : el);
                 return member.save();
             });
         }).then(() => {
@@ -272,7 +269,7 @@ function mergeUser(req, res, target, promise) {
             throw "Too many members in group!";
         }
         target._doc.members.push(requestor._id);
-        target._doc.requests = target._doc.requests.filter(el => el._id != requestor._id);
+        target.requests = target._doc.requests.filter(el => el.id.toString() != requestor._id.toString());
         // For every member in the requesting team, find the idea of the requestor in their groups list
         // then replace it with the target team id.
         requestor._doc.groups.push(target._id);
