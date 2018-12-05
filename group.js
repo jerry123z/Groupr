@@ -68,6 +68,17 @@ router.post("/:assignment_id", (req, res) => {
     })
 });
 
+// Route for getting groups for a specific assignment
+router.get("/assignment/:assignment_id", (req, res) => {
+    let assignment_id = req.params.assignment_id;
+
+    dbGet.getGroupsForAssignment(assignment_id).then(groups => {
+        res.send(groups);
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
 router.get("/full/:id", (req, res) => {
     let group;
     dbGet.getGroup(req.params.id).then(groupData => {

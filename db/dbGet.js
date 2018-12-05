@@ -110,6 +110,24 @@ function getGroup(id) {
     });
 }
 
+function getGroupsForAssignment(aId) {
+    debugger;
+    return new Promise((resolve, reject) => {
+        if(!ObjectID.isValid(aId))
+        {
+            reject("getGroupForAssignment: Invalid id provided: " + aId);
+        }
+        getAllGroups().then(groups => {
+            let groupsForAssignment = groups.filter(group => {
+                return group.assignment.toString() === aId.toString();
+            });
+            resolve(groupsForAssignment);
+        }).catch(error => {
+            reject("getGroupsForAssignment: " + JSON.stringify(error));
+        });
+    });
+}
+
 function getGroupByPartialName(name){
 	var val = new RegExp(".*"+name+".*");
 	return new Promise((resolve, reject) => {
@@ -119,6 +137,10 @@ function getGroupByPartialName(name){
 			reject("getGroup: " + JSON.stringify(error));
 		});
     });
+}
+
+function getAllGroups() {
+    return Group.find();
 }
 
 function getAllSchools() {
@@ -138,7 +160,9 @@ module.exports = {
 	getCourseByPartialName,
     getAssignment,
     getGroup,
+    getGroupsForAssignment,
 	getGroupByPartialName,
     getAllSchools,
+    getAllGroups,
     getAllCourses
 };
