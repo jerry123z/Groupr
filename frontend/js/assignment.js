@@ -16,15 +16,26 @@ $(document).on("loggedin", function(event, user) {
         interval: 60
     });
 
-    // display appropriate group header
-    displayGroupHeader(user.groups.length > 0);
+    // set assignment title
+    getAssignmentData(assignmentId).then(assignmentData => {
+        $("#assignment-name").html(`${assignmentData.course.name} - ${assignmentData.name}`);
+    });
 
+    // set user group info, or display "create a group" message if user does
+    // not have a group for this assignment
     getUserData(user._id).then(userData => {
         const group = findGroupsMatchingAssignment(userData.groups, assignmentId);
-        return getGroupData(group._id);
+        if (group) {
+            return getGroupData(group._id);
+        } else {
+            return Promise.reject(null);
+        }
     }).then(groupInfo => {
         // add user group to page, if it exists
+        displayGroupHeader(true);
         setUserGroup(groupInfo);
+    }).catch(() => {
+        displayGroupHeader(false);
     });
 
     // add other users' groups to the page
@@ -69,6 +80,12 @@ function getUserData(userId) {
 
 function getGroupData(groupId) {
     return fetch("/group/full/" + groupId, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function getAssignmentData(aId) {
+    return fetch("/assignment/full/" + aId, {
         method: "GET"
     }).then(parseBody);
 }
