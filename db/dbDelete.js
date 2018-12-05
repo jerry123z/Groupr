@@ -48,18 +48,18 @@ function deleteGroup(groupId){
     })
 }
 
-function saveArray( array ){
+function deleteMemberFromGroup(groupId, userId){
     return new Promise((resolve, reject) => {
-        var count = 0;
-        docs.forEach(function(doc){
-            doc.save().then((doc) => {
-                //do nothing
-            }).catch((doc) => {
-                reject("Unable to save " + doc)
-            })
+        Group.findById(groupId).then(group => {
+            return Group.findByIdAndUpdate(groupId, {$pull:{members:userId}},  {new: true})
+        }).then(group => {
+            return User.findByIdAndUpdate(userId, {$pull:{groups:groupId}},  {new: true})
+        }).then(user => {
+            resolve(user)
+        }).catch(error => {
+            reject("deleteMemberFromGroup " + JSON.stringify(error))
         })
-        resolve("saved successfully");
-    })
+    }
 }
 
 module.exports = {
