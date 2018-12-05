@@ -60,12 +60,23 @@ router.get("/full/:id", (req, res) => {
     let user;
     dbGet.getUser(req.params.id).then(userData => {
         user = userData._doc;
-        return dbGet.getSchool(user.school);
-    }).then(school => {
-        user.school = school;
-        return getArrData(user.courses, dbGet.getCourse);
+        if(user.school) {
+            return dbGet.getSchool(user.school).then(school => {
+                user.school = school;
+                return getArrData(user.courses, dbGet.getCourse);
+            });
+        } else {
+            return getArrData(user.courses, dbGet.getCourse);
+        }
     }).then(courses => {
-        user.courses = courses;
+        user.courses = courses.slice();
+        return getArrData(courses, (course) => {
+            return getArrData(course.assignments, dbGet.getAssignment).then(assignment => {
+                return Promise.resolve(assignment);
+            });
+        });
+    }).then(assignments => {
+        user.assignments = assignments[0];
         return getArrData(user.groups, dbGet.getGroup);
     }).then(groups => {
         return getArrData(groups, (group) => {
@@ -91,33 +102,6 @@ router.get("/:id", (req, res) => {
     });
 });
 
-// Route for adding an assignment to a user
-router.patch("/assignment/:user_id/:assignment_id", (req, res) => {
-    const user_id = req.params.user_id;
-    const assignment_id = req.params.assignment_id;
-
-    if(!ObjectID.isValid(user_id)) {
-        res.status(400).send("Invalid user id.");
-        return;
-    } else if (!ObjectID.isValid(assignment_id)) {
-        res.status(400).send("Invalid assignment id.");
-        return;
-    }
-
-    dbGet.getUser(user_id).then(user => {
-        dbGet.getAssignment(assignment_id).then(assignment => {
-            assignment.members.push(user._id);
-            user.assignments.push(assignment._id);
-            assignment.save();
-            user.save();
-            res.send(user);
-        }).catch(error => {
-            res.status(404).send("No such assignment");
-        });
-    }).catch(error => {
-        res.status(404).send("No such user.");
-    });
-});
 
 // Route for adding a course to a user
 router.patch("/course/:user_id/:course_id", (req, res) => {
@@ -134,11 +118,17 @@ router.patch("/course/:user_id/:course_id", (req, res) => {
 
     dbGet.getUser(user_id).then(user => {
         dbGet.getCourse(course_id).then(course => {
-            course.members.push(user._id);
-            user.courses.push(course._id);
-            course.save();
-            user.save();
-            res.send(user);
+            // Only add the course if it is not already being taken by user
+            if (checkCourseAgainstUser(user, course)) {
+                course.members.push(user._id);
+                user.courses.push(course._id);
+                course.save();
+                user.save();
+                res.send(user);
+            } else {
+                res.status(400).send("User is already taking course.")
+                return;
+            }
         }).catch(error => {
             res.status(404).send(error);
         });
@@ -146,6 +136,14 @@ router.patch("/course/:user_id/:course_id", (req, res) => {
         res.status(404).send(error);
     });
 });
+
+// Returns true iff user is not currently taking the course, false if the user
+// is taking the course.
+function checkCourseAgainstUser(user, course) {
+    return user.courses.every((userCourseId) => {
+        return userCourseId.toString() != course._id.toString();
+    });
+}
 
 // Route for adding a user to a group
 router.patch("/group/:user_id/:group_id", (req, res) => {
@@ -186,14 +184,12 @@ router.patch("/group/:user_id/:group_id", (req, res) => {
 });
 
 //route for changing a user's name
-//returns the old user object
 router.patch("/name/:id", (req, res) => {
     const id = req.params.id
     const name = req.body.name
 
     dbGet.getUser(req.params.id).then(user => {
-        const obuser = obfuscateUser(user);
-        return dbEdit.editUser(obuser._id, obuser.email, name, obuser.schoolId, obuser.isAdmin)
+        return dbEdit.editUser(user._id, user.email, name, user.schoolId, user.isAdmin)
     }).then(user => {
         res.send(user)
     }).catch(error => {
@@ -202,14 +198,12 @@ router.patch("/name/:id", (req, res) => {
 })
 
 //route for changing a user's email
-//returns the old user object
 router.patch("/email/:id", (req, res) => {
     const id = req.params.id
     const email = req.body.email
 
     dbGet.getUser(req.params.id).then(user => {
-        const obuser = obfuscateUser(user);
-        return dbEdit.editUser(obuser._id, email, obuser.name, obuser.schoolId, obuser.isAdmin)
+        return dbEdit.editUser(user._id, email, user.name, user.schoolId, user.isAdmin)
     }).then(user => {
         res.send(user)
     }).catch(error => {
@@ -217,24 +211,28 @@ router.patch("/email/:id", (req, res) => {
     });
 })
 
-//route for a user
+//route for a user's school
+//requires the schoolId in the body
 router.patch("/school/:id", (req, res) => {
     const id = req.params.id
-    const school = req.body.school
+    const schoolId = req.body.schoolId
 
-
-    //TODO:Wait for priya to push dbget school by name
+    dbGet.getUser(req.params.id).then(user => {
+        return dbEdit.editUser(user._id, user.email, user.name, schoolId, user.isAdmin)
+    }).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
 })
 
 //route for changing a user's admin status
-//returns the old user object
 router.patch("/admin/:id", (req, res) => {
     const id = req.params.id
     const isAdmin = req.body.isAdmin
 
     dbGet.getUser(req.params.id).then(user => {
-        const obuser = obfuscateUser(user);
-        return dbEdit.editUser(obuser._id, obuser.email, obuser.name, obuser.schoolId, isAdmin)
+        return dbEdit.editUser(user._id, user.email, user.name, user.schoolId, isAdmin)
     }).then(user => {
         res.send(user)
     }).catch(error => {

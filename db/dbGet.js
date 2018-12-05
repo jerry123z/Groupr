@@ -28,7 +28,7 @@ function getUserByPartialEmail(email) {
 		}).catch(error => {
 			reject("getUser: " + JSON.stringify(error));
 		});
-	});	
+	});
 }
 
 function getSchool(id) {
@@ -125,6 +125,10 @@ function getAllSchools() {
     return School.find();
 }
 
+function getAllCourses() {
+    return Course.find();
+}
+
 module.exports = {
     getUser,
 	getUserByPartialEmail,
@@ -135,5 +139,6 @@ module.exports = {
     getAssignment,
     getGroup,
 	getGroupByPartialName,
-    getAllSchools
+    getAllSchools,
+    getAllCourses
 };

@@ -11,6 +11,7 @@ const { Token, User, School, Course, Assignment, Group } = require('./models.js'
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
+const dbEdit = require('./db/dbEdit.js');
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
@@ -79,6 +80,15 @@ router.get("/:id", (req, res) => {
     });
 });
 
+// Route for getting all courses
+router.get("/", (req, res) => {
+    dbGet.getAllCourses().then(courses => {
+        res.send(courses)
+    }).catch(error => {
+        res.status(400).send(error);
+    })
+});
+
 //TODO NOT DONE
 //deleting
 router.delete("/:id", (req, res) =>{
@@ -98,5 +108,31 @@ router.get("/name/:name", (req, res) => {
 		res.status(400).send(error);
 	});
 });
+
+router.patch("/name/:id", (req, res) => {
+    const id = req.params.id
+    const name = req.body.name
+
+    dbGet.getCourse(req.params.id).then(course => {
+        return dbEdit.editCourse(course._id, name, course.school)
+    }).then(course => {
+        res.send(course)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+router.patch("/school/:id", (req, res) => {
+    const id = req.params.id
+    const schoolId = req.body.schoolId
+
+    dbGet.getCourse(req.params.id).then(course => {
+        return dbEdit.editCourse(course._id, course.name, schoolId)
+    }).then(course => {
+        res.send(course)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
 
 module.exports = router

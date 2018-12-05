@@ -12,6 +12,7 @@ const { Token, User, School, Course, Assignment, Group } = require('./models.js'
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
+const dbEdit = require('./db/dbEdit.js');
 
 const {getArrData, obfuscateUser, forEach} = require("./routeUtil.js");
 
@@ -320,4 +321,29 @@ router.get("/name/:name", (req, res) => {
 	});
 });
 
+router.patch("/name/:id", (req, res) => {
+    const id = req.params.id
+    const name = req.body.name
+
+    dbGet.getGroup(req.params.id).then(group => {
+        return dbEdit.editGroup(group._id, name, group.description, group.maxMembers)
+    }).then(group => {
+        res.send(group)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+router.patch("/description/:id", (req, res) => {
+    const id = req.params.id
+    const description = req.body.description
+
+    dbGet.getGroup(req.params.id).then(group => {
+        return dbEdit.editGroup(group._id, group.name, description, group.maxMembers)
+    }).then(group => {
+        res.send(group)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
 module.exports = router

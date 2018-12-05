@@ -30,8 +30,7 @@ const User = mongoose.model("User", {
         required: true
     },
     school: {
-        type: ObjectId,
-        required: true
+        type: ObjectId
     },
     courses: [ObjectId],
     assignments: [ObjectId],
