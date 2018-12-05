@@ -9,23 +9,7 @@ $(document).on("loggedin", function(event, user) {
 // Popualte side nav bar with data
 function populateSideNav(user) {
     getUserData(user._id).then(userData => {
-        // Extract courses and assignments associated with user into the format
-        // expected by insertNavHTML
-        let assignments = [];
-        let courses = [];
-        let i = 0;
-        for (let i = 0; i < userData.courses.length; i++) {
-            let course = userData.courses[i];
-            courses.push(course.name);
-            assignments[i] = [];
-            for (let j = 0; j < userData.assignments.length; j++) {
-                let assignment = userData.assignments[j];
-                if (course._id == assignment.course) {
-                    assignments[i].push(assignment.name);
-                }
-            }
-        }
-        insertNavHTML(courses, assignments);
+        insertNavHTML(userData.courses, userData.assignments);
     }).catch(error => {
         console.error(error);
     });
@@ -67,67 +51,43 @@ function logout() {
     });
 }
 
-// given courses and assingments, create the HTML of the navbar
-function insertNavHTML(user_courses, assignments){
-    //logout
-    let listItem = $('<li></li>');
-    listItem.addClass("nav-item");
-    let anchor = $('<a class="nav-link" href="#"></a>');
-    let span = $('<span>Logout</span>');
-    anchor.click(logout);
-    anchor.append(span);
-    listItem.append(anchor);
-    $("#nav").append(listItem);
-
-    //profile
-    listItem = $('<li></li>');
-    listItem.addClass("nav-item");
-    anchor = $('<a class="nav-link" href="./profile.html"></a>');
-    span = $('<span>Profile</span>');
-    anchor.append(span);
-    listItem.append(anchor);
-    $("#nav").append(listItem);
-
-    //courses
-    let i;
-    let j;
-    for (i = 0; i < user_courses.length; i++ ){
-        let listItem = $('<li></li>');
-        listItem.addClass("nav-item");
-        listItem.addClass("dropdown")
-        let anchor = $( '<a class="nav-link dropdown-toggle collapsed" href="#SubMenu' + user_courses[i] +
+// Adds courses/assignments to the navbar
+function insertNavHTML(courses, assignments){
+    courses.forEach(course => {
+        // Add course subsection
+        let courseItem = $('<li class="nav-item dropdown course-item"></li>');
+        let anchor = $( '<a class="nav-link dropdown-toggle collapsed" href="#SubMenu' + course.name +
             '"  role="button" data-toggle="collapse"  aria-expanded="false"></a>');
-        let id = $('<span>'.concat(user_courses[i], '</span>'));
+        let id = $('<span>' + course.name +  '</span>');
         anchor.append(id);
-        listItem.append(anchor);
-        const containerDiv = $('<div id="SubMenu' + user_courses[i] + '" class="collapse"></div>');
-        let ulist = $( '<ul class="list-unstyled dropdown-menu show"></ul>' );
-        if (assignments[i].length == 0) {
-            let noAssignmentsMessage = $('<li><a class="dropdown-item"> No Assignments Yet!</a></li>');
-            ulist.append(noAssignmentsMessage);
-        } else {
-            for(j = 0; j < assignments[i].length; j++){
-                let listItem = $('<li></li>');
-                let anchor = $('<a class="dropdown-item" href="./assignment.html">'.concat(assignments[i][j],'</a>'));
-                listItem.append(anchor);
-                ulist.append(listItem);
+        courseItem.append(anchor);
+        let containerDiv = $('<div id="SubMenu' + course.name + '" class="collapse"></div>');
+        let alist = $( '<ul class="list-unstyled dropdown-menu show"></ul>' );
+
+        // Add assignments to course subsection
+        let assignmentCount = 0;
+        assignments.forEach(assignment => {
+            if (assignment.course == course._id) {
+                assignmentCount++;
+                let link = "./assignment.html?aid=" + assignment._id;
+                let assignmentItem = $('<li><a class="dropdown-item" href="' + link + '">' + assignment.name + '</a></li>');
+                alist.append(assignmentItem);
             }
+        });
+        // Add message if course has no assignments
+        if (assignmentCount == 0) {
+            alist.append('<li><a class="dropdown-item"> No Assignments Yet!</a></li>');
         }
-        containerDiv.append(ulist);
-        listItem.append(containerDiv);
-        $("#nav").append(listItem);
-    }
-    let divider = $('<li><div id="course-divider" class="dropdown-divider"></div></li>');
-    let addCourseItem = $('<li id="add-course-item" class="nav-item"></li>');
-    let addCourseLink = $('<a id="add-course-link" class="nav-link" data-toggle="modal" data-target="#addModal"></a>');
-    addCourseLink.append($('<span> Add Course </span>'));
-    addCourseItem.append(addCourseLink);
-    $("#nav").append(divider);
-    $("#nav").append(addCourseItem);
+        // Add course item to DOM
+        containerDiv.append(alist);
+        courseItem.append(containerDiv);
+        $("#profile-item").after(courseItem);
+    });
 }
 
+// Removes courses/assignments from the navbar
 function eraseNavHTML() {
-    $("#nav li").remove();
+    $("#nav .course-item").remove();
 }
 
 // Display error/success message to user
@@ -177,7 +137,7 @@ $("#submit-btn").click((e) => {
                     eraseNavHTML();
                     populateSideNav(currentUser);
                 }).catch(error => {
-                    displayMessage("User already enrolled in " + name, "red");
+                    displayMessage("You're already enrolled in " + name, "red");
                 });
             } else {
                 displayMessage("Course " + name + " not found", "red");
