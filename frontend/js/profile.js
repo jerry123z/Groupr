@@ -116,7 +116,6 @@ function parseBody(response) {
 }
 
 function getData(user) {
-    let userData;
     return fetch("/user/full/" + user, {
         method: "GET"
     }).then(parseBody);
@@ -141,7 +140,6 @@ $(document).on("loggedin", function(event, user) {
     }
 
     getData($.urlParam('user') || user._id).then(userData => {
-        console.log(userData);
         $('#username').text(userData.name);
         $('#school').text(userData.school.name);
         // add groups to the page
