@@ -58,3 +58,7 @@ body {
     cursor: pointer;
     width: 140px;
 }
+
+#message-container {
+    text-align: center;
+}

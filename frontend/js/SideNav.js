@@ -119,18 +119,17 @@ function populate_side_nav(user_courses, assignments){
     $("#nav").append(addCourseItem);
 }
 
-function displayErrorMessage(message) {
-    console.log(message);
+// Display error/success message to user
+function displayMessage(message, color) {
+    $("#message").css("color", color);
+    $("#message").html(message);
 }
 
-function displaySuccessMessage() {
-    console.log("success");
+function hideMessage() {
+    $("#message").html("");
 }
 
-function hideMessages() {
-
-}
-
+// Return the id of the course with specified name
 function findCourseIdByName(courses, name) {
     for (let i = 0; i < courses.length; i++) {
         if (courses[i].name == name) {
@@ -162,13 +161,18 @@ $("#submit-btn").click((e) => {
             let courseId = findCourseIdByName(courses, name);
             if (courseId) {
                 addUserToCourse(user._id, courseId).then(response => {
-                    displaySuccessMessage();
+                    displayMessage("Successfully enrolled in " + name, "green");
                 }).catch(error => {
-                    displayErrorMessage("User already enrolled in " + name);
+                    displayMessage("User already enrolled in " + name, "red");
                 });
             } else {
-                displayErrorMessage("Course " + name + " not found");
+                displayMessage("Course " + name + " not found", "red");
             }
         });
     });
 });
+
+// Hide error/success messages on modal close
+$('#addModal').on('hidden.bs.modal', () => {
+    hideMessage();
+})
