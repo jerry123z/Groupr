@@ -70,8 +70,6 @@ router.post("/:assignment_id", (req, res) => {
 // Create merge request.
 router.post("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
     let userId;
-    let requestor;
-    let target;
 
     if(!ObjectID.isValid(req.params.mergeRequestor)) {
         res.status(400).send("Invalid requestor id.");
@@ -89,6 +87,23 @@ router.post("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         userId = user;
         return dbGet.getGroup(req.params.mergeRequestor);
     }).then(group => {
+        if(!group) {
+            if(userId != req.params.mergeRequestor) {
+                throw "Cannot request merge as non user!";
+            }
+            return requestMergeUser(req, res, userId, dbGet.getUser(req.params.mergeRequestor));
+        } else {
+            return requestMergeGroup(req, res, userId, Promise.resolve(group));
+        }
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
+function requestMergeGroup(req, res, userId, promise) {
+    let requestor;
+    let target;
+    return promise.then(group => {
         requestor = group;
         if(group.owner != userId) {
             throw "Owner not logged in!";
@@ -96,20 +111,39 @@ router.post("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         return dbGet.getGroup(req.params.mergeTarget);
     }).then(group => {
         target = group;
-        if(target._doc.requests.find(el => el == requestor._id)) {
-            throw "This group has already requested to join target group!";
-        }
         if(target.assignment != requestor.assignment) {
             throw "Groups cannot merge as they are not part of the same assignment!";
         }
-        target._doc.requests.push(requestor._id);
+        if(target._doc.requests.find(el => el.id == requestor._id)) {
+            throw "This group has already requested to join target group!";
+        }
+        target._doc.requests.push({isUser: false, id: requestor._id});
         return target.save();
     }).then(() => {
         res.send("Request sent!");
-    }).catch(error => {
-        res.status(400).send(error);
     });
-});
+}
+
+function requestMergeUser(req, res, userId, promise) {
+    let requestor;
+    let target;
+    return promise.then(user => {
+        requestor = user;
+        return dbGet.getGroup(req.params.mergeTarget);
+    }).then(group => {
+        target = group;
+        if(requestor.courses.find(el => el == target.course)) {
+            throw "User cannot join group as they are not in this course!";
+        }
+        if(target._doc.requests.find(el => el.id == userId)) {
+            throw "This group has already requested to join target group!";
+        }
+        target._doc.requests.push({isUser: true, id: userId});
+        return target.save();
+    }).then(() => {
+        res.send("Request sent!");
+    });
+}
 
 router.delete("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
     let userId;
