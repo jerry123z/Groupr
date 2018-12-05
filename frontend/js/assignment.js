@@ -16,30 +16,80 @@ const userGroup = {
     maxNumMembers: 5
 }
 
-
+// Assignment id of the assignment associated with this page
+let assignmentId;
+// All groups exisitng for the assignment associated with this page
+let assignmentGroups;
 // the row which holds all group entries
 const $groupsRow = $("#all-groups-container").find(".row");
+
+// Populate page with information on page load
+$(document).on("loggedin", function(event, user) {
+    setAssignmentId();
+
+    // add availability to group form
+    $("#schedule").dayScheduleSelector({
+        startTime: '08:00',
+        endTime: '24:00',
+        interval: 60
+    });
+    // display appropriate group header
+    displayGroupHeader(user.groups.length > 0);
+
+    // add groups to page (REQUIRES SERVER CALL)
+    setUserGroup(userGroup);
+    // add other user's groups to page
+    getGroupData().then(groups => {
+        assignmentGroups = groups;
+        groups.forEach(group => {
+            addGroup(group);
+        });
+    });
+});
+
+function parseBody(response) {
+    if(response.status === 200) {
+        return response.json();
+    } else {
+        console.error(response.body);
+        return new Promise(resolve => {
+            resolve(null);
+        });
+    }
+}
+
+function getGroupData() {
+    return fetch("/group/assignment/" + assignmentId, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function setAssignmentId() {
+    let url = new URL(window.location.href);
+    let aId = url.searchParams.get("aid");
+    if (aId) {
+        assignmentId = aId;
+    } else {
+        // Redirect user to profile page is assignment id is not set
+        window.location.replace("./profile.html");
+    }
+}
 
 // Filter groups by number of spots available.
 $("#spots-input").keyup(function() {
     const numSpots = parseInt($("#spots-input").val());
-    if (numSpots >= 0) {
+    if (numSpots >= 0 && assignmentGroups && assignmentGroups[0].maxMembers) {
         // Determine maxNumMembers
-        let maxNumMembers;
-        if (allGroups.length > 0) {
-            maxNumMembers = allGroups[0].maxNumMembers;
-        } else {
-            maxNumMembers = -1;
-        }
+        let maxNumMembers = assignmentGroups[0].maxMembers;
         // remove all group entries
         $groupsRow.empty();
         // add back all groups that have numSpots or more spots available
-        for (let i = 0; i < allGroups.length; i++) {
-            const spaceAvailable = maxNumMembers - allGroups[i].numMembers;
+        assignmentGroups.forEach(group => {
+            const spaceAvailable = maxNumMembers - group.members.length;
             if (spaceAvailable >= numSpots) {
-                addGroup(allGroups[i]);
+                addGroup(group);
             }
-        }
+        });
     }
 });
 
@@ -49,19 +99,19 @@ $("#spots-input").keyup(function() {
 function addGroup(group) {
     const $col = $("<div>", {class: "col-md-4"});
     const $container = $("<div>", {class: "all-groups-entry group-entry card"});
-    const $link = $("<a>", {href: `group_page.html?groupId=${group.groupId}`});
+    const $link = $("<a>", {href: `group_page.html?groupId=${group._id}`});
     const $title = $("<h5>").text(group.name);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
 
     // adding all filled-in icons
     let i;
-    for (i = 0; i < group.numMembers; i++) {
+    for (i = 0; i < group.members.length; i++) {
         const $icon = $("<img>", {class: "small-user-icon",
                                   src: "content/person_filled.png"});
         $numMembersContainer.append($icon);
     }
     // adding all unfilled icons
-    for (; i < group.maxNumMembers; i++) {
+    for (; i < group.maxMembers; i++) {
         const $icon = $("<img>", {class: "small-user-icon",
                                   src: "content/person_unfilled.png"});
         $numMembersContainer.append($icon);
@@ -124,22 +174,4 @@ $('#group-form').submit(e => {
     const nameInput = $("#name-input").val();
     const reqInput = $("#reqs-input").val();
     const scheduleInput = $("#schedule").data('artsy.dayScheduleSelector').serialize();
-});
-
-// Populate page with information on page load
-$(document).ready(function() {
-    // add availability to group form
-    $("#schedule").dayScheduleSelector({
-        startTime: '08:00',
-        endTime: '24:00',
-        interval: 60
-    });
-    // display appropriate group header
-    displayGroupHeader(false);
-
-    // add groups to page (REQUIRES SERVER CALL)
-    setUserGroup(userGroup);
-    for (let i = 0; i < allGroups.length; i++) {
-        addGroup(allGroups[i]);
-    }
 });
