@@ -8,14 +8,25 @@ mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
 
 
 function deleteCourseFromSchool(schoolId, courseId){
-    return new Promise((resolve, reject) => {
-        School.findByIdAndUpdate(schoolId, {$pull:{courses: {_id: courseId}}}).then(school => {
-            console.log(school);
-            resolve(school);
-        }).catch(error => {
-            reject("removeCourse: " + JSON.stringify(error));
-        });
-    })
+	return new Promise((resolve, reject) => {
+		School.findByIdAndUpdate(schoolId, {$pull:{courses: courseId}}).then(school => {
+			resolve(school);
+		}).catch(error => {
+			reject("removeCourse: " + JSON.stringify(error));
+		});
+	})		
+}
+
+function deleteCourse(courseId){
+	console.log(courseId);
+	return new Promise((resolve, reject) => {
+		Course.findByIdAndRemove(courseId).then(course => {
+			console.log(course);
+			resolve(course);
+		}).catch(error => {
+			reject("removeCourse: " + JSON.stringify(error));
+		});
+	})
 }
 
 function deleteGroup(groupId){
@@ -48,20 +59,8 @@ function deleteGroup(groupId){
     })
 }
 
-function saveArray( array ){
-    return new Promise((resolve, reject) => {
-        var count = 0;
-        docs.forEach(function(doc){
-            doc.save().then((doc) => {
-                //do nothing
-            }).catch((doc) => {
-                reject("Unable to save " + doc)
-            })
-        })
-        resolve("saved successfully");
-    })
-}
-
 module.exports = {
+    deleteCourseFromSchool,
+    deleteCourse,
     deleteGroup
 }

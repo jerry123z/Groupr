@@ -12,6 +12,8 @@ const { Token, User, School, Course, Assignment, Group } = require('./models.js'
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
+const dbEdit = require('./db/dbEdit.js');
+const dbDelete = require('./db/dbDelete.js');
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
@@ -75,12 +77,25 @@ router.post("/", (req, res) => {
 
 
 router.get("/name/:name", (req, res) => {
-	console.log(req.params.name);
 	dbGet.getSchoolByPartialName(req.params.name).then((names) => {
 		res.send(names);
 	}).catch((error) => {
 		res.status(400).send(error);
 	});
 });
+
+
+router.patch("/name/:id", (req, res) => {
+	const id = req.params.id
+    const name = req.body.name
+    dbGet.getSchool(req.params.id).then(school => {
+        return dbEdit.editSchool(id, name)
+    }).then(school => {
+        res.send(school)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
 
 module.exports = router
