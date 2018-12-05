@@ -184,7 +184,7 @@ function deleteMergeRequest(req, res, userId, isUser, promise) {
     }).then(group => {
         target = group;
         if(target.owner != userId && (isUser || requestor.owner != userId)) {
-            throw isUser ? "Cannot request merge as non user!" : "Owner not logged in!";
+            throw isUser ? "Cannot delete merge as non user!" : "Owner not logged in!";
         }
         target._doc.requests = target._doc.requests.filter(el => el.id != requestor._id);
         return target.save();
@@ -195,7 +195,6 @@ function deleteMergeRequest(req, res, userId, isUser, promise) {
 
 router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
     let userId;
-    let requestor;
     let target;
 
     if(!ObjectID.isValid(req.params.mergeRequestor)) {
@@ -218,17 +217,32 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         if(target.owner != userId) {
             throw "Owner not logged in!";
         }
-        if(!target._doc.requests.find(el => el == req.params.mergeRequestor)) {
+        const request = target._doc.requests.find(el => el._id == req.params.mergeRequestor);
+        if(!request) {
             throw "Requesting group has not requested to join you!";
         }
-        return dbGet.getGroup(req.params.mergeRequestor);
-    }).then(group => {
+        if(request.isUser) {
+            if(userId != req.params.mergeRequestor) {
+                throw "Cannot request merge as non user!";
+            }
+            return mergeUser(req, res, target, dbGet.getUser(userId));
+        } else {
+            return mergeGroups(req, res, target, dbGet.getGroup(req.params.mergeRequestor));
+        }
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
+function mergeGroups(req, res, target, promise) {
+    let requestor;
+    return promise.then(group => {
         requestor = group;
         if(target.members.length + requestor.members.length > target.maxMembers) {
             throw "Too many members in group!";
         }
         target._doc.members.concat(requestor.members);
-        target._doc.requests = target._doc.requests.filter(el => el != requestor._id);
+        target._doc.requests = target._doc.requests.filter(el => el._id != requestor._id);
         // For every member in the requesting team, find the idea of the requestor in their groups list
         // then replace it with the target team id.
         return forEach(requestor.members, (memberId) => {
@@ -244,10 +258,28 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         return target.save({new: true});
     }).then(save => {
         res.send(save);
-    }).catch(error => {
-        res.status(400).send(error);
     });
-});
+}
+
+function mergeUser(req, res, target, promise) {
+    let requestor;
+    return promise.then(user => {
+        requestor = user;
+        if(target.members.length + 1 > target.maxMembers) {
+            throw "Too many members in group!";
+        }
+        target._doc.members.push(requestor._id);
+        target._doc.requests = target._doc.requests.filter(el => el._id != requestor._id);
+        // For every member in the requesting team, find the idea of the requestor in their groups list
+        // then replace it with the target team id.
+        requestor._doc.groups.push(target._id);
+        return requestor.save();
+    }).then(() => {
+        return target.save({new: true});
+    }).then(save => {
+        res.send(save);
+    });
+}
 
 router.get("/full/:id", (req, res) => {
     let group;
