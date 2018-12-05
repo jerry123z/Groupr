@@ -1,21 +1,3 @@
-// hard-coded values (REQUIRES SERVER CALL TO OBTAIN)
-const allGroups = [
-    {groupId: 1, name: "Hip Hippos", numMembers: 2, maxNumMembers: 5},
-    {groupId: 2, name: "Peckish Penguins", numMembers: 1, maxNumMembers: 5},
-    {groupId: 3, name: "Sinewy Centaurs", numMembers: 5, maxNumMembers: 5},
-    {groupId: 4, name: "Diligent Dingos", numMembers: 4, maxNumMembers: 5},
-    {groupId: 5, name: "Witty Walruses", numMembers: 3, maxNumMembers: 5},
-    {groupId: 6, name: "Sagacious Squids", numMembers: 1, maxNumMembers: 5},
-    {groupId: 6, name: "Butyraceous Barnacles", numMembers: 5, maxNumMembers: 5}
-]
-const userGroup = {
-    groupId: 7,
-    name: "Bullish Frogs",
-    numMembers: 4,
-    members: ["Priya", "Jerry", "Andriy", "Brennan"],
-    maxNumMembers: 5
-}
-
 // Assignment id of the assignment associated with this page
 let assignmentId;
 // All groups exisitng for the assignment associated with this page
@@ -33,19 +15,34 @@ $(document).on("loggedin", function(event, user) {
         endTime: '24:00',
         interval: 60
     });
+
     // display appropriate group header
     displayGroupHeader(user.groups.length > 0);
 
-    // add groups to page (REQUIRES SERVER CALL)
-    setUserGroup(userGroup);
-    // add other user's groups to page
-    getGroupData().then(groups => {
+    getUserData(user._id).then(userData => {
+        const group = findGroupsMatchingAssignment(userData.groups, assignmentId);
+        return getGroupData(group._id);
+    }).then(groupInfo => {
+        // add user group to page, if it exists
+        setUserGroup(groupInfo);
+    });
+
+    // add other users' groups to the page
+    getallGroupData().then(groups => {
         assignmentGroups = groups;
         groups.forEach(group => {
             addGroup(group);
         });
     });
 });
+
+function findGroupsMatchingAssignment(groups, aId) {
+    for (let i = 0; i < groups.length; i++) {
+        if (groups[i].assignment.toString() == aId.toString()) {
+            return groups[i];
+        }
+    }
+}
 
 function parseBody(response) {
     if(response.status === 200) {
@@ -58,8 +55,20 @@ function parseBody(response) {
     }
 }
 
-function getGroupData() {
+function getallGroupData() {
     return fetch("/group/assignment/" + assignmentId, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function getUserData(userId) {
+    return fetch("/user/full/" + userId, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function getGroupData(groupId) {
+    return fetch("/group/full/" + groupId, {
         method: "GET"
     }).then(parseBody);
 }
@@ -134,20 +143,20 @@ function setUserGroup(group) {
         const $numMembersContainer = $("#number-members-container");
         // adding all filled-in icons
         let i;
-        for (i = 0; i < group.numMembers; i++) {
+        for (i = 0; i < group.members.length; i++) {
             let $icon = $("<img>", {class: "big-user-icon",
                                      src:"content/person_filled.png"});
             $numMembersContainer.append($icon);
         }
         // adding all unfilled icons
-        for (; i < group.maxNumMembers; i++) {
+        for (; i < group.maxMembers; i++) {
             const $icon = $("<img>", {class: "big-user-icon",
                                       src: "content/person_unfilled.png"});
             $numMembersContainer.append($icon);
         }
         // setting link href appropriately
-        $("#group-link").attr("href", `group_page.html?groupId=${group.groupId}`);
-        const membersList = group.members.map(member => `<li> ${member} </li>`);
+        $("#group-link").attr("href", `group_page.html?groupId=${group._id}`);
+        const membersList = group.members.map(member => `<li> ${member.name} </li>`);
         $("#group-members-container").find("ul").append(membersList.join(""));
     }
 }
