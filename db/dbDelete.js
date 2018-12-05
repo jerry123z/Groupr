@@ -9,14 +9,23 @@ mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
 
 function deleteCourseFromSchool(schoolId, courseId){
     return new Promise((resolve, reject) => {
-        School.findByIdAndUpdate(schoolId, {$pull:{courses: {_id: courseId}}}).then(school => {
-            console.log(school);
-            resolve(school);
-        }).catch(error => {
-            reject("removeCourse: " + JSON.stringify(error));
-        });
-    })
+		School.findByIdAndUpdate(schoolId, {$pull:{courses: courseId}}).then(school => {
+			resolve(school);
+		}).catch(error => {
+			reject("removeCourse: " + JSON.stringify(error));
+		});
+	})		
 }
+ function deleteCourse(courseId){
+	console.log(courseId);
+	return new Promise((resolve, reject) => {
+		Course.findByIdAndRemove(courseId).then(course => {
+			console.log(course);
+			resolve(course);
+		}).catch(error => {
+			reject("removeCourse: " + JSON.stringify(error));
+		});
+	})
 
 function deleteGroup(groupId){
     let saveGroup;
