@@ -114,7 +114,7 @@ function requestMergeGroup(req, res, userId, promise) {
         if(target.assignment != requestor.assignment) {
             throw "Groups cannot merge as they are not part of the same assignment!";
         }
-        if(target._doc.requests.find(el => el.id == requestor._id)) {
+        if(target._doc.requests.find(el => el.id.toString() == requestor._id.toString())) {
             throw "This group has already requested to join target group!";
         }
         target._doc.requests.push({isUser: false, id: requestor._id});
@@ -135,7 +135,7 @@ function requestMergeUser(req, res, userId, promise) {
         if(requestor.courses.find(el => el == target.course)) {
             throw "User cannot join group as they are not in this course!";
         }
-        if(target._doc.requests.find(el => el.id == userId)) {
+        if(target._doc.requests.find(el => el.id.toString() == userId)) {
             throw "This group has already requested to join target group!";
         }
         target._doc.requests.push({isUser: true, id: userId});
@@ -146,7 +146,7 @@ function requestMergeUser(req, res, userId, promise) {
 }
 
 router.delete("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
-    let target;
+    let userId;
 
     if(!ObjectID.isValid(req.params.mergeRequestor)) {
         res.status(400).send("Invalid requestor id.");
@@ -173,20 +173,23 @@ router.delete("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
             return deleteMergeRequest(req, res, userId, false, Promise.resolve(group));
         }
     }).catch(error => {
+        console.log(error);
         res.status(400).send(error);
     });
 });
 
 function deleteMergeRequest(req, res, userId, isUser, promise) {
+    let requestor;
+    let target;
     return promise.then(group => {
         requestor = group;
         return dbGet.getGroup(req.params.mergeTarget);
     }).then(group => {
         target = group;
-        if(target.owner != userId && (isUser || requestor.owner != userId)) {
+        if(target.owner != userId && !isUser && requestor.owner != userId) {
             throw isUser ? "Cannot delete merge as non user!" : "Owner not logged in!";
         }
-        target._doc.requests = target._doc.requests.filter(el => el.id != requestor._id);
+        target.requests = target._doc.requests.filter(el => el.id.toString() != requestor._id.toString());
         return target.save();
     }).then(() => {
         res.send("Request deleted!");
@@ -217,7 +220,7 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         if(target.owner != userId) {
             throw "Owner not logged in!";
         }
-        const request = target._doc.requests.find(el => el._id == req.params.mergeRequestor);
+        const request = target._doc.requests.find(el => el._id.toString() == req.params.mergeRequestor.toString());
         if(!request) {
             throw "Requesting group has not requested to join you!";
         }
