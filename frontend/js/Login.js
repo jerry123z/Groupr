@@ -107,7 +107,7 @@ $('#signup-form').submit(function (e) {
         if(response.status === 200) {
             return response.json();
         } else {
-            throw response;
+            throw response.text();
         }
     }).then(json => {
         window.location.replace("./profile.html?user=" + json._id);
