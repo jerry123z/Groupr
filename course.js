@@ -79,6 +79,15 @@ router.get("/:id", (req, res) => {
     });
 });
 
+// Route for getting all courses
+router.get("/", (req, res) => {
+    dbGet.getAllCourses().then(courses => {
+        res.send(courses)
+    }).catch(error => {
+        res.status(400).send(error);
+    })
+});
+
 //TODO NOT DONE
 //deleting
 router.delete("/:id", (req, res) =>{
