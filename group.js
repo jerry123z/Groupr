@@ -216,7 +216,7 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         res.status(400).send("Invalid target id.");
         return;
     }
-    
+
     dbLogin.verifyRequest(req).then(user => {
         if(!user) {
             throw "Owner not logged in!";
@@ -368,4 +368,14 @@ router.delete("/:id", (req, res) => {
     })
 })
 
+router.patch("/remove/", (req, res) => {
+    const groupId = req.body.groupId;
+    const userId = req.body.userId;
+
+    dbDelete.deleteMemberFromGroup(groupId, userId).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error);
+    })
+})
 module.exports = router

@@ -8,7 +8,7 @@ mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
 
 
 function deleteCourseFromSchool(schoolId, courseId){
-	return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
 		School.findByIdAndUpdate(schoolId, {$pull:{courses: courseId}}).then(school => {
 			resolve(school);
 		}).catch(error => {
@@ -59,8 +59,23 @@ function deleteGroup(groupId){
     })
 }
 
+function deleteMemberFromGroup(groupId, userId){
+    return new Promise((resolve, reject) => {
+        User.findByIdAndUpdate(userId, {$pull:{groups:groupId}},  {new: true}).then(user => {
+            console.log(user)
+            return Group.findByIdAndUpdate(groupId, {$pull:{members:userId}},  {new: true})
+        }).then(group => {
+            console.log(group)
+            resolve(group)
+        }).catch(error => {
+            reject("deleteMemberFromGroup " + JSON.stringify(error))
+        })
+    })
+}
+
 module.exports = {
     deleteCourseFromSchool,
     deleteCourse,
-    deleteGroup
+    deleteGroup,
+    deleteMemberFromGroup
 }
