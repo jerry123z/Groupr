@@ -72,6 +72,8 @@ function deleteMemberFromGroup(groupId, userId){
 }
 
 module.exports = {
+    deleteCourseFromSchool,
+    deleteCourse,
     deleteGroup,
     deleteMemberFromGroup
 }
