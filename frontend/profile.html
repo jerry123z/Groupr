@@ -16,7 +16,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addModalLabel">Add Assignment</h5>
+                        <h5 class="modal-title" id="addModalLabel">Add Course</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -27,15 +27,15 @@
                                 <label for="course-name" class="col-form-label">Course:</label>
                                 <input type="text" class="form-control" id="course-name">
                             </div>
-                            <div id="assignment-form-group" class="form-group">
-                                <label for="assignment" class="col-form-label">Assignment:</label>
-                                <input type="text" class="form-control" id="assignment-name">
-                            </div>
                         </form>
+                        <!-- for error/success message -->
+                        <div id="message-container">
+                          <span id="message"> </span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Add</button>
+                        <button id="submit-btn" type="button" class="btn btn-primary">Add</button>
                     </div>
                 </div>
             </div>

@@ -12,6 +12,7 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 const dbEdit = require('./db/dbEdit.js');
+const dbDelete = require('./db/dbDelete.js');
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
@@ -80,6 +81,15 @@ router.get("/:id", (req, res) => {
     });
 });
 
+// Route for getting all courses
+router.get("/", (req, res) => {
+    dbGet.getAllCourses().then(courses => {
+        res.send(courses)
+    }).catch(error => {
+        res.status(400).send(error);
+    })
+});
+
 //TODO NOT DONE
 //deleting
 router.delete("/:id", (req, res) =>{
@@ -125,5 +135,23 @@ router.patch("/school/:id", (req, res) => {
         res.status(400).send(error);
     });
 })
+
+router.delete("/:schoolId/:courseId", (req, res) => {
+	const schoolId = req.params.schoolId;
+	const courseId = req.params.courseId;
+	
+	dbGet.getSchool(schoolId).then(school => {
+		console.log(school)
+        return dbDelete.deleteCourseFromSchool(schoolId, courseId)
+    }).then(school => {
+		return dbDelete.deleteCourse(courseId)
+	}).then(course => {
+		console.log("here");
+		console.log(course)
+		res.send(course)
+	}).catch(error => {
+		res.status(400).send(error);
+	});
+});
 
 module.exports = router

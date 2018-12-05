@@ -59,8 +59,6 @@ body {
     width: 140px;
 }
 
-/* Both form groups start off invisible; only one is made visible as the modal
-   opens depending on if the user is adding a course or assignment */
-#course-form-group, #assignment-form-group {
-    display: none;
+#message-container {
+    text-align: center;
 }

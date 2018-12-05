@@ -25,6 +25,26 @@ function getArrData(arrIn, itemFunction) {
     return promise;
 }
 
+function forEach(arrIn, itemFunction) {
+    let promise;
+    let arr = arrIn;
+    if(arr.length == 0) {
+        promise = new Promise(resolve => { resolve(); });
+    }
+    else
+    {
+        for(let i = 0; i < arr.length; i++) {
+            if(i == 0) {
+                promise = itemFunction(arr[0]);
+                continue;
+            }
+            promise = promise.then(() => {
+                return itemFunction(arr[i]);
+            });
+        }
+    }
+    return promise;
+}
 
 function obfuscateUser(user) {
     const userObj = {
@@ -39,5 +59,7 @@ function obfuscateUser(user) {
 }
 
 module.exports = {
-    getArrData, obfuscateUser
+    getArrData,
+    obfuscateUser,
+    forEach
 };
