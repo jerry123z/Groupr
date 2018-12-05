@@ -54,6 +54,9 @@ router.post("/:assignment_id", (req, res) => {
             maxMembers: assignment.maxMembers,
             owner: user._id
         };
+        if(assignment.groups.find(el => user.groups.find(el2 => el.toString() == el2.toString()))) {
+            throw "You already have a group for this assignment!";
+        }
         return dbCreate.createGroup(group.name, group.description, group.schedule,
         group.school, group.course, group.assignment, group.maxMembers,
         group.owner);
