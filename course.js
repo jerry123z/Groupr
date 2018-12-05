@@ -11,6 +11,8 @@ const { Token, User, School, Course, Assignment, Group } = require('./models.js'
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
+const dbEdit = require('./db/dbEdit.js');
+const dbDelete = require('./db/dbDelete.js');
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
@@ -104,6 +106,50 @@ router.get("/name/:name", (req, res) => {
 	dbGet.getCourseByPartialName(req.params.name).then((courses) => {
 		res.send(courses);
 	}).catch((error) => {
+		res.status(400).send(error);
+	});
+});
+
+router.patch("/name/:id", (req, res) => {
+    const id = req.params.id
+    const name = req.body.name
+
+    dbGet.getCourse(req.params.id).then(course => {
+        return dbEdit.editCourse(course._id, name, course.school)
+    }).then(course => {
+        res.send(course)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+router.patch("/school/:id", (req, res) => {
+    const id = req.params.id
+    const schoolId = req.body.schoolId
+
+    dbGet.getCourse(req.params.id).then(course => {
+        return dbEdit.editCourse(course._id, course.name, schoolId)
+    }).then(course => {
+        res.send(course)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+router.delete("/:schoolId/:courseId", (req, res) => {
+	const schoolId = req.params.schoolId;
+	const courseId = req.params.courseId;
+	
+	dbGet.getSchool(schoolId).then(school => {
+		console.log(school)
+        return dbDelete.deleteCourseFromSchool(schoolId, courseId)
+    }).then(school => {
+		return dbDelete.deleteCourse(courseId)
+	}).then(course => {
+		console.log("here");
+		console.log(course)
+		res.send(course)
+	}).catch(error => {
 		res.status(400).send(error);
 	});
 });
