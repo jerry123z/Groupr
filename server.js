@@ -42,4 +42,14 @@ app.get('/', function(req, res){
 
 app.listen(port, () => {
     console.log("Listening on port " + port);
+
+    User.findOne({email: "admin@admin"}).then(user => {
+        if(!user) {
+            return dbCreate.createUser("admin@admin", "admin", "Admin", null, true).then(() => {
+                console.log("Created admin account!");
+            });
+        }
+    }).catch(error => {
+        console.log(error);
+    });
 });
