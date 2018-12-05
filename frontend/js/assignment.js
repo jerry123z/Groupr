@@ -126,20 +126,53 @@ $('#group-form').submit(e => {
     const scheduleInput = $("#schedule").data('artsy.dayScheduleSelector').serialize();
 });
 
-// Populate page with information on page load
-$(document).ready(function() {
-    // add availability to group form
-    $("#schedule").dayScheduleSelector({
-        startTime: '08:00',
-        endTime: '24:00',
-        interval: 60
-    });
-    // display appropriate group header
-    displayGroupHeader(false);
-
-    // add groups to page (REQUIRES SERVER CALL)
-    setUserGroup(userGroup);
-    for (let i = 0; i < allGroups.length; i++) {
-        addGroup(allGroups[i]);
+function parseBody(response) {
+    if(response.status === 200) {
+        return response.json();
+    } else {
+        console.error(response.body);
+        return new Promise(resolve => {
+            resolve(null);
+        });
     }
+}
+
+function getData(assignment) {
+    return fetch("/assignment/full/" + assignment, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+// Populate page with information on page load
+$(document).on("loggedin", function(event, user) {
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results==null) {
+           return null;
+        }
+        return decodeURI(results[1]) || 0;
+    }
+    if(!$.urlParam["aid"]) {
+        window.location.replace("./profile.html");
+        return;
+    }
+    getData($.urlParam["aid"]).then(assignment => {
+        // add availability to group form
+        $("#schedule").dayScheduleSelector({
+            startTime: '08:00',
+            endTime: '24:00',
+            interval: 60
+        });
+        
+        let userGroup = null;
+        for (let i = 0; i < assignment.groups.length; i++) {
+            if(user.groups.find(el => el._id == assignment.groups[i]._id)) {
+                userGroup = assignment.groups[i];
+            } else {
+                addGroup(assignment.groups[i]);
+            }
+        }
+        setUserGroup(userGroup);
+        displayGroupHeader(userGroup != null);
+    });
 });
