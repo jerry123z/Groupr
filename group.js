@@ -13,7 +13,7 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 const dbEdit = require('./db/dbEdit.js');
-const dbDelete = require('./db/dbDelte.js')
+const dbDelete = require('./db/dbDelete.js')
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 

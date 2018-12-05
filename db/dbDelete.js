@@ -17,13 +17,7 @@ function deleteCourseFromSchool(schoolId, courseId){
         });
     })
 }
-function getUsers(id){
-    console.log("@@");
-    dbGet.getUser(user).then(user => {
-        console.log(user)
-        return user
-    }).catch()
-}
+
 function deleteGroup(groupId){
     let saveGroup;
     let saveAssignment;
@@ -33,14 +27,18 @@ function deleteGroup(groupId){
             saveGroup = group
             return Assignment.findById(saveGroup.assignment)
         }).then((assignment) => {
-            return saveAssignment = Assignment.findByIdAndUpdate(assignment._id, {$pull:{group:saveGroup._id}})
-        }).then((assignment) => {
-            saveUsers = saveGroup.members.map(user => getUsers(user))
-            console.log(saveUsers)
-            changedUsers = saveUsers.map( user => user.groups.id(saveGroup._id).remove())
+            saveAssignment = assignment
 
-            return saveArray(changedUsers)
-        }).then((string) => {
+        }).then((assignment) => {
+            return promise =  User.find({
+                '_id': { $in:saveGroup.members}
+            }).exec()
+        }).then((users) => {
+            saveUsers = users
+            return User.updateMany({'_id': { $in:saveGroup.members}}, {$pull:{groups:groupId}})
+        }).then((user) => {
+            return Assignment.findByIdAndUpdate(saveAssignment._id, {$pull:{groups:groupId}})
+        }).then((assignment) => {
             Group.findByIdAndRemove(groupId).then((group)=>{
                 resolve(group)
             })
