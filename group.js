@@ -80,6 +80,9 @@ router.get("/full/:id", (req, res) => {
         return dbGet.getAssignment(group.assignment);
     }).then(assignment => {
         group.assignment = assignment;
+        return getArrData(group.requests, dbGet.getGroup);
+    }).then(requests => {
+        group.requests = requests;
         return getArrData(group.members, dbGet.getUser);
     }).then(members => {
         group.members = members.map(member => obfuscateUser(member));
