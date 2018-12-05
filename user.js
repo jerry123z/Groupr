@@ -190,14 +190,12 @@ router.patch("/group/:user_id/:group_id", (req, res) => {
 });
 
 //route for changing a user's name
-//returns the old user object
 router.patch("/name/:id", (req, res) => {
     const id = req.params.id
     const name = req.body.name
 
     dbGet.getUser(req.params.id).then(user => {
-        const obuser = obfuscateUser(user);
-        return dbEdit.editUser(obuser._id, obuser.email, name, obuser.schoolId, obuser.isAdmin)
+        return dbEdit.editUser(user._id, user.email, name, user.schoolId, user.isAdmin)
     }).then(user => {
         res.send(user)
     }).catch(error => {
@@ -206,14 +204,12 @@ router.patch("/name/:id", (req, res) => {
 })
 
 //route for changing a user's email
-//returns the old user object
 router.patch("/email/:id", (req, res) => {
     const id = req.params.id
     const email = req.body.email
 
     dbGet.getUser(req.params.id).then(user => {
-        const obuser = obfuscateUser(user);
-        return dbEdit.editUser(obuser._id, email, obuser.name, obuser.schoolId, obuser.isAdmin)
+        return dbEdit.editUser(user._id, email, user.name, user.schoolId, user.isAdmin)
     }).then(user => {
         res.send(user)
     }).catch(error => {
@@ -221,24 +217,28 @@ router.patch("/email/:id", (req, res) => {
     });
 })
 
-//route for a user
+//route for a user's school
+//requires the schoolId in the body
 router.patch("/school/:id", (req, res) => {
     const id = req.params.id
-    const school = req.body.school
+    const schoolId = req.body.schoolId
 
-
-    //TODO:Wait for priya to push dbget school by name
+    dbGet.getUser(req.params.id).then(user => {
+        return dbEdit.editUser(user._id, user.email, user.name, schoolId, user.isAdmin)
+    }).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
 })
 
 //route for changing a user's admin status
-//returns the old user object
 router.patch("/admin/:id", (req, res) => {
     const id = req.params.id
     const isAdmin = req.body.isAdmin
 
     dbGet.getUser(req.params.id).then(user => {
-        const obuser = obfuscateUser(user);
-        return dbEdit.editUser(obuser._id, obuser.email, obuser.name, obuser.schoolId, isAdmin)
+        return dbEdit.editUser(user._id, user.email, user.name, user.schoolId, isAdmin)
     }).then(user => {
         res.send(user)
     }).catch(error => {

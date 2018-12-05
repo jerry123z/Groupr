@@ -106,4 +106,29 @@ router.get("/name/:name", (req, res) => {
 	});
 });
 
+router.patch("/name/:id", (req, res) => {
+    const id = req.params.id
+    const name = req.body.name
+
+    dbGet.getGroup(req.params.id).then(group => {
+        return dbEdit.editGroup(group._id, name, group.school, group.maxMembers)
+    }).then(group => {
+        res.send(group)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+router.patch("/school/:id", (req, res) => {
+    const id = req.params.id
+    const schoolId = req.body.schoolId
+
+    dbGet.getgroup(req.params.id).then(group => {
+        return dbEdit.editgroup(group._id, group.name, schoolId, group.maxMembers)
+    }).then(group => {
+        res.send(group)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
 module.exports = router

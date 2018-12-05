@@ -99,4 +99,30 @@ router.get("/name/:name", (req, res) => {
 	});
 });
 
+router.patch("/name/:id", (req, res) => {
+    const id = req.params.id
+    const name = req.body.name
+
+    dbGet.getCourse(req.params.id).then(course => {
+        return dbEdit.editCourse(course._id, name, course.school)
+    }).then(course => {
+        res.send(course)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
+router.patch("/school/:id", (req, res) => {
+    const id = req.params.id
+    const schoolId = req.body.schoolId
+
+    dbGet.getCourse(req.params.id).then(course => {
+        return dbEdit.editCourse(course._id, course.name, schoolId)
+    }).then(course => {
+        res.send(course)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
 module.exports = router
