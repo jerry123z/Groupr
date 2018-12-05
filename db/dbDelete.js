@@ -50,18 +50,19 @@ function deleteGroup(groupId){
 
 function deleteMemberFromGroup(groupId, userId){
     return new Promise((resolve, reject) => {
-        Group.findById(groupId).then(group => {
+        User.findByIdAndUpdate(userId, {$pull:{groups:groupId}},  {new: true}).then(user => {
+            console.log(user)
             return Group.findByIdAndUpdate(groupId, {$pull:{members:userId}},  {new: true})
         }).then(group => {
-            return User.findByIdAndUpdate(userId, {$pull:{groups:groupId}},  {new: true})
-        }).then(user => {
-            resolve(user)
+            console.log(group)
+            resolve(group)
         }).catch(error => {
             reject("deleteMemberFromGroup " + JSON.stringify(error))
         })
-    }
+    })
 }
 
 module.exports = {
-    deleteGroup
+    deleteGroup,
+    deleteMemberFromGroup
 }
