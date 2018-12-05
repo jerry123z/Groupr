@@ -16,7 +16,8 @@ function deleteCourseFromSchool(schoolId, courseId){
 		});
 	})		
 }
- function deleteCourse(courseId){
+
+function deleteCourse(courseId){
 	console.log(courseId);
 	return new Promise((resolve, reject) => {
 		Course.findByIdAndRemove(courseId).then(course => {
@@ -26,6 +27,7 @@ function deleteCourseFromSchool(schoolId, courseId){
 			reject("removeCourse: " + JSON.stringify(error));
 		});
 	})
+}
 
 function deleteGroup(groupId){
     let saveGroup;
