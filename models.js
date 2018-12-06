@@ -35,8 +35,24 @@ const User = mongoose.model("User", {
     courses: [ObjectId],
     assignments: [ObjectId],
     groups: [ObjectId],
+    notifications: [ObjectId],
     isAdmin: {
         type: Boolean,
+        required: true
+    }
+});
+
+const Notification = mongoose.model("Notification", {
+    user: {
+        type: ObjectId,
+        required: true
+    },
+    group: {
+        type: ObjectId,
+        required: true
+    },
+    action: {
+        type: String,
         required: true
     }
 });
@@ -135,5 +151,6 @@ module.exports = {
     School,
     Course,
     Assignment,
-    Group
+    Group,
+    Notification
 };
