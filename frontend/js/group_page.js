@@ -209,7 +209,9 @@ function addAvailability(group)
         endTime: '24:00',
         interval: 60
     });
-    $(".schedule").data('artsy.dayScheduleSelector').deserialize(group.schedule);
+    if (group.schedule) {
+        $(".schedule").data('artsy.dayScheduleSelector').deserialize(group.schedule);
+    }
 }
 
 function parseBody(response) {
