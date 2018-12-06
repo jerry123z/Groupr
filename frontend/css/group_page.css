@@ -37,22 +37,6 @@ html, body {
 	background-color: #B4869F;
 }
 
-#group_name {
-	font-size: 30;
-	flex: 0 0 auto;
-	margin-right: 10px;
-}
-
-#editable_group_name {
-	font-size: 30;
-	flex: 1 0 auto;
-	margin-right: 10px;
-}
-
-.group_name_edit {
-	flex: 1 0 auto;
-}
-
 .page-container {
     padding-top:40px;
     margin: auto;
@@ -94,7 +78,7 @@ html, body {
 }
 
 .members_title {
-	border-bottom: 1px solid rgba(86,86,86,.5);	
+	border-bottom: 1px solid rgba(86,86,86,.5);
 }
 
 .member_you {
@@ -145,4 +129,44 @@ html, body {
 
 #request-members {
     border-left: solid 1px black;
+}
+
+#header {
+	margin-top: 20px;
+	text-align: center;
+}
+
+#button-container {
+ 	display: flex;
+ 	justify-content: center;
+	margin-top: 20px;
+}
+
+#editGroupButton, #requestJoinButton, #leaveGroupButton {
+	margin-left: 5px;
+}
+
+#group-form-container input, #group-form-container textarea,
+#schedule {
+    width: 100%;
+    padding: 8px;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    border: 1px solid #a2a3a5;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#group-form-title-container {
+    text-align: center;
+}
+
+#submit-btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#editModal .modal-content {
+	width: 600px;
 }

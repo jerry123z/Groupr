@@ -47,20 +47,13 @@
 		</div>
 
 		<div id="content-wrapper">
-			<div class='assignment_block'>
-				<div id='assignment_name'>CSC 309 - A1</div>
-				<div class='assignment_date'>Due: Oct 30</div>
+			<div class="row">
+					<div id="header" class="col">
+							<h1 id="group-name"></h1>
+							<h5 id="course_and_assignment_names"> </h5>
+					</div>
 			</div>
-			<div class='group_block shadow_above'>
-				<div id='group_name'>Bullish Frogs</div>
-				<div class='group_name_edit'>
-					<button id='group_name_edit_btn' type='button' class='btn btn-secondary btn-sm'>Edit</button>
-				</div>
-				<input id='editable_group_name' type="text">
-				<button id='requestJoinButton' type='button' class='btn btn-primary'>Request To Join</button>
-				<button id='leaveGroupButton' type='button' class='btn btn-danger'>Leave Group</button>
-			</div>
-			<div class='shadow_above'>
+
 				<div class='page-container container'>
 					<div class="row">
 						<div class="col-md-2"> </div> <!-- spacing div -->
@@ -70,13 +63,12 @@
 								<div class="row">
 									<div class="col-md-6">
 										<div id='posting'>
-											<h4>Your Posting</h4>
 											<!-- icons -->
 											<div id="number-members-container" class="container">
 												<!-- icons injected here -->
 											</div>
 											<div class='container'>
-												<h5>Requirements:</h5>
+												<h5>Description/Requirements:</h5>
 												<div id='posting_requirements'>
 													<!-- Requirements injected here. -->
 												</div>
@@ -91,6 +83,11 @@
 										</ul>
 									</div>
 								</div>
+							</div>
+							<div id="button-container">
+								<button id='editGroupButton' type='button' class='btn btn-primary' data-toggle="modal" data-target="#editModal">Edit Group</button>
+								<button id='requestJoinButton' type='button' class='btn btn-primary'>Request To Join</button>
+								<button id='leaveGroupButton' type='button' class='btn btn-danger'>Leave Group</button>
 							</div>
 						</div>
 					</div>
@@ -118,13 +115,12 @@
 					</div>
 					<div class="row">
 						<div class="col">
-							<div id="schedule">
+							<div id="group-schedule" class="schedule">
 								<!-- schedule injected here -->
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 		</div>
 
 		<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel" aria-hidden="true">
@@ -157,6 +153,37 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary">Merge</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 id="group-form-title-container">	Edit Your Group </h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+							<div id="group-form-container">
+								<form id="group-form">
+								<label for="name-input"> Group Name: </label>
+								<input id="name-input" type="text" required> </input>
+								<label for="desc-input"> Group Description/Requirements (optional):</label>
+								<textarea id="desc-input" rows="5" cols="30"> </textarea>
+								<label for="schedule"> Group Meeting Schedule (optional): </label>
+								<div id="group-form-schedule" class="schedule">
+									<!-- schedule injected here -->
+								</div>
+								</form>
+							</div>
+					</div>
+					<div class="modal-footer">
+						<button id='submit-group' type='button submit' class='btn btn-primary'>Submit</button>
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</div>

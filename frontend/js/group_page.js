@@ -1,56 +1,7 @@
-
-const groupRequests = [
-    {name: "Hip Hippos", _id: Math.floor(Math.random() * 1000000), numMembers: 2, members: ["Larry", "Velma"]},
-    {name: "Peckish Penguins", _id: Math.floor(Math.random() * 1000000), numMembers: 1, members: ["Jacob"]},
-    {name: "Sinewy Centaurs", _id: Math.floor(Math.random() * 1000000), numMembers: 5, members: ["Tyler", "Skyler", "Ashley", "Sassie", "Bessy"]},
-    {name: "Diligent Dingos", _id: Math.floor(Math.random() * 1000000), numMembers: 4, members: ["Harry", "Berry", "Mary", "Carrie"]},
-    {name: "Witty Walruses", _id: Math.floor(Math.random() * 1000000), numMembers: 3, members: ["Dawn", "Ron", 'John']},
-    {name: "Sagacious Squids", _id: Math.floor(Math.random() * 1000000), numMembers: 1, members: ["Tony"]}
-];
-
-const user = {
-    name: "Andriy",
-    _id: "z9827398276398",
-    school: "jnksnv0s9v9823",
-    courses: ["nlkajoia882"],
-    assignments: ["092hfahoifao"],
-    groups: ["mkanmln89090"]
-};
-const owner = {
-    name: "Brennan",
-    _id: "z9827398276398",
-    school: "jnksnv0s9v9823",
-    courses: ["nlkajoia882"],
-    assignments: ["092hfahoifao"],
-    groups: ["mkanmln89090"]
-};
-
-const userGroup = {
-    _id: "mkanmln89090",
-    school: "jnksnv0s9v9823",
-    course: "nlkajoia882",
-    assignment: "092hfahoifao",
-    name: "Bullish Frogs",
-    numMembers: 4,
-    members: [
-        {name: "Priya", _id: "ah98fchq39809qfy", school: "jnksnv0s9v9823", courses: ["nlkajoia882"], assignments: ["092hfahoifao"], groups: ["mkanmln89090"]},
-        {name: "Jerry", _id: "la02ha08fh980a", school: "jnksnv0s9v9823", courses: ["nlkajoia882"], assignments: ["092hfahoifao"], groups: ["mkanmln89090"]},
-        {name: "Andriy", _id: "pa982ya9igaf", school: "jnksnv0s9v9823", courses: ["nlkajoia882"], assignments: ["092hfahoifao"], groups: ["mkanmln89090"]},
-        {name: "Brennan", _id: "z9827398276398", school: "jnksnv0s9v9823", courses: ["nlkajoia882"], assignments: ["092hfahoifao"], groups: ["mkanmln89090"]}
-    ],
-    requirements: ["Available Mon/Wed/Fri mornings", "Willing to work 8 hours/week"],
-    availability: {
-        0: [['09:00', '11:00'], ['13:00', '16:00']],
-        1: [],
-        2: [['10:00', '12:00'], ['16:00', '19:00']],
-        3: [['13:00', '18:00']],
-        4: [['08:00', '11:00'], ['12:00', '13:00'], ['18:00', '20:00']],
-        5: [],
-        6: [['09:00', '12:00']]
-    }
-}
-const maxNumMembers = 6;
-
+// the id of the group associated with this page
+let groupId;
+// the information about the group associated with this page
+let currentGroup;
 // the row which holds all group entries
 const $requestsRow = $("#requests-container").find(".row");
 
@@ -61,6 +12,7 @@ function setUserGroup(group, user) {
         $("#group-container").remove();
     } else {
         $("#group-name").text(group.name);
+        $("#course_and_assignment_names").text(`${group.course.name}: ${group.assignment.name}`);
         const $numMembersContainer = $("#number-members-container");
         // adding all filled-in icons
         let i;
@@ -77,7 +29,7 @@ function setUserGroup(group, user) {
         }
         // Add the member list. Also put a crown next to the owner and make the user blue.
         const membersList = group.members.map(member => {
-            const kick = user._id == group.owner ? `<img data-uid='${member._id}' class='member_kick' src='content/kick.png'>` : ``;
+            const kick = member._id != group.owner ? `<img data-uid='${member._id}' class='member_kick' src='content/kick.png'>` : ``;
             const crown = member._id == group.owner ? `<img class='member_crown' src='content/crown.png'>` : ``;
             return member._id == user._id ? $(`<li class='member_you'> ${member.name} ${crown} ${kick} </li>`) : $(`<li> ${member.name} ${crown} ${kick} </li>`);
         });
@@ -89,9 +41,10 @@ function setUserGroup(group, user) {
             const uid = button.data('uid');
             console.log("Request sent!");
         });
-        
+
         // Attach the requirement list.
         $("#posting_requirements").text(group.description);
+        // Add appropriate buttons to the page
         if(group.members.find((member) => member._id == user._id))
         {
             $('#requestJoinButton').remove();
@@ -99,9 +52,13 @@ function setUserGroup(group, user) {
                 $('#leaveGroupButton').removeClass('btn-danger')
                     .addClass('btn-secondary');
             });
+            if (user._id != group.owner) {
+                $('#editGroupButton').remove();
+            }
         }
         else
         {
+            $('#editGroupButton').remove();
             $('#leaveGroupButton').remove();
             $('#requestJoinButton').click(event => {
                 $('#requestJoinButton').removeClass('btn-primary')
@@ -151,6 +108,14 @@ function setupMergeModal(user)
     });
 }
 
+
+$('#editModal').on('show.bs.modal', event => {
+    $("#name-input").attr("value", currentGroup.name);
+    $("#desc-input").text(currentGroup.description);
+    $("#group-form-schedule").data('artsy.dayScheduleSelector').deserialize(currentGroup.schedule);
+});
+
+
 function openMergeModal(group, user) {
     $("#requestModalLabel").text(group.name);
     $("#requestModalLabel").attr('href', "group_page.html?gid=" + group._id);
@@ -183,33 +148,12 @@ function openMergeModal(group, user) {
 function addAvailability(group)
 {
     // add schedule to the page
-    $("#schedule").dayScheduleSelector({
+    $(".schedule").dayScheduleSelector({
         startTime: '08:00',
         endTime: '24:00',
         interval: 60
     });
-    $("#schedule").data('artsy.dayScheduleSelector').deserialize(group.availability);
-}
-
-function setupEditNameButton(group)
-{
-    const $group_name = $('#group_name');
-    const $group_name_edit = $('.group_name_edit');
-    const $editable_group_name = $('#editable_group_name');
-    $editable_group_name.css('display', 'none');
-    $('#group_name_edit_btn').click(event => {
-        $group_name.css('display', 'none');
-        $group_name_edit.css('display', 'none');
-        $editable_group_name.val($group_name.text());
-        $editable_group_name.css('display', 'inline-block');
-    });
-
-    $editable_group_name.on('change', event => {
-        $group_name.text($editable_group_name.val());
-        $group_name.css('display', 'inline-block');
-        $group_name_edit.css('display', 'inline-block');
-        $editable_group_name.css('display', 'none');
-    });
+    $(".schedule").data('artsy.dayScheduleSelector').deserialize(group.schedule);
 }
 
 function parseBody(response) {
@@ -229,27 +173,27 @@ function getData(group) {
     }).then(parseBody);
 }
 
+function setGroupId() {
+    let url = new URL(window.location.href);
+    groupId = url.searchParams.get("gid");
+}
+
 // Populate page with information on page load
 $(document).on('loggedin', function(event, user) {
-    $.urlParam = function(name){
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        if (results==null) {
-           return null;
-        }
-        return decodeURI(results[1]) || 0;
-    }
-    if(!$.urlParam["gid"]) {
+    setGroupId();
+    // if gid is not in url, redirect user to profile page
+    if(!groupId) {
         window.location.replace("./profile.html");
         return;
     }
 
-    getData($.urlParam["gid"]).then(data => {
+    getData(groupId).then(group => {
+        currentGroup = group;
         setUserGroup(group, user);
         for (let i = 0; i < group.requests.length; i++) {
             addRequest(group.requests[i]);
         }
         addAvailability(group);
         setupMergeModal(user);
-        setupEditNameButton(group);
     });
 });
