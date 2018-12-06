@@ -15,9 +15,10 @@ function editSchool(e){
 		info = e.target.parentElement.parentElement.parentElement.parentElement.getElementsByTagName("p");
 		console.log(info);
 		name = info[0].textContent.split(":")[1].trim();
-		members = info[1].textContent.split(":")[1].trim();
-		active = info[2].textContent.split(":")[1].trim();
-		window.location.href = "schoolEdit.html?name=" + name + "&members=" + members + "&active=" + active;
+
+		let ind = groups.findIndex(o => o.name == name);
+		console.log(name)
+		window.location.href = "schoolEdit.html?id=" + groups[ind]._id;
 	}
 }
 
