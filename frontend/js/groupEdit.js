@@ -78,6 +78,8 @@ function deleteMember(e){
 		}).then(groupRes => {
 				group = groupRes;
 				displayGroup();
+				getGroupMembers(group.members)
+				displayMembers();
 		}).catch(error => {
 				console.error(error)
 		})
