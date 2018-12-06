@@ -52,7 +52,6 @@ function changeName(e){
 	}).catch(error => {
 		console.log(error);
 	})
-
 }
 
 
