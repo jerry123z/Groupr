@@ -107,6 +107,7 @@ html, body {
 .member_kick {
 	max-height: 15px;
 	max-width: 15px;
+	cursor: pointer;
 	resize: both;
 }
 
@@ -173,5 +174,9 @@ html, body {
 
 #message-container {
 	margin-top: 5px;
+	text-align: center;
+}
+
+#warning-message-container {
 	text-align: center;
 }

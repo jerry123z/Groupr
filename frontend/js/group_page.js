@@ -31,8 +31,11 @@ function setUserGroup(group, user) {
         }
         // Add the member list. Also put a crown next to the owner and make the user blue.
         const membersList = group.members.map(member => {
-            const kick = member._id != group.owner ? `<img data-uid='${member._id}' class='member_kick' src='content/kick.png'>` : ``;
+            let kick = member._id != group.owner ? `<img data-uid='${member._id}' class='member_kick' src='content/kick.png'>` : ``;
             const crown = member._id == group.owner ? `<img class='member_crown' src='content/crown.png'>` : ``;
+            if (userId != group.owner) {
+                kick = ``;
+            }
             return member._id == user._id ? $(`<li class='member_you'> ${member.name} ${crown} ${kick} </li>`) : $(`<li> ${member.name} ${crown} ${kick} </li>`);
         });
         // Attach the member list.
@@ -41,7 +44,11 @@ function setUserGroup(group, user) {
         $(".member_kick").click(event => {
             const button = $(event.target);
             const uid = button.data('uid');
-            console.log("Request sent!");
+            getUserData(uid).then(user => {
+                $("#warning-message").text(`Are you sure you'd like to kick ${user.name}?`)
+                $("#warningModal").attr("userId", user._id);
+                $("#warningModal").modal("show");
+            });
         });
 
         // Attach the requirement list.
@@ -277,6 +284,22 @@ $("#requestJoinButton").click(() => {
     });
 });
 
+function removeMemberFromHTML(uid) {
+    $(`#group-members-container ul li img[data-uid="${uid}"]`).parent().remove();
+}
+
+// Action on confirming within the warning modal
+$("#confirm-btn").click(() => {
+    const uid = $("#warningModal").attr("userId")
+    sendRemoveUserRequest(uid).then(res => {
+        removeMemberFromHTML(uid);
+        $("#warningModal").modal("hide");
+    }).catch(err => {
+        console.log(err);
+    });
+})
+
+
 function sendEditGroupRequest(name, description, schedule) {
     return fetch("/group/" + groupId, {
         method: "PATCH",
@@ -310,6 +333,22 @@ function closeMergeRequest(mergeRequestorId) {
 function sendMergeRequest(mergeRequestorId) {
     return fetch("/group/merge/" + mergeRequestorId + "/" + groupId, {
         method: "POST"
+    }).then((response) => {
+        if(response.status === 200) {
+            return Promise.resolve(response);
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(null);
+    });
+}
+
+function sendRemoveUserRequest(userToKickId) {
+    return fetch("/group/" + currentGroup._id + "/remove/" + userToKickId, {
+        method: "PATCH",
+        headers: { 'Content-Type': "application/json" },
+        body: JSON.stringify({ "groupId": currentGroup._id, "userId": userToKickId })
     }).then((response) => {
         if(response.status === 200) {
             return Promise.resolve(response);
