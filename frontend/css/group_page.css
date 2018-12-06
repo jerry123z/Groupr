@@ -170,3 +170,8 @@ html, body {
 #editModal .modal-content, #requestModal .modal-content {
 	width: 600px;
 }
+
+#message-container {
+	margin-top: 5px;
+	text-align: center;
+}

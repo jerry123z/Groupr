@@ -1,5 +1,7 @@
 // the id of the group associated with this page
 let groupId;
+// the id of the current user
+let userId;
 // the information about the group associated with this page
 let currentGroup;
 // the row which holds all group entries
@@ -231,6 +233,10 @@ function setGroupId() {
     groupId = url.searchParams.get("gid");
 }
 
+function setUserId(user) {
+    userId = user._id;
+}
+
 // Fill in input values with current group info on edit modal open
 $('#editModal').on('show.bs.modal', event => {
     $("#name-input").attr("value", currentGroup.name);
@@ -250,6 +256,27 @@ $("#submit-group").click((e) => {
     });
 });
 
+// Display error/success message to user
+function displayRequestMessage(message, color) {
+    $("#req-message").css("color", color);
+    $("#req-message").text(message);
+}
+
+$("#requestJoinButton").click(() => {
+    getUserData(userId).then(user => {
+        let toMerge;
+        const groupToMerge = user.groups.find(group => {
+            return group.assignment == currentGroup.assignment;
+        });
+        groupToMerge ? toMerge = groupToMerge : toMerge = user._id;
+        sendMergeRequest(toMerge).then(res => {
+            displayRequestMessage("Sent your request to join!", "green");
+        }).catch(err => {
+            displayRequestMessage("Error sending your request.", "red");
+        })
+    });
+});
+
 function sendEditGroupRequest(name, description, schedule) {
     return fetch("/group/" + groupId, {
         method: "PATCH",
@@ -257,19 +284,32 @@ function sendEditGroupRequest(name, description, schedule) {
         body: JSON.stringify({ name, description, schedule })
     }).then((response) => {
         if(response.status === 200) {
-            return response.json();
+            return Promise.resolve(response);
         } else {
             return Promise.reject(null);
         }
     }).catch(error => {
-        return Promise.reject(null);
+        return Promise.reject(error);
     });
 }
 
 function closeMergeRequest(mergeRequestorId) {
-    console.log("/group/merge/" + mergeRequestorId + "/" + groupId)
     return fetch("/group/merge/" + mergeRequestorId + "/" + groupId, {
-        method: "DELETE"
+        method: "PUT"
+    }).then((response) => {
+        if(response.status === 200) {
+            return Promise.resolve(response);
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(error);
+    });
+}
+
+function sendMergeRequest(mergeRequestorId) {
+    return fetch("/group/merge/" + mergeRequestorId + "/" + groupId, {
+        method: "POST"
     }).then((response) => {
         if(response.status === 200) {
             return response.json();
@@ -284,6 +324,7 @@ function closeMergeRequest(mergeRequestorId) {
 // Populate page with information on page load
 $(document).on('loggedin', function(event, user) {
     setGroupId();
+    setUserId(user);
     // if gid is not in url, redirect user to profile page
     if(!groupId) {
         window.location.replace("./profile.html");
@@ -293,10 +334,12 @@ $(document).on('loggedin', function(event, user) {
     getGroupData(groupId).then(group => {
         currentGroup = group;
         setUserGroup(group, user);
-        group.requests.forEach(request => {
-            request.isUser ? addRequestUser(request.id) : addRequestGroup(request.id);
-        });
         addAvailability(group);
-        setupMergeModal(user);
+        if (user._id == group.owner) {
+            group.requests.forEach(request => {
+                request.isUser ? addRequestUser(request.id) : addRequestGroup(request.id);
+            });
+            setupMergeModal(user);
+        }
     });
 });
