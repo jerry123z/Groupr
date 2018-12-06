@@ -11,10 +11,8 @@ function editUser(e){
 	e.preventDefault();
 	if(e.target.classList.contains('button')){
 		info = e.target.parentElement.parentElement.parentElement.parentElement.getElementsByTagName("p");
-		name = info[0].textContent.split(":")[1].trim();
 		email = info[1].textContent.split(":")[1].trim();
-		school = info[2].textContent.split(":")[1].trim();
-		active = info[3].textContent.split(":")[1].trim();
+
 
 		let ind = users.findIndex(o => o.email == email);
 		window.location.href = "userEdit.html?id=" + users[ind]._id;
