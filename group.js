@@ -181,6 +181,8 @@ router.delete("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         return dbGet.getGroup(req.params.mergeRequestor);
     }).then(group => {
         if(!group) {
+            console.log(userId)
+            console.log(req.params.mergeRequestor)
             if(userId != req.params.mergeRequestor) {
                 throw "Cannot request merge as non user!";
             }
@@ -286,9 +288,6 @@ function mergeUser(req, res, target, promise) {
         }
         return dbGet.getAssignment(target.assignment);
     }).then(assignment => {
-        if(assignment.groups.find(el => user.groups.find(el2 => el.toString() == el2.toString()))) {
-            throw "User cannot be merged because they are already in a group!";
-        }
         target._doc.members.push(requestor._id);
         target.requests = target._doc.requests.filter(el => el.id.toString() != requestor._id.toString());
         // For every member in the requesting team, find the idea of the requestor in their groups list

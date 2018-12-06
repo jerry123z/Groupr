@@ -266,9 +266,9 @@ $("#requestJoinButton").click(() => {
     getUserData(userId).then(user => {
         let toMerge;
         const groupToMerge = user.groups.find(group => {
-            return group.assignment == currentGroup.assignment;
+            return group.assignment == currentGroup.assignment._id;
         });
-        groupToMerge ? toMerge = groupToMerge : toMerge = user._id;
+        groupToMerge ? toMerge = groupToMerge._id : toMerge = user._id;
         sendMergeRequest(toMerge).then(res => {
             displayRequestMessage("Sent your request to join!", "green");
         }).catch(err => {
@@ -312,7 +312,7 @@ function sendMergeRequest(mergeRequestorId) {
         method: "POST"
     }).then((response) => {
         if(response.status === 200) {
-            return response.json();
+            return Promise.resolve(response);
         } else {
             return Promise.reject(null);
         }
