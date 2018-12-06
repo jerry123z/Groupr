@@ -172,7 +172,7 @@ function setUserGroup(group) {
             $numMembersContainer.append($icon);
         }
         // setting link href appropriately
-        $("#group-link").attr("href", `group_page.html?groupId=${group._id}`);
+        $("#group-link").attr("href", `group_page.html?gid=${group._id}`);
         const membersList = group.members.map(member => `<li> ${member.name} </li>`);
         $("#group-members-container").find("ul").append(membersList.join(""));
     }
