@@ -148,7 +148,7 @@ function requestMergeUser(req, res, userId, promise) {
         return dbGet.getGroup(req.params.mergeTarget);
     }).then(group => {
         target = group;
-        if(requestor.courses.find(el => el.toString() == target.course.toString())) {
+        if(!requestor.courses.find(el => el.toString() == target.course.toString())) {
             throw "User cannot join group as they are not in this course!";
         }
         if(target._doc.requests.find(el => el.id.toString() == userId)) {
@@ -315,7 +315,20 @@ router.get("/full/:id", (req, res) => {
         return dbGet.getAssignment(group.assignment);
     }).then(assignment => {
         group.assignment = assignment;
-        return getArrData(group.requests, dbGet.getGroup);
+        return getArrData(group.requests, request => {
+            let promise;
+            if(request.isUser) {
+                promise = dbGet.getUser(request.id).then(user => {
+                    return Promise.resolve(obfuscateUser(user));
+                });
+            } else {
+                promise = dbGet.getGroup(request.id);
+            }
+            return promise.then(obj => {
+                request._doc.id = obj;
+                return Promise.resolve(request._doc);
+            });
+        });
     }).then(requests => {
         group.requests = requests;
         return getArrData(group.members, dbGet.getUser);
