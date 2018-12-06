@@ -14,7 +14,7 @@ function deleteCourseFromSchool(schoolId, courseId){
 		}).catch(error => {
 			reject("removeCourse: " + JSON.stringify(error));
 		});
-	})		
+	})
 }
 
 function deleteCourse(courseId){
@@ -73,9 +73,20 @@ function deleteMemberFromGroup(groupId, userId){
     })
 }
 
+function deleteUser(userId){
+    return new Promise((resolve, reject) => {
+        User.findByIdAndRemove(userId).then(user =>{
+            resolve(user)
+        }).catch((error)=>{
+            reject(error)
+        })
+    })
+}
+
 module.exports = {
     deleteCourseFromSchool,
     deleteCourse,
     deleteGroup,
-    deleteMemberFromGroup
+    deleteMemberFromGroup,
+    deleteUser
 }

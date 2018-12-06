@@ -13,6 +13,7 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 const dbEdit = require('./db/dbEdit.js');
+const dbDelte = require('./db/dbDelete.js');
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
@@ -250,5 +251,42 @@ router.get("/email/:email", (req, res) => {
 		res.status(400).send(error);
 	});
 });
+
+
+//Delete user
+router.delete("/:id", (req, res) => {
+    const id = req.params.id
+    let ownedGroups = [];
+    dbGet.getUser(id).then((user)=>{
+        return new Promise(function(resolve, reject) {
+            for(let i = 0; i< user.groups.length; i++){
+                //find groups they are an owner is of
+                getCourse(user.groups[i]).then(group => {
+                    if (group.owner == id){
+                        ownedGroups.append(group._id)
+                    }
+                    if (i == user.groups.length-1){
+                        resolve(ownedGroups)
+                    }
+                }).catch(error =>{
+                    reject(error)
+                })
+            }
+        })
+    }).then((groups) =>{
+        // assign new owners
+        return new Promise(function(revolve, reject) {
+            for(let i = 0; i < groups.length; i++){
+
+            }
+        })
+    }).then()
+
+        return dbDelete.deleteUser(id).then(user => {
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error)
+    })
+})
 
 module.exports = router
