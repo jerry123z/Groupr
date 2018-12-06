@@ -11,12 +11,13 @@ function editUser(e){
 	e.preventDefault();
 	if(e.target.classList.contains('button')){
 		info = e.target.parentElement.parentElement.parentElement.parentElement.getElementsByTagName("p");
-		console.log(info);
 		name = info[0].textContent.split(":")[1].trim();
 		email = info[1].textContent.split(":")[1].trim();
 		school = info[2].textContent.split(":")[1].trim();
 		active = info[3].textContent.split(":")[1].trim();
-		window.location.href = "userEdit.html?name=" + name + "&email=" + email + "&school=" + school + "&active=" + active;
+
+		let ind = users.findIndex(o => o.email == email);
+		window.location.href = "userEdit.html?id=" + users[ind]._id;
 	}
 }
 
@@ -39,11 +40,12 @@ function searchUsers(email) {
 					throw response;
 			}
 	}).then(userArray => {
-		user = userArray
+		users = userArray
 		return userArray
 	}).then(userArray => {
 		return getSchoolNames(userArray) //race condition
 	}).then(userArray => {
+
 		userArray.forEach(u => displayUser(u))
 	}).catch(error => {
 		console.error(error)
