@@ -167,6 +167,6 @@ html, body {
   justify-content: center;
 }
 
-#editModal .modal-content {
+#editModal .modal-content, #requestModal .modal-content {
 	width: 600px;
 }

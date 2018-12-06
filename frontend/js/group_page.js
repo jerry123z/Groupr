@@ -70,10 +70,9 @@ function setUserGroup(group, user) {
 }
 
 // Add request to "Requests" section of page.
-// "group" is an object with keys name and numMembers.
-function addRequest(group) {
+function addRequestGroup(group) {
     const $col = $("<div>", {class: "col-md-4"});
-    const $container = $("<div>", {class: "requests-entry group-entry group-entry-hover card"});
+    const $container = $("<div>", {class: "requests-entry group-entry group-entry-hover card group"});
     const $title = $("<h5>").text(group.name);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
 
@@ -100,18 +99,63 @@ function addRequest(group) {
     $requestsRow.append($col);
 }
 
+function addRequestUser(user) {
+    const $col = $("<div>", {class: "col-md-4"});
+    const $container = $("<div>", {class: "requests-entry group-entry group-entry-hover card user"});
+    const $title = $("<h5>").text(user.name);
+    const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
+
+    const $icon = $("<img>", {class: "small-user-icon",
+                              src: "content/person_filled.png"});
+    $numMembersContainer.append($icon);
+
+    $container.attr('data-toggle', 'modal');
+    $container.attr('data-target', '#requestModal');
+    $container.attr('data-uid', user._id);
+
+    $container.append($title);
+    $container.append($numMembersContainer);
+    $col.append($container);
+    $requestsRow.append($col);
+}
+
 function setupMergeModal(user)
 {
     $('#requestModal').on('show.bs.modal', event => {
-        const button = $(event.relatedTarget);
-        const gid = button.data('gid');
-        openMergeModal(group.requests.find(group => group._id == gid), user);
+        const $button = $(event.relatedTarget);
+        if ($button.hasClass("group")) {
+            const gid = $button.data('gid');
+            getGroupData(gid).then(group => {
+                openMergeModalGroup(group);
+            });
+        } else {
+            const uid = $button.data('uid');
+            getUserData(uid).then(user => {
+                openMergeModalUser(user);
+            });
+        }
     });
 }
 
+function openMergeModalUser(user) {
+    $("#requestModalLabel").text("");
+    $("#requestModalLabel").attr("requestor-id", user._id)
+    const $numMembersContainer = $("#request-members-icons");
+    $numMembersContainer.empty();
+    // Add the user name to members list
+    const userListItem = `<li> ${user.name} </li>`;
+    // Attach the member list.
+    const $memberContainer = $("#request-members").find("ul");
+    $memberContainer.empty();
+    $memberContainer.append(userListItem);
 
-function openMergeModal(group, user) {
+    let $icon = $("<img>", {class: "big-user-icon", src:"content/person_filled.png"});
+    $numMembersContainer.append($icon);
+}
+
+function openMergeModalGroup(group) {
     $("#requestModalLabel").text(group.name);
+    $("#requestModalLabel").attr("requestor-id", group._id)
     $("#requestModalLabel").attr('href', "group_page.html?gid=" + group._id);
     const $numMembersContainer = $("#request-members-icons");
     $numMembersContainer.empty();
@@ -130,14 +174,23 @@ function openMergeModal(group, user) {
     }
     // Add the member list. Also put a crown next to the owner and make the user blue.
     const membersList = group.members.map(member => {
-        const crown = member._id == group.owner ? `<img class='member_crown' src='content/crown.png'>` : ``;
-        return member._id == user._id ? `<li class='member_you'> ${member} ${crown} </li>` : `<li> ${member} ${crown} </li>`;
+        return `<li> ${member.name} </li>`;
     });
     // Attach the member list.
     const $memberContainer = $("#request-members").find("ul");
     $memberContainer.empty();
     $memberContainer.append(membersList.join(""));
 }
+
+$("#submit-merge").click(() => {
+    const mergeRequestorId = $("#requestModalLabel").attr("requestor-id");
+    closeMergeRequest(mergeRequestorId).then(response => {
+        // Refresh page on success
+        location.reload();
+    }).catch(error => {
+        console.log(error);
+    });
+});
 
 function addAvailability(group)
 {
@@ -161,8 +214,14 @@ function parseBody(response) {
     }
 }
 
-function getData(group) {
+function getGroupData(group) {
     return fetch("/group/full/" + group, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function getUserData(user) {
+    return fetch("/user/full/" + user, {
         method: "GET"
     }).then(parseBody);
 }
@@ -207,6 +266,21 @@ function sendEditGroupRequest(name, description, schedule) {
     });
 }
 
+function closeMergeRequest(mergeRequestorId) {
+    console.log("/group/merge/" + mergeRequestorId + "/" + groupId)
+    return fetch("/group/merge/" + mergeRequestorId + "/" + groupId, {
+        method: "DELETE"
+    }).then((response) => {
+        if(response.status === 200) {
+            return response.json();
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(null);
+    });
+}
+
 // Populate page with information on page load
 $(document).on('loggedin', function(event, user) {
     setGroupId();
@@ -216,12 +290,12 @@ $(document).on('loggedin', function(event, user) {
         return;
     }
 
-    getData(groupId).then(group => {
+    getGroupData(groupId).then(group => {
         currentGroup = group;
         setUserGroup(group, user);
-        for (let i = 0; i < group.requests.length; i++) {
-            addRequest(group.requests[i]);
-        }
+        group.requests.forEach(request => {
+            request.isUser ? addRequestUser(request.id) : addRequestGroup(request.id);
+        });
         addAvailability(group);
         setupMergeModal(user);
     });
