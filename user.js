@@ -13,7 +13,7 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 const dbEdit = require('./db/dbEdit.js');
-const dbDelte = require('./db/dbDelete.js');
+const dbDelete = require('./db/dbDelete.js');
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
@@ -261,9 +261,9 @@ router.delete("/:id", (req, res) => {
         return new Promise(function(resolve, reject) {
             for(let i = 0; i< user.groups.length; i++){
                 //find groups they are an owner is of
-                getCourse(user.groups[i]).then(group => {
+                dbGet.getGroup(user.groups[i]).then(group => {
                     if (group.owner == id){
-                        ownedGroups.append(group._id)
+                        ownedGroups.push(group._id)
                     }
                     if (i == user.groups.length-1){
                         resolve(ownedGroups)
@@ -272,17 +272,30 @@ router.delete("/:id", (req, res) => {
                     reject(error)
                 })
             }
-        })
-    }).then((groups) =>{
-        // assign new owners
-        return new Promise(function(revolve, reject) {
-            for(let i = 0; i < groups.length; i++){
-
+            if (user.groups.length == 0){
+                resolve(ownedGroups)
             }
         })
-    }).then()
-
-        return dbDelete.deleteUser(id).then(user => {
+    }).then((groups) =>{
+        return new Promise(function(resolve, reject) {
+            if (groups.length == 0){
+                resolve(groups)
+            }
+            for(let i = 0; i < groups.length; i++){
+                dbEdit.newGroupOwnerOrDelete(groups[i], id).then(group =>{
+                    if (i == groups.length-1){
+                        resolve(groups)
+                    }
+                }).catch(error =>{
+                    reject(error)
+                })
+            }
+        })
+    }).then(groups=>{
+        console.log(id)
+        return dbDelete.deleteUser(id)
+    }).then(user=>{
+        console.log(user)
         res.send(user)
     }).catch(error => {
         res.status(400).send(error)

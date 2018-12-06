@@ -74,6 +74,7 @@ function deleteMemberFromGroup(groupId, userId){
 }
 
 function deleteUser(userId){
+    console.log(userId)
     return new Promise((resolve, reject) => {
         User.findByIdAndRemove(userId).then(user =>{
             resolve(user)

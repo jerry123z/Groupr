@@ -108,22 +108,26 @@ function assignNewOwner(groupId, ownerId){
 //Call this right before deleting a user who is the owner
 function newGroupOwnerOrDelete(groupId, ownerId){
     return new Promise((resolve, reject) => {
-        if(!(ObjectID.isValid(groupId)))
-        {
+        if(!(ObjectID.isValid(groupId))){
             reject("newGroupOwner: Invalid groupId provided: " + groupId);
         } else if (!(ObjectID.isValid(ownerId))) {
             reject("newGroupOwner: Invalid ownerId provided: " + ownerId);
         }
-        Group.findbyId(groupId).then((group)=>{
-            if (group.members.length == 0){
+        Group.findById(groupId).then((group)=>{
+            console.log(group)
+            if (group.members.length == 1 && group.members[0] == ownerId){
                 return dbDelete.deleteGroup(groupId)
             } else {
-                for(let i = 1; i < group.memebers; i++){
+                for(let i = 0; i < group.memebers; i++){
                     if (group.members[i] != ownerId){
-                        assignNewOwner(groupId, group.memebers[i])
+                        return assignNewOwner(groupId, group.memebers[i])
                     }
                 }
             }
+        }).then((group)=>{
+            resolve(group)
+        }).catch(error =>{
+            reject(error)
         })
     })
 }
