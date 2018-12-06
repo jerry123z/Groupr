@@ -54,7 +54,8 @@ function obfuscateUser(user) {
         school: user.school,
         courses: user.courses,
         assignments: user.assignments,
-        groups: user.groups
+        groups: user.groups,
+        isAdmin: user.isAdmin
     };
     return userObj;
 }
