@@ -55,9 +55,6 @@ router.post("/:assignment_id", (req, res) => {
             maxMembers: assignment.maxMembers,
             owner: user._id
         };
-        if(user.courses.find(el => el.toString() == assignment.course.toString())) {
-            throw "You already have a group for this assignment!";
-        }
         if(assignment.groups.find(el => user.groups.find(el2 => el.toString() == el2.toString()))) {
             throw "You already have a group for this assignment!";
         }
@@ -73,6 +70,17 @@ router.post("/:assignment_id", (req, res) => {
     }).catch(error => {
         res.status(400).send(error);
     })
+});
+
+// Route for getting groups for a specific assignment
+router.get("/assignment/:assignment_id", (req, res) => {
+    let assignment_id = req.params.assignment_id;
+
+    dbGet.getGroupsForAssignment(assignment_id).then(groups => {
+        res.send(groups);
+    }).catch(error => {
+        res.status(400).send(error);
+    });
 });
 
 // Create merge request.

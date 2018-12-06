@@ -13,6 +13,14 @@
     <body>
         <div id="wrapper">
           <ul id="nav" class="sidebar navbar-nav">
+            <li id="logout-btn" class="nav-item"><a class="nav-link" href="#"><span>Logout</span></a></li>
+            <li id="profile-item" class="nav-item"><a class="nav-link" href="./profile.html"><span>Profile</span></a></li>
+            <li id="course-divider"><div idclass="dropdown-divider"></div></li>
+            <li class="nav-item">
+              <a id="add-course-link" class="nav-link" data-toggle="modal" data-target="#addModal">
+                <span> Add Course </span>
+              </a>
+            </li>
           </ul>
           <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addAssignmentLabel" aria-hidden="true">
               <div class="modal-dialog" role="document">
@@ -46,8 +54,7 @@
             <div id="content-wrapper">
 
                 <div class='assignment-block'>
-                    <div class='assignment-name'>CSC 309 - Main Project</div>
-                    <div class='assignment-date'>Due: Nov. 8</div>
+                    <div id='assignment-name'></div>
                 </div>
                 <div id="window-container" class="shadow-above">
                     <div id="page-container" class="container">
@@ -95,7 +102,7 @@
                                 <form id="group-form">
                                 <label for="name-input"> Group Name: </label>
                                 <input id="name-input" type="text" required> </input>
-                                <label for="reqs-input"> Group Requirements (optional):</label>
+                                <label for="desc-input"> Group Description/Requirements (optional):</label>
                                 <textarea id="reqs-input" rows="5" cols="30"> </textarea>
                                 <label for="schedule"> Group Meeting Schedule (optional): </label>
                                 <div id="schedule">

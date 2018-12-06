@@ -1,45 +1,121 @@
-// hard-coded values (REQUIRES SERVER CALL TO OBTAIN)
-const allGroups = [
-    {groupId: 1, name: "Hip Hippos", numMembers: 2, maxNumMembers: 5},
-    {groupId: 2, name: "Peckish Penguins", numMembers: 1, maxNumMembers: 5},
-    {groupId: 3, name: "Sinewy Centaurs", numMembers: 5, maxNumMembers: 5},
-    {groupId: 4, name: "Diligent Dingos", numMembers: 4, maxNumMembers: 5},
-    {groupId: 5, name: "Witty Walruses", numMembers: 3, maxNumMembers: 5},
-    {groupId: 6, name: "Sagacious Squids", numMembers: 1, maxNumMembers: 5},
-    {groupId: 6, name: "Butyraceous Barnacles", numMembers: 5, maxNumMembers: 5}
-]
-const userGroup = {
-    groupId: 7,
-    name: "Bullish Frogs",
-    numMembers: 4,
-    members: ["Priya", "Jerry", "Andriy", "Brennan"],
-    maxNumMembers: 5
-}
-
-
+// Assignment id of the assignment associated with this page
+let assignmentId;
+// All groups exisitng for the assignment associated with this page
+let assignmentGroups;
 // the row which holds all group entries
 const $groupsRow = $("#all-groups-container").find(".row");
+
+// Populate page with information on page load
+$(document).on("loggedin", function(event, user) {
+    setAssignmentId();
+
+    // add availability to group form
+    $("#schedule").dayScheduleSelector({
+        startTime: '08:00',
+        endTime: '24:00',
+        interval: 60
+    });
+
+    // set assignment title
+    getAssignmentData(assignmentId).then(assignmentData => {
+        $("#assignment-name").html(`${assignmentData.course.name} - ${assignmentData.name}`);
+    });
+
+    // set user group info, or display "create a group" message if user does
+    // not have a group for this assignment
+    getUserData(user._id).then(userData => {
+        const group = findGroupsMatchingAssignment(userData.groups, assignmentId);
+        if (group) {
+            return getGroupData(group._id);
+        } else {
+            return Promise.reject(null);
+        }
+    }).then(groupInfo => {
+        // add user group to page, if it exists
+        displayGroupHeader(true);
+        setUserGroup(groupInfo);
+    }).catch(() => {
+        displayGroupHeader(false);
+    });
+
+    // add other users' groups to the page
+    getallGroupData().then(groups => {
+        assignmentGroups = groups;
+        groups.forEach(group => {
+            addGroup(group);
+        });
+    });
+});
+
+function findGroupsMatchingAssignment(groups, aId) {
+    for (let i = 0; i < groups.length; i++) {
+        if (groups[i].assignment.toString() == aId.toString()) {
+            return groups[i];
+        }
+    }
+}
+
+function parseBody(response) {
+    if(response.status === 200) {
+        return response.json();
+    } else {
+        console.error(response.body);
+        return new Promise(resolve => {
+            resolve(null);
+        });
+    }
+}
+
+function getallGroupData() {
+    return fetch("/group/assignment/" + assignmentId, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function getUserData(userId) {
+    return fetch("/user/full/" + userId, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function getGroupData(groupId) {
+    return fetch("/group/full/" + groupId, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function getAssignmentData(aId) {
+    return fetch("/assignment/full/" + aId, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function setAssignmentId() {
+    let url = new URL(window.location.href);
+    let aId = url.searchParams.get("aid");
+    if (aId) {
+        assignmentId = aId;
+    } else {
+        // Redirect user to profile page is assignment id is not set
+        window.location.replace("./profile.html");
+    }
+}
 
 // Filter groups by number of spots available.
 $("#spots-input").keyup(function() {
     const numSpots = parseInt($("#spots-input").val());
-    if (numSpots >= 0) {
+    if (numSpots >= 0 && assignmentGroups && assignmentGroups[0].maxMembers) {
         // Determine maxNumMembers
-        let maxNumMembers;
-        if (allGroups.length > 0) {
-            maxNumMembers = allGroups[0].maxNumMembers;
-        } else {
-            maxNumMembers = -1;
-        }
+        let maxNumMembers = assignmentGroups[0].maxMembers;
         // remove all group entries
         $groupsRow.empty();
         // add back all groups that have numSpots or more spots available
-        for (let i = 0; i < allGroups.length; i++) {
-            const spaceAvailable = maxNumMembers - allGroups[i].numMembers;
+        assignmentGroups.forEach(group => {
+            const spaceAvailable = maxNumMembers - group.members.length;
             if (spaceAvailable >= numSpots) {
-                addGroup(allGroups[i]);
+                addGroup(group);
             }
-        }
+        });
     }
 });
 
@@ -49,19 +125,19 @@ $("#spots-input").keyup(function() {
 function addGroup(group) {
     const $col = $("<div>", {class: "col-md-4"});
     const $container = $("<div>", {class: "all-groups-entry group-entry card"});
-    const $link = $("<a>", {href: `group_page.html?groupId=${group.groupId}`});
+    const $link = $("<a>", {href: `group_page.html?groupId=${group._id}`});
     const $title = $("<h5>").text(group.name);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
 
     // adding all filled-in icons
     let i;
-    for (i = 0; i < group.numMembers; i++) {
+    for (i = 0; i < group.members.length; i++) {
         const $icon = $("<img>", {class: "small-user-icon",
                                   src: "content/person_filled.png"});
         $numMembersContainer.append($icon);
     }
     // adding all unfilled icons
-    for (; i < group.maxNumMembers; i++) {
+    for (; i < group.maxMembers; i++) {
         const $icon = $("<img>", {class: "small-user-icon",
                                   src: "content/person_unfilled.png"});
         $numMembersContainer.append($icon);
@@ -84,20 +160,20 @@ function setUserGroup(group) {
         const $numMembersContainer = $("#number-members-container");
         // adding all filled-in icons
         let i;
-        for (i = 0; i < group.numMembers; i++) {
+        for (i = 0; i < group.members.length; i++) {
             let $icon = $("<img>", {class: "big-user-icon",
                                      src:"content/person_filled.png"});
             $numMembersContainer.append($icon);
         }
         // adding all unfilled icons
-        for (; i < group.maxNumMembers; i++) {
+        for (; i < group.maxMembers; i++) {
             const $icon = $("<img>", {class: "big-user-icon",
                                       src: "content/person_unfilled.png"});
             $numMembersContainer.append($icon);
         }
         // setting link href appropriately
-        $("#group-link").attr("href", `group_page.html?groupId=${group.groupId}`);
-        const membersList = group.members.map(member => `<li> ${member} </li>`);
+        $("#group-link").attr("href", `group_page.html?groupId=${group._id}`);
+        const membersList = group.members.map(member => `<li> ${member.name} </li>`);
         $("#group-members-container").find("ul").append(membersList.join(""));
     }
 }
@@ -112,6 +188,23 @@ function displayGroupHeader(hasGroup) {
     }
 }
 
+function sendCreateGroupRequest(name, description, schedule) {
+    return fetch("/group/" + assignmentId, {
+        method: "POST",
+        headers: { 'Content-Type': "application/json" },
+        body: JSON.stringify({ name, description, schedule })
+    }).then((response) => {
+        if(response.status === 200) {
+            return response.json();
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(null);
+    });
+}
+
+
 // Display group form on click of 'Create a Group' button.
 $("#display-group-form").click(e => {
     $("#group-options-container").css("display", "none");
@@ -122,57 +215,12 @@ $("#display-group-form").click(e => {
 $('#group-form').submit(e => {
     e.preventDefault();
     const nameInput = $("#name-input").val();
-    const reqInput = $("#reqs-input").val();
+    const descInput = $("#desc-input").val();
     const scheduleInput = $("#schedule").data('artsy.dayScheduleSelector').serialize();
-});
-
-function parseBody(response) {
-    if(response.status === 200) {
-        return response.json();
-    } else {
-        console.error(response.body);
-        return new Promise(resolve => {
-            resolve(null);
-        });
-    }
-}
-
-function getData(assignment) {
-    return fetch("/assignment/full/" + assignment, {
-        method: "GET"
-    }).then(parseBody);
-}
-
-// Populate page with information on page load
-$(document).on("loggedin", function(event, user) {
-    $.urlParam = function(name){
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        if (results==null) {
-           return null;
-        }
-        return decodeURI(results[1]) || 0;
-    }
-    if(!$.urlParam["aid"]) {
-        window.location.replace("./profile.html");
-        return;
-    }
-    getData($.urlParam["aid"]).then(assignment => {
-        // add availability to group form
-        $("#schedule").dayScheduleSelector({
-            startTime: '08:00',
-            endTime: '24:00',
-            interval: 60
-        });
-        
-        let userGroup = null;
-        for (let i = 0; i < assignment.groups.length; i++) {
-            if(user.groups.find(el => el._id == assignment.groups[i]._id)) {
-                userGroup = assignment.groups[i];
-            } else {
-                addGroup(assignment.groups[i]);
-            }
-        }
-        setUserGroup(userGroup);
-        displayGroupHeader(userGroup != null);
+    sendCreateGroupRequest(nameInput, descInput, scheduleInput).then(res => {
+        // refresh page on success
+        location.reload();
+    }).catch(error => {
+        console.error("Error creating group");
     });
 });
