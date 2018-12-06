@@ -3,22 +3,7 @@ const users = [] // Array of books owned by the library (whether they are loaned
 const userSearchForm = document.querySelector('#userSearchForm');
 const editUserForm = document.querySelector('#allDisplays');
 
-
-
-class User {
-	constructor(name, email, school, active) {
-		this.name = name;
-		this.email = email;
-		this.school = school;
-		this.active = active;
-	}
-}
-
-users.push(new User('Andriy', 'andriy123@gmail.com', 'University of Toronto', 'Jan 1, 2018'));
-users.push(new User('Brennan', 'brennan@gmail.com', 'University of Toronto', 'Jan 2, 2018'));
-users.push(new User('Priya', 'priya123@gmail.com', 'University of Toronto', 'Jan 3, 2018'));
-users.push(new User('Jerry', 'jerry123@gmail.com', 'University of Toronto', 'Jan 4, 2018'));
-users.push(new User('Priya2', 'priya222@gmail.com', 'University of Toronto', 'Jan 5, 2018'));
+var groups = [];
 
 userSearchForm.addEventListener('input', searchUser);
 editUserForm.addEventListener('click', editUser);
@@ -32,25 +17,42 @@ function editUser(e){
 		email = info[1].textContent.split(":")[1].trim();
 		school = info[2].textContent.split(":")[1].trim();
 		active = info[3].textContent.split(":")[1].trim();
-		window.location.href = "userEdit.html?name=" + name + "&email=" + email + "&school=" + school + "&active=" + active;	
+		window.location.href = "userEdit.html?name=" + name + "&email=" + email + "&school=" + school + "&active=" + active;
 	}
 }
 
 function searchUser(e) {
 	e.preventDefault();
-	
 	document.getElementById('allDisplays').innerHTML = "";
 	let email = userSearchForm.querySelector('#userEmail').value;
 	if(email == ""){
-		document.getElementById('allDisplays').innerHTML = "";
-		return;
+			document.getElementById('allDisplays').innerHTML = "";
+			return;
 	}
-	for(var i = 0; i < users.length; i++){
-		if(users[i].email.includes(email)){
-			displayUser(users[i]);
-		}
-	}
+	console.log("@@@@@");
+	searchUsers(email)
+	console.log(groups);
 }
+
+function searchUsers(email) {
+
+	fetch('/user/email/' + email).then(response => {
+			if(response.status === 200) {
+					console.log(response)
+					return response.json();
+			} else {
+					throw response;
+			}
+	}).then(groupArray => {
+		groups = groupArray;
+		return groups
+	}).catch(error => {
+			console.log(error)
+	})
+
+
+}
+
 
 function displayUser(user){
 	let markup = `
@@ -72,7 +74,7 @@ function displayUser(user){
 		</div>
 	</div>
 	`;
-	
+
 
 	let display = document.getElementById('allDisplays');
 	display.innerHTML += markup;
