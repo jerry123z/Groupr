@@ -58,6 +58,7 @@ function setUserGroup(group, user) {
         }
         else
         {
+            $('#requests-header').remove();
             $('#editGroupButton').remove();
             $('#leaveGroupButton').remove();
             $('#requestJoinButton').click(event => {
@@ -107,13 +108,6 @@ function setupMergeModal(user)
         openMergeModal(group.requests.find(group => group._id == gid), user);
     });
 }
-
-
-$('#editModal').on('show.bs.modal', event => {
-    $("#name-input").attr("value", currentGroup.name);
-    $("#desc-input").text(currentGroup.description);
-    $("#group-form-schedule").data('artsy.dayScheduleSelector').deserialize(currentGroup.schedule);
-});
 
 
 function openMergeModal(group, user) {
@@ -176,6 +170,41 @@ function getData(group) {
 function setGroupId() {
     let url = new URL(window.location.href);
     groupId = url.searchParams.get("gid");
+}
+
+// Fill in input values with current group info on edit modal open
+$('#editModal').on('show.bs.modal', event => {
+    $("#name-input").attr("value", currentGroup.name);
+    $("#desc-input").text(currentGroup.description);
+    $("#group-form-schedule").data('artsy.dayScheduleSelector').deserialize(currentGroup.schedule);
+});
+
+$("#submit-group").click((e) => {
+    const name = $("#name-input").val();
+    const description = $("#desc-input").val();
+    const schedule = $("#group-form-schedule").data('artsy.dayScheduleSelector').serialize();
+    sendEditGroupRequest(name, description, schedule).then(res => {
+        // refresh page on success
+        location.reload();
+    }).catch(error => {
+        console.error("Error editing group");
+    });
+});
+
+function sendEditGroupRequest(name, description, schedule) {
+    return fetch("/group/" + groupId, {
+        method: "PATCH",
+        headers: { 'Content-Type': "application/json" },
+        body: JSON.stringify({ name, description, schedule })
+    }).then((response) => {
+        if(response.status === 200) {
+            return response.json();
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(null);
+    });
 }
 
 // Populate page with information on page load
