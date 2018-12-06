@@ -1,4 +1,5 @@
 // global arrays
+const email_regex = /[A-Za-z0-9\._]+@[A-Za-z0-9\._]+/;
 const changeNameForm = document.querySelector('#changeNameForm');
 const deleteClassForm = document.querySelector('#deleteClassForm');
 const memberDisplayForm = document.querySelector('#membersDisplay');
@@ -21,20 +22,16 @@ function deleteGroup(e){
 }
 
 
-
-
-function changeMembers(e){
-	e.preventDefault();
-	var members = changeMembersForm.querySelector('#newMembers').value;
-	if(!isNaN(members)){
-		group.members = members;
-		displayGroup();
-	}
-}
-
 function changeName(e){
 	e.preventDefault();
 	var name = changeNameForm.querySelector('#newName').value;
+
+	if (name.length == 0) {
+		if (document.getElementById("nameError").hasAttribute("hidden")){
+        	document.getElementById("nameError").removeAttribute("hidden")
+			return
+		}
+    }
 	group.name = name;
 	fetch('/group/name/' + group._id, {
 		method: "PATCH",
@@ -48,6 +45,9 @@ function changeName(e){
 		}
 	}).then(groupRes => {
 		group = groupRes;
+		if (!document.getElementById("nameError").hasAttribute("hidden")){
+        	document.getElementById("nameError").setAttribute("hidden", true);
+		}
 		displayGroup();
 	}).catch(error => {
 		console.log(error);
@@ -93,6 +93,18 @@ function addMember(e){
 	e.preventDefault();
 	var email = addMemberForm.querySelector('#newMember').value;
 
+	if (!email_regex.test(email)) {
+		if (document.getElementById("emailError").hasAttribute("hidden")){
+        	document.getElementById("emailError").removeAttribute("hidden")
+			return
+		}
+    } else if (email.length == 0) {
+		if (document.getElementById("emailError").hasAttribute("hidden")){
+        	document.getElementById("emailError").removeAttribute("hidden")
+			return
+		}
+    }
+
 	fetch('/user/email/' + email).then(response => {
 		if(response.status === 200) {
 				return response.json();
@@ -109,6 +121,9 @@ function addMember(e){
 				throw response;
 		}
 	}).then(vargroup => {
+		if (!(document.getElementById("emailError").hasAttribute("hidden"))){
+			document.getElementById("emailError").setAttribute("hidden", true);
+		}
 		getGroupInfo();
 	}).catch(error => {
 		console.error(error);

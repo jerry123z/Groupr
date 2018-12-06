@@ -21,10 +21,10 @@ $('document').ready(function () {
             });
         }
     }).then((json) => {
-        if(json && json.isAdmin=="false") {
+        if(json && json.isAdmin == false) {
             window.location.replace("./profile.html?user=" + json._id);
             return null;
-        } else if(json && json.isAdmin=="true") {
+        } else if(json && json.isAdmin == true) {
             window.location.replace("./findGroup.html");
             return null;
         }
@@ -79,7 +79,7 @@ $('#login-form').submit(function (e) {
             throw response;
         }
     }).then(json => {
-        if (json.isAdmin == "false"){
+        if (json.isAdmin == false){
             window.location.replace("./profile.html?user=" + json._id);
         } else {
             window.location.replace("./findGroup.html");

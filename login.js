@@ -13,25 +13,14 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 
+const {getArrData, obfuscateUser} = require("./routeUtil.js");
+
 const router = express.Router();
 router.use(bodyParser.json());
 router.use(cookieParser());
 
 // Start the front end.
 router.use(express.static(__dirname + "/frontend"));
-
-
-function obfuscateUser(user) {
-    const userObj = {
-        _id: user._id,
-        name: user.name,
-        school: user.school,
-        courses: user.courses,
-        assignments: user.assignments,
-        groups: user.groups
-    };
-    return userObj;
-}
 
 
 router.get("/", (req, res) => {
