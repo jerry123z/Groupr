@@ -17,9 +17,7 @@ deleteUserForm.addEventListener('submit', deleteUser);
 function deleteUser(e){
 	e.preventDefault();
 
-	//TODO implement this
-	/*
-	fetch("/user/"+userId, {method:"DELETE"}.then(user => {
+	fetch("/user/"+userId, {method:"DELETE"}).then(user => {
 		let markup = `
 		<p><b>User successfully deleted</b></p>
 		`
@@ -27,7 +25,6 @@ function deleteUser(e){
 	}).catch(error => {
 		console.error(error)
 	})
-	*/
 }
 
 
