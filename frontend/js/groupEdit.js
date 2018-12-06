@@ -21,8 +21,8 @@ function deleteGroup(e){
 	document.getElementById("group").innerHTML = markup;
 }
 
-	
-	
+
+
 
 function changeMembers(e){
 	e.preventDefault();
@@ -37,7 +37,23 @@ function changeName(e){
 	e.preventDefault();
 	var name = changeNameForm.querySelector('#newName').value;
 	group.name = name;
-	displayGroup();
+	fetch('/group/name/' + group._id, {
+		method: "PATCH",
+		headers: { 'Content-Type': "application/json" },
+		body: JSON.stringify({ name })
+	}).then(response => {
+		if(response.status === 200) {
+			return response.json();
+		}else{
+			throw response;
+		}
+	}).then(groupRes => {
+		group = groupRes;
+		displayGroup();
+	}).catch(error => {
+		console.log(error);
+	})
+
 }
 
 
@@ -76,9 +92,21 @@ function getGroupInfo(){
 		group[split[0]] = decodeURI(split[1]);
 	}
 	console.log(group);
-	group.members = groupMembers.length;
-	displayGroup();
-	displayMembers();
+	fetch('/group/' + group.id).then(response => {
+			if(response.status === 200) {
+					console.log(response)
+					return response.json();
+			} else {
+					throw response;
+			}
+	}).then(groupRes => {
+			group = groupRes;
+			displayGroup();
+			displayMembers();
+	}).catch(error => {
+			console.log(error)
+	})
+
 }
 
 
@@ -93,10 +121,10 @@ function displayMembers(){
 			<input type = "submit" class = "button" class = "member-button" value = "Delete">
 		</div>
 		`
-		
+
 		display.innerHTML = display.innerHTML + markup;
 	}
-	
+
 }
 
 
@@ -106,8 +134,7 @@ function displayGroup(){
 		<div id = "groupDisplay" class = "group-entry">
 			<div id = "groupInfo">
 				<p><b>Name:</b> ${group.name}</p>
-				<p><b>Number of Members:</b> ${group.members}</p>
-				<p><b>Last Active:</b> ${group.active}</p>
+				<p><b>Number of Members:</b> ${group.members.length}</p>
 			</div>
 		</div>
 	</div>
@@ -116,4 +143,3 @@ function displayGroup(){
 	let display = document.getElementById('allDisplays');
 	display.innerHTML = markup;
 }
-
