@@ -129,6 +129,24 @@ function getAllCourses() {
     return Course.find();
 }
 
+function getAllNotifications() {
+    return Notification.find();
+}
+
+function getNotificationsForUser(uId) {
+    return new Promise((resolve, reject) => {
+        if(!ObjectID.isValid(uId))
+        {
+            reject("getNotificationsForUser: Invalid id provided: " + uId);
+        }
+        getUser(uId).then(user => {
+            resolve(user.notifications)
+        }).catch(error => {
+            reject("getNotificationsForUser: " + JSON.stringify(error));
+        });
+    });
+}
+
 module.exports = {
     getUser,
 	getUserByPartialEmail,

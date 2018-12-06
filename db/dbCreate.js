@@ -42,6 +42,10 @@ function createGroup(name, description, schedule, school, course, assignment, ma
     }).save();
 }
 
+function createNotification(user, group, action) {
+    return new Notification({user, group, action}).save();
+}
+
 module.exports = {
     createUser,
     createSchool,
