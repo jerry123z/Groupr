@@ -1,39 +1,24 @@
 // global arrays
 const classes = [] // Array of books owned by the library (whether they are loaned or not)
 const changeNameForm = document.querySelector('#changeNameForm');
-const changeMembersForm = document.querySelector('#changeMembersForm');
 const changeCodeForm = document.querySelector('#changeCodeForm');
-const deleteClassForm = document.querySelector('#deleteClassForm');
 var varclass = {}
 var group = {}
 window.onload = getClassInfo;
 
-changeMembersForm.addEventListener('submit', changeMembers);
 changeNameForm.addEventListener('submit', changeName);
 deleteClassForm.addEventListener('submit', deleteClass);
-
-function deleteClass(e){
-	e.preventDefault();
-	let markup = `
-	<p><b>Class successfully deleted</b></p>
-	`
-	document.getElementById("varclass").innerHTML = markup;
-}
-
-
-function changeMembers(e){
-	e.preventDefault();
-	var members = changeMembersForm.querySelector('#newMembers').value;
-	if(!isNaN(members)){
-		varclass.members = members;
-		displayClass();
-	}
-}
 
 function changeName(e){
 	e.preventDefault();
 	var name = changeNameForm.querySelector('#newName').value;
 	group.name = name;
+	if (name.length == 0) {
+		if (document.getElementById("nameError").hasAttribute("hidden")){
+        	document.getElementById("nameError").removeAttribute("hidden")
+			return;
+		}
+    }
 	fetch('/course/name/' + group._id, {
 		method: "PATCH",
 		headers: { 'Content-Type': "application/json" },
@@ -45,6 +30,9 @@ function changeName(e){
 			throw response;
 		}
 	}).then(groupRes => {
+		if (!document.getElementById("nameError").hasAttribute("hidden")){
+        	document.getElementById("nameError").setAttribute("hidden", true);
+		}
 		group = groupRes;
 		displayClass();
 	}).catch(error => {
@@ -85,7 +73,7 @@ function displayClass(){
 	<div id = "innerWrapper">
 		<div id = "varclassDisplay" class = "varclass-entry">
 			<div id = "varclassInfo">
-				<p><b>Code:</b> ${group.name}</p>
+				<p><b>Name:</b> ${group.name}</p>
 				<p><b>Number of Members:</b> ${group.members.length}</p>
 			</div>
 		</div>
