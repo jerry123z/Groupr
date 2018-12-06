@@ -125,7 +125,7 @@ $("#spots-input").keyup(function() {
 function addGroup(group) {
     const $col = $("<div>", {class: "col-md-4"});
     const $container = $("<div>", {class: "all-groups-entry group-entry card"});
-    const $link = $("<a>", {href: `group_page.html?groupId=${group._id}`});
+    const $link = $("<a>", {href: `group_page.html?gid=${group._id}`});
     const $title = $("<h5>").text(group.name);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
 
