@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 // Import the models.
-const { Token, User, School, Course, Assignment, Group } = require('./models.js');
+const { Token, User, School, Course, Assignment, Group, Notification} = require('./models.js');
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');

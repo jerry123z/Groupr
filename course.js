@@ -7,7 +7,7 @@ const { ObjectID } = require('mongodb');
 const mongoose = require('mongoose');
 
 // Import the models.
-const { Token, User, School, Course, Assignment, Group } = require('./models.js');
+const { Token, User, School, Course, Assignment, Group, Notification} = require('./models.js');
 const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
@@ -139,7 +139,7 @@ router.patch("/school/:id", (req, res) => {
 router.delete("/:schoolId/:courseId", (req, res) => {
 	const schoolId = req.params.schoolId;
 	const courseId = req.params.courseId;
-	
+
 	dbGet.getSchool(schoolId).then(school => {
 		console.log(school)
         return dbDelete.deleteCourseFromSchool(schoolId, courseId)
