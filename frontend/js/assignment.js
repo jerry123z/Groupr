@@ -18,8 +18,7 @@ $(document).on("loggedin", function(event, user) {
 
     // set assignment title
     getAssignmentData(assignmentId).then(assignmentData => {
-        $("#assignment-name").html(assignmentData.name);
-        $("#assignment-course").html(assignmentData.course.name);
+        $("#assignment-header").html(`${assignmentData.course.name}: ${assignmentData.name}`);
     });
 
     // set user group info, or display "create a group" message if user does
