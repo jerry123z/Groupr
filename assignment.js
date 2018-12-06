@@ -51,7 +51,7 @@ router.post("/:school_id/:course_id", (req, res) => {
     })
     .then(assignment => {
         dbGet.getCourse(assignment.course).then(course => {
-            course.assignments.push(assignment._id);
+            course._doc.assignments.push(assignment._id);
             course.save();
         });
         res.send(assignment);

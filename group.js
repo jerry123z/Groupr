@@ -55,9 +55,6 @@ router.post("/:assignment_id", (req, res) => {
             maxMembers: assignment.maxMembers,
             owner: user._id
         };
-        if(user.courses.find(el => el.toString() == assignment.course.toString())) {
-            throw "You already have a group for this assignment!";
-        }
         if(assignment.groups.find(el => user.groups.find(el2 => el.toString() == el2.toString()))) {
             throw "You already have a group for this assignment!";
         }
@@ -73,6 +70,17 @@ router.post("/:assignment_id", (req, res) => {
     }).catch(error => {
         res.status(400).send(error);
     })
+});
+
+// Route for getting groups for a specific assignment
+router.get("/assignment/:assignment_id", (req, res) => {
+    let assignment_id = req.params.assignment_id;
+
+    dbGet.getGroupsForAssignment(assignment_id).then(groups => {
+        res.send(groups);
+    }).catch(error => {
+        res.status(400).send(error);
+    });
 });
 
 // Create merge request.
@@ -140,7 +148,7 @@ function requestMergeUser(req, res, userId, promise) {
         return dbGet.getGroup(req.params.mergeTarget);
     }).then(group => {
         target = group;
-        if(requestor.courses.find(el => el.toString() == target.course.toString())) {
+        if(!requestor.courses.find(el => el.toString() == target.course.toString())) {
             throw "User cannot join group as they are not in this course!";
         }
         if(target._doc.requests.find(el => el.id.toString() == userId)) {
@@ -242,6 +250,27 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
     });
 });
 
+router.put("/mergeAdmin/:mergeRequestor/:mergeTarget", (req, res) => {
+    let userId;
+    let target;
+
+    if(!ObjectID.isValid(req.params.mergeRequestor)) {
+        res.status(400).send("Invalid requestor id.");
+        return;
+    }
+    if(!ObjectID.isValid(req.params.mergeTarget)) {
+        res.status(400).send("Invalid target id.");
+        return;
+    }
+     dbGet.getGroup(req.params.mergeTarget).then(group => {
+        target = group;
+        return mergeUser(req, res, target, dbGet.getUser(req.params.mergeRequestor));
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
+
 function mergeGroups(req, res, target, promise) {
     let requestor;
     return promise.then(group => {
@@ -271,6 +300,7 @@ function mergeGroups(req, res, target, promise) {
 
 function mergeUser(req, res, target, promise) {
     let requestor;
+
     return promise.then(user => {
         requestor = user;
         if(target.members.length + 1 > target.maxMembers) {
@@ -278,9 +308,9 @@ function mergeUser(req, res, target, promise) {
         }
         return dbGet.getAssignment(target.assignment);
     }).then(assignment => {
-        if(assignment.groups.find(el => user.groups.find(el2 => el.toString() == el2.toString()))) {
-            throw "User cannot be merged because they are already in a group!";
-        }
+    //    if(assignment.groups.find(el => user.groups.find(el2 => el.toString() == el2.toString()))) {
+    //        throw "User cannot be merged because they are already in a group!";
+    //    }
         target._doc.members.push(requestor._id);
         target.requests = target._doc.requests.filter(el => el.id.toString() != requestor._id.toString());
         // For every member in the requesting team, find the idea of the requestor in their groups list
@@ -307,7 +337,20 @@ router.get("/full/:id", (req, res) => {
         return dbGet.getAssignment(group.assignment);
     }).then(assignment => {
         group.assignment = assignment;
-        return getArrData(group.requests, dbGet.getGroup);
+        return getArrData(group.requests, request => {
+            let promise;
+            if(request.isUser) {
+                promise = dbGet.getUser(request.id).then(user => {
+                    return Promise.resolve(obfuscateUser(user));
+                });
+            } else {
+                promise = dbGet.getGroup(request.id);
+            }
+            return promise.then(obj => {
+                request._doc.id = obj;
+                return Promise.resolve(request._doc);
+            });
+        });
     }).then(requests => {
         group.requests = requests;
         return getArrData(group.members, dbGet.getUser);

@@ -5,12 +5,11 @@ const changeMembersForm = document.querySelector('#changeMembersForm');
 const changeCodeForm = document.querySelector('#changeCodeForm');
 const deleteClassForm = document.querySelector('#deleteClassForm');
 var varclass = {}
-
+var group = {}
 window.onload = getClassInfo;
 
 changeMembersForm.addEventListener('submit', changeMembers);
 changeNameForm.addEventListener('submit', changeName);
-changeCodeForm.addEventListener('submit', changeCode);
 deleteClassForm.addEventListener('submit', deleteClass);
 
 function deleteClass(e){
@@ -34,30 +33,49 @@ function changeMembers(e){
 function changeName(e){
 	e.preventDefault();
 	var name = changeNameForm.querySelector('#newName').value;
-	varclass.name = name;
-	displayClass();
-}
-
-function changeCode(e){
-	e.preventDefault();
-	var code = changeCodeForm.querySelector('#newCode').value;
-	varclass.code = code;
-	displayClass();
+	group.name = name;
+	fetch('/course/name/' + group._id, {
+		method: "PATCH",
+		headers: { 'Content-Type': "application/json" },
+		body: JSON.stringify({ name })
+	}).then(response => {
+		if(response.status === 200) {
+			return response.json();
+		}else{
+			throw response;
+		}
+	}).then(groupRes => {
+		group = groupRes;
+		displayClass();
+	}).catch(error => {
+		console.log(error);
+	})
 }
 
 
 function getClassInfo(){
 	let url = window.location.search.substring(1);
 
-		let parameters = url.split("&");
-		for(var i = 0; i < parameters.length; i++){
-			split = parameters[i].split("=");
-			varclass[split[0]] = decodeURI(split[1]);
-		}
-		console.log(varclass);
-		displayClass();
-	
+	let parameters = url.split("&");
+	for(var i = 0; i < parameters.length; i++){
+		split = parameters[i].split("=");
+		group[split[0]] = decodeURI(split[1]);
+	}
+	fetch('/course/' + group.id).then(response => {
+			if(response.status === 200) {
+					return response.json();
+			} else {
+					throw response;
+			}
+	}).then(groupRes => {
+			group = groupRes;
+				displayClass();
+	}).catch(error => {
+			console.error(error)
+	})
+
 }
+
 
 
 
@@ -67,10 +85,8 @@ function displayClass(){
 	<div id = "innerWrapper">
 		<div id = "varclassDisplay" class = "varclass-entry">
 			<div id = "varclassInfo">
-				<p><b>Code:</b> ${varclass.code}</p>
-				<p><b>Name:</b> ${varclass.name}</p>
-				<p><b>Number of Members:</b> ${varclass.members}</p>
-				<p><b>Last Active:</b> ${varclass.active}</p>
+				<p><b>Code:</b> ${group.name}</p>
+				<p><b>Number of Members:</b> ${group.members.length}</p>
 			</div>
 		</div>
 	</div>
@@ -79,4 +95,3 @@ function displayClass(){
 	let display = document.getElementById('allDisplays');
 	display.innerHTML = markup;
 }
-
