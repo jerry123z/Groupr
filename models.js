@@ -54,6 +54,10 @@ const Notification = mongoose.model("Notification", {
     action: {
         type: String,
         required: true
+    },
+    date: {
+        type: Date,
+        required: true
     }
 });
 
