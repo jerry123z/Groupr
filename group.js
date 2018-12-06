@@ -242,6 +242,27 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
     });
 });
 
+router.put("/mergeAdmin/:mergeRequestor/:mergeTarget", (req, res) => {
+    let userId;
+    let target;
+
+    if(!ObjectID.isValid(req.params.mergeRequestor)) {
+        res.status(400).send("Invalid requestor id.");
+        return;
+    }
+    if(!ObjectID.isValid(req.params.mergeTarget)) {
+        res.status(400).send("Invalid target id.");
+        return;
+    }
+     dbGet.getGroup(req.params.mergeTarget).then(group => {
+        target = group;
+        return mergeUser(req, res, target, dbGet.getUser(req.params.mergeRequestor));
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
+
 function mergeGroups(req, res, target, promise) {
     let requestor;
     return promise.then(group => {
@@ -271,6 +292,7 @@ function mergeGroups(req, res, target, promise) {
 
 function mergeUser(req, res, target, promise) {
     let requestor;
+
     return promise.then(user => {
         requestor = user;
         if(target.members.length + 1 > target.maxMembers) {
@@ -278,9 +300,9 @@ function mergeUser(req, res, target, promise) {
         }
         return dbGet.getAssignment(target.assignment);
     }).then(assignment => {
-        if(assignment.groups.find(el => user.groups.find(el2 => el.toString() == el2.toString()))) {
-            throw "User cannot be merged because they are already in a group!";
-        }
+    //    if(assignment.groups.find(el => user.groups.find(el2 => el.toString() == el2.toString()))) {
+    //        throw "User cannot be merged because they are already in a group!";
+    //    }
         target._doc.members.push(requestor._id);
         target.requests = target._doc.requests.filter(el => el.id.toString() != requestor._id.toString());
         // For every member in the requesting team, find the idea of the requestor in their groups list

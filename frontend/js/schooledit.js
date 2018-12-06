@@ -1,14 +1,12 @@
 // global arrays
 const classes = [] // Array of books owned by the library (whether they are loaned or not)
 const changeNameForm = document.querySelector('#changeNameForm');
-const deleteSchoolForm = document.querySelector('#deleteSchoolForm');
 var school = {}
 var group = {}
 
 window.onload = getSchoolInfo;
 
 changeNameForm.addEventListener('submit', changeName);
-deleteSchoolForm.addEventListener('submit', deleteSchool);
 
 function deleteSchool(e){
 	e.preventDefault();
@@ -36,7 +34,6 @@ function changeName(e){
 			throw response;
 		}
 	}).then(groupRes => {
-		console.log(groupRes)
 		group = groupRes;
 		displaySchool();
 	}).catch(error => {

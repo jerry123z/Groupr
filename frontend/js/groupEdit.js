@@ -6,7 +6,7 @@ const addMemberForm = document.querySelector('#addMemberForm');
 var group = {}
 var groupMembers = []
 window.onload = getGroupInfo;
-
+var saveUser = {}
 changeNameForm.addEventListener('submit', changeName);
 deleteGroupForm.addEventListener('submit', deleteGroup);
 addMemberForm.addEventListener('submit', addMember);
@@ -77,7 +77,6 @@ function deleteMember(e){
 				}
 		}).then(groupRes => {
 				group = groupRes;
-				getGroupMembers(group.members);
 				displayGroup();
 		}).catch(error => {
 				console.error(error)
@@ -90,15 +89,32 @@ function deleteMember(e){
 
 function addMember(e){
 	e.preventDefault();
-	var members = addMemberForm.querySelector('#newMember').value;
-	console.log(members)
-	groupMembers.push(members);
-	displayMembers();
+	var email = addMemberForm.querySelector('#newMember').value;
+
+	fetch('/user/email/' + email).then(response => {
+		if(response.status === 200) {
+				return response.json();
+		} else {
+				throw response;
+		}
+	}).then(user => {
+		return fetch('/group/mergeAdmin/' + user[0]._id + '/' + group._id, {
+			method: "PUT"})
+	}).then(response => {
+		if(response.status === 200) {
+				return response.json();
+		} else {
+				throw response;
+		}
+	}).then(vargroup => {
+		getGroupInfo();
+	}).catch(error => {
+		console.error(error);
+	})
 }
 
 function getGroupInfo(){
 	let url = window.location.search.substring(1);
-
 	let parameters = url.split("&");
 	for(var i = 0; i < parameters.length; i++){
 		split = parameters[i].split("=");
@@ -112,8 +128,9 @@ function getGroupInfo(){
 			}
 	}).then(groupRes => {
 			group = groupRes;
-			getGroupMembers(group.members);
 			displayGroup();
+			getGroupMembers(group.members);
+			displayMembers()
 	}).catch(error => {
 			console.error(error)
 	})
