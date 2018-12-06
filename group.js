@@ -378,4 +378,15 @@ router.patch("/remove/", (req, res) => {
         res.status(400).send(error);
     })
 })
+
+router.patch("/add", (req, res) => {
+    const groupId = req.body.groupId;
+    const userId = req.body.userId;
+
+    dbEdit.addUserToGroup(groupId, userId).then(user => {
+        res.send(user);
+    }).catch(error => {
+        res.status(400).send(error);
+    })
+})
 module.exports = router
