@@ -29,8 +29,21 @@ function editUser(id, email, name, schoolId, isAdmin){
     })
 }
 
-function editSchool(){
-
+function editSchool(id, name){
+	 return new Promise((resolve, reject)=>{
+        if(!(ObjectID.isValid(id)))
+        {
+            reject("getUser: Invalid id provided: " + id);
+        }
+        const properties = {
+            name: name
+        }
+        School.findByIdAndUpdate(id, {$set: properties}).then((school) => {
+            resolve(school);
+        }).catch(error => {
+            reject("editSchool: " + JSON.stringify(error));
+        });
+    })
 }
 
 function editCourse(id, name, schoolId){
@@ -58,7 +71,6 @@ function editGroup(id, name, description, maxMembers){
         {
             reject("editGroup: Invalid id provided: " + id);
         }
-        console.log(description)
         const properties = {
             name:name,
             description:description,
@@ -75,6 +87,7 @@ function editGroup(id, name, description, maxMembers){
 
 module.exports = {
     editUser,
-    editCourse,
-    editGroup
+	editSchool,
+	editCourse,
+	editGroup
 }

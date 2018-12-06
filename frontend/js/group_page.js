@@ -56,7 +56,7 @@ const $requestsRow = $("#requests-container").find(".row");
 
 // Set user's group (top of the page) to group.
 // If group is null, remove the group container from the page.
-function setUserGroup(group) {
+function setUserGroup(group, user) {
     if (!group) {
         $("#group-container").remove();
     } else {
@@ -64,21 +64,21 @@ function setUserGroup(group) {
         const $numMembersContainer = $("#number-members-container");
         // adding all filled-in icons
         let i;
-        for (i = 0; i < group.numMembers; i++) {
+        for (i = 0; i < group.members.length; i++) {
             let $icon = $("<img>", {class: "big-user-icon",
                                      src:"content/person_filled.png"});
             $numMembersContainer.append($icon);
         }
         // adding all unfilled icons
-        for (; i < maxNumMembers; i++) {
+        for (; i < group.maxMembers; i++) {
             const $icon = $("<img>", {class: "big-user-icon",
                                       src: "content/person_unfilled.png"});
             $numMembersContainer.append($icon);
         }
         // Add the member list. Also put a crown next to the owner and make the user blue.
         const membersList = group.members.map(member => {
-            const kick = user._id == owner._id ? `<img data-uid='${member._id}' class='member_kick' src='content/kick.png'>` : ``;
-            const crown = member._id == owner._id ? `<img class='member_crown' src='content/crown.png'>` : ``;
+            const kick = user._id == group.owner ? `<img data-uid='${member._id}' class='member_kick' src='content/kick.png'>` : ``;
+            const crown = member._id == group.owner ? `<img class='member_crown' src='content/crown.png'>` : ``;
             return member._id == user._id ? $(`<li class='member_you'> ${member.name} ${crown} ${kick} </li>`) : $(`<li> ${member.name} ${crown} ${kick} </li>`);
         });
         // Attach the member list.
@@ -91,8 +91,7 @@ function setUserGroup(group) {
         });
         
         // Attach the requirement list.
-        const requirementList = group.requirements.map(requirement => `<li>${requirement}</li>`);
-        $("#posting_requirements").append(requirementList.join(""));
+        $("#posting_requirements").text(group.description);
         if(group.members.find((member) => member._id == user._id))
         {
             $('#requestJoinButton').remove();
@@ -122,13 +121,13 @@ function addRequest(group) {
 
     // adding all filled-in icons
     let i;
-    for (i = 0; i < group.numMembers; i++) {
+    for (i = 0; i < group.members.length; i++) {
         const $icon = $("<img>", {class: "small-user-icon",
                                   src: "content/person_filled.png"});
         $numMembersContainer.append($icon);
     }
     // adding all unfilled icons
-    for (; i < maxNumMembers; i++) {
+    for (; i < group.maxMembers; i++) {
         const $icon = $("<img>", {class: "small-user-icon",
                                   src: "content/person_unfilled.png"});
         $numMembersContainer.append($icon);
@@ -143,37 +142,37 @@ function addRequest(group) {
     $requestsRow.append($col);
 }
 
-function setupMergeModal()
+function setupMergeModal(user)
 {
     $('#requestModal').on('show.bs.modal', event => {
         const button = $(event.relatedTarget);
         const gid = button.data('gid');
-        openMergeModal(groupRequests.filter(group => group._id == gid)[0]);
+        openMergeModal(group.requests.find(group => group._id == gid), user);
     });
 }
 
-function openMergeModal(group) {
+function openMergeModal(group, user) {
     $("#requestModalLabel").text(group.name);
     $("#requestModalLabel").attr('href', "group_page.html?gid=" + group._id);
     const $numMembersContainer = $("#request-members-icons");
     $numMembersContainer.empty();
     // adding all filled-in icons
     let i;
-    for (i = 0; i < group.numMembers; i++) {
+    for (i = 0; i < group.members.length; i++) {
         let $icon = $("<img>", {class: "big-user-icon",
                                     src:"content/person_filled.png"});
         $numMembersContainer.append($icon);
     }
     // adding all unfilled icons
-    for (; i < maxNumMembers; i++) {
+    for (; i < group.maxMembers; i++) {
         const $icon = $("<img>", {class: "big-user-icon",
                                     src: "content/person_unfilled.png"});
         $numMembersContainer.append($icon);
     }
     // Add the member list. Also put a crown next to the owner and make the user blue.
     const membersList = group.members.map(member => {
-        const crown = member == owner ? `<img class='member_crown' src='content/crown.png'>` : ``;
-        return member == user ? `<li class='member_you'> ${member} ${crown} </li>` : `<li> ${member} ${crown} </li>`;
+        const crown = member._id == group.owner ? `<img class='member_crown' src='content/crown.png'>` : ``;
+        return member._id == user._id ? `<li class='member_you'> ${member} ${crown} </li>` : `<li> ${member} ${crown} </li>`;
     });
     // Attach the member list.
     const $memberContainer = $("#request-members").find("ul");
@@ -213,13 +212,44 @@ function setupEditNameButton(group)
     });
 }
 
-// Populate page with information on page load
-$(document).ready(function() {
-    setUserGroup(userGroup);
-    for (let i = 0; i < groupRequests.length; i++) {
-        addRequest(groupRequests[i]);
+function parseBody(response) {
+    if(response.status === 200) {
+        return response.json();
+    } else {
+        console.error(response.body);
+        return new Promise(resolve => {
+            resolve(null);
+        });
     }
-    addAvailability(userGroup);
-    setupMergeModal();
-    setupEditNameButton(userGroup);
+}
+
+function getData(group) {
+    return fetch("/group/full/" + group, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+// Populate page with information on page load
+$(document).on('loggedin', function(event, user) {
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results==null) {
+           return null;
+        }
+        return decodeURI(results[1]) || 0;
+    }
+    if(!$.urlParam["gid"]) {
+        window.location.replace("./profile.html");
+        return;
+    }
+
+    getData($.urlParam["gid"]).then(data => {
+        setUserGroup(group, user);
+        for (let i = 0; i < group.requests.length; i++) {
+            addRequest(group.requests[i]);
+        }
+        addAvailability(group);
+        setupMergeModal(user);
+        setupEditNameButton(group);
+    });
 });
