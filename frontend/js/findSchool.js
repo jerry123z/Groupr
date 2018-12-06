@@ -13,12 +13,8 @@ function editSchool(e){
 	e.preventDefault();
 	if(e.target.classList.contains('button')){
 		info = e.target.parentElement.parentElement.parentElement.parentElement.getElementsByTagName("p");
-		console.log(info);
-		name = info[0].textContent.split(":")[1].trim();
 
-		let ind = groups.findIndex(o => o.name == name);
-		console.log(name)
-		window.location.href = "schoolEdit.html?id=" + groups[ind]._id;
+		window.location.href = "schoolEdit.html?id=" + info[2].textContent;
 	}
 }
 
@@ -68,8 +64,8 @@ function displayUser(school){
 		<div id = "userDisplay" class = "school-entry">
 			<div id = "userInfo">
 				<p><b>Name:</b> ${school.name}</p>
-				<p><b>Number of Members:</b> ${school.members}</p>
-				<p><b>Last Updated:</b> ${school.active}</p>
+				<p><b>Number of Members:</b> ${school.members.length}</p>
+				<p hidden>${school._id}</p>
 			</div>
 			<div id = "buttons">
 				<div id = "innerWrapper">
