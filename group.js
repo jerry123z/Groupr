@@ -252,6 +252,27 @@ router.put("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
     });
 });
 
+router.put("/mergeAdmin/:mergeRequestor/:mergeTarget", (req, res) => {
+    let userId;
+    let target;
+
+    if(!ObjectID.isValid(req.params.mergeRequestor)) {
+        res.status(400).send("Invalid requestor id.");
+        return;
+    }
+    if(!ObjectID.isValid(req.params.mergeTarget)) {
+        res.status(400).send("Invalid target id.");
+        return;
+    }
+     dbGet.getGroup(req.params.mergeTarget).then(group => {
+        target = group;
+        return mergeUser(req, res, target, dbGet.getUser(req.params.mergeRequestor));
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+});
+
+
 function mergeGroups(req, res, target, promise) {
     let requestor;
     return promise.then(group => {
@@ -281,6 +302,7 @@ function mergeGroups(req, res, target, promise) {
 
 function mergeUser(req, res, target, promise) {
     let requestor;
+
     return promise.then(user => {
         requestor = user;
         if(target.members.length + 1 > target.maxMembers) {

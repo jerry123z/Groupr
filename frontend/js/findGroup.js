@@ -9,13 +9,10 @@ editUserForm.addEventListener('click', editUser);
 function editUser(e){
 	e.preventDefault();
 	if(e.target.classList.contains('button')){
-		info = e.target.parentElement.parentElement.parentElement.parentElement.getElementsByTagName("p");
-		console.log(info);
+		info = e.target.parentElement.parentElement.parentElement.getElementsByTagName("p");
 		name = info[0].textContent.split(":")[1].trim();
 
-		let ind = groups.findIndex(o => o.name == name);
-		console.log(name)
-		window.location.href = "groupEdit.html?id=" + groups[ind]._id;
+		window.location.href = "groupEdit.html?id=" + info[2].textContent;
 	}
 }
 
@@ -30,12 +27,12 @@ function searchUser(e) {
 		}
 		fetch('/group/name/' + name).then(response => {
 				if(response.status === 200) {
-						console.log(response)
 						return response.json();
 				} else {
 						throw response;
 				}
 		}).then(groupArray => {
+			console.log(groupArray);
 			groups = groupArray;
 			for(var i = 0; i < groupArray.length; i++){
 					displayUser(groupArray[i]);
@@ -54,6 +51,7 @@ function displayUser(group){
 			<div id = "groupInfo">
 				<p><b>Name:</b> ${group.name}</p>
 				<p><b>Number of Members:</b> ${group.members.length}</p>
+				<p hidden>${group._id}</p>
 			</div>
 			<div id = "buttons">
 				<div id = "innerWrapper">

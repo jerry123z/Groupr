@@ -3,7 +3,7 @@
 
 <head>
  	<meta charset="utf-8">
-    <title>Edit a group</title>
+    <title>Edit a Group</title>
     <link rel="stylesheet" type="text/css">
 	<link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/AdminSideNav.css" rel="stylesheet">
@@ -37,40 +37,45 @@
 						<span>Group</span>
 					</a>
 				</li>
+                <li class="nav-item">
+                    <a class="nav-link" href="findClass.html">
+                        <span>Class</span>
+                    </a>
+                </li>
 			</ul>
         </div>
 	</div>
-	
+
 	<div id="page">
 		<div id = "header">
 			<h1>Edit Group</h1>
 		</div>
-		
+
 		<div id = "group">
-		
+
 			<div id = "displayDelete">
 				<div id = "allDisplays">
 				</div>
-				
+
 				<div id = "deleteGroup">
 					<form id = "deleteGroupForm">
 						<input type = "submit" class = "big-button" class = "button" value = "Delete Group">
 					</form>
 				</div>
-				
-				
-			
+
+
+
 				<div id = "membersDisplay">
-					
+
 					<h3> Member List </h3>
 
-					
+
 				</div>
 			</div>
-			
-			
+
+
 			<div id = "changeForms">
-								
+
 				<div id = "ChangeName" class = "editValue">
 					<p class = "instructions">Enter a new group name</p>
 					<form id = "changeNameForm">
@@ -88,15 +93,17 @@
 				</div>
 
 			</div>
-			
-		</div>
-	
 
-		
+		</div>
+
+
+
 
 		<script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.bundle.min.js"></script>
 		<script type="text/javascript" src="js/groupEdit.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	</div>
+    <script src="js/EnforceLogin.js"></script>
 </body>
+</html>

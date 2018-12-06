@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Jerry Sucks</title>
+    <title>Edit a Class</title>
     <link rel="stylesheet" type="text/css">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/SideNav.css" rel="stylesheet">
@@ -34,6 +34,11 @@
 					<span>Group</span>
 				</a>
 			</li>
+            <li class="nav-item">
+                <a class="nav-link" href="findClass.html">
+                    <span>Class</span>
+                </a>
+            </li>
         </ul>
 
         <div id="content-wrapper">
@@ -43,45 +48,25 @@
             </div>
 			<div id = "page">
 				<div id = "varclass">
-			
+
                 <div id = "displayDelete">
                     <div id = "allDisplays">
                     </div>
 
-                    <div id = "deleteClass">
-                        <form id = "deleteClassForm">
-                            <input type = "submit" class = "big-button" class = "button" value = "Delete Class">
-                        </form>
-                    </div>
+    
                 </div>
 
 
                 <div id = "changeForms">
 
-                    <div id = "ChangeCode" class = "editValue">
-                        <p class = "instructions">Enter a new course code</p>
-                        <form id = "changeCodeForm">
-                            <input id = "newCode" type = "text" class = "searchTerm" placeholder = "Course Code">
-                            <input type = "submit" class = "button" value = "Change">
-                        </form>
-                    </div>
-
                     <div id = "ChangeName" class = "editValue">
                         <p class = "instructions">Enter a new name</p>
+                        <p class = "error" id="nameError" hidden>Invalid name</p>
                         <form id = "changeNameForm">
                             <input id = "newName" type = "text" class = "searchTerm" placeholder = "New Name">
                             <input type = "submit" class = "button" value = "Change">
                         </form>
                     </div>
-
-                    <div id = "changeMembers" class = "editValue">
-                        <p class = "instructions">Enter a new number</p>
-                        <form id = "changeMembersForm">
-                            <input id = "newMembers" type = "text" class = "searchTerm" placeholder = "Number of Members">
-                            <input type = "submit" class = "button" value = "Change">
-                        </form>
-                    </div>
-
 
 
                 </div>
@@ -95,4 +80,6 @@
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         </div>
     </div>
+    <script src="js/EnforceLogin.js"></script>
 </body>
+</html>

@@ -94,13 +94,17 @@ body{
 }
 
 .instructions{
-	font-weight: bold;	
+	font-weight: bold;
 }
 
 
 .editValue{
 	margin-top: 15px;
 	margin-bottom: 20px;
+}
+
+.error{
+	color: red;
 }
 
 .big-button{

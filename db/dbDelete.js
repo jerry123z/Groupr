@@ -59,6 +59,7 @@ function deleteGroup(groupId){
     })
 }
 
+
 function deleteMemberFromGroup(groupId, userId){
     return new Promise((resolve, reject) => {
         User.findByIdAndUpdate(userId, {$pull:{groups:groupId}},  {new: true}).then(user => {

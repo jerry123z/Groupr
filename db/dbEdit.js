@@ -38,7 +38,8 @@ function editSchool(id, name){
         const properties = {
             name: name
         }
-        School.findByIdAndUpdate(id, {$set: properties}).then((school) => {
+        School.findByIdAndUpdate(id, {$set: properties}, {new: true}).then((school) => {
+            console.log(school)
             resolve(school);
         }).catch(error => {
             reject("editSchool: " + JSON.stringify(error));
