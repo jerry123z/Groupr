@@ -55,9 +55,9 @@ const Notification = mongoose.model("Notification", {
         type: String,
         required: true
     },
-    date: {
+    created: {
         type: Date,
-        required: true
+        default: Date.now
     }
 });
 
