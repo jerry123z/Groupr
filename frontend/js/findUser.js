@@ -1,9 +1,8 @@
 // global arrays
-const users = [] // Array of books owned by the library (whether they are loaned or not)
 const userSearchForm = document.querySelector('#userSearchForm');
 const editUserForm = document.querySelector('#allDisplays');
 
-var groups = [];
+var users = [];
 
 userSearchForm.addEventListener('input', searchUser);
 editUserForm.addEventListener('click', editUser);
@@ -29,28 +28,48 @@ function searchUser(e) {
 			document.getElementById('allDisplays').innerHTML = "";
 			return;
 	}
-	console.log("@@@@@");
 	searchUsers(email)
-	console.log(groups);
 }
 
 function searchUsers(email) {
-
 	fetch('/user/email/' + email).then(response => {
 			if(response.status === 200) {
-					console.log(response)
 					return response.json();
 			} else {
 					throw response;
 			}
-	}).then(groupArray => {
-		groups = groupArray;
-		return groups
+	}).then(userArray => {
+		user = userArray
+		return userArray
+	}).then(userArray => {
+		return getSchoolNames(userArray) //race condition
+	}).then(userArray => {
+		userArray.forEach(u => displayUser(u))
 	}).catch(error => {
-			console.log(error)
+		console.error(error)
 	})
+}
 
 
+function getSchoolNames(userArray){
+	return new Promise(function(resolve, reject) {
+		for(let i = 0; i< userArray.length; i++){
+			fetch('/school/' + userArray[i].school).then(response => {
+					if(response.status === 200) {
+							return response.json();
+					} else {
+							throw response;
+					}
+			}).then((schoolObj) => {
+				userArray[i].school = schoolObj.name
+				if (i == userArray.length-1){
+					resolve(userArray)
+				}
+			}).catch(error => {
+				reject(error)
+			})
+		}
+	})
 }
 
 
