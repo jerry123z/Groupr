@@ -290,14 +290,43 @@ function removeMemberFromHTML(uid) {
 
 // Action on confirming within the warning modal
 $("#confirm-btn").click(() => {
-    const uid = $("#warningModal").attr("userId")
-    sendRemoveUserRequest(uid).then(res => {
-        removeMemberFromHTML(uid);
-        $("#warningModal").modal("hide");
-    }).catch(err => {
-        console.log(err);
-    });
+    // If the warning modal is warning before user leaves group
+    if ($("#warningModal").hasClass("leave")) {
+        // Delete the group is the user is the owner
+        if(userId == currentGroup.owner) {
+            sendDeleteGroupRequest().then(res => {
+                window.location.replace("./profile.html");
+            }).catch(err => {
+                console.log(err);
+            });
+        // Otherwise, simply delete the user
+        } else {
+            sendRemoveUserRequest(userId).then(res => {
+                window.location.replace("./profile.html");
+            }).catch(err => {
+                console.log(err);
+            });
+        }
+    // If the warning modal is warning before kicking a user
+    } else {
+        const uid = $("#warningModal").attr("userId")
+        sendRemoveUserRequest(uid).then(res => {
+            removeMemberFromHTML(uid);
+            $("#warningModal").modal("hide");
+        }).catch(err => {
+            console.log(err);
+        });
+    }
 })
+
+//Action on clicking the "leave group" button
+$("#leaveGroupButton").click(() => {
+    getGroupData(groupId).then(group => {
+        $("#warning-message").text(`Are you sure you'd like to leave ${group.name}?`)
+        $("#warningModal").addClass("leave")
+        $("#warningModal").modal("show");
+    });
+});
 
 
 function sendEditGroupRequest(name, description, schedule) {
@@ -349,6 +378,20 @@ function sendRemoveUserRequest(userToKickId) {
         method: "PATCH",
         headers: { 'Content-Type': "application/json" },
         body: JSON.stringify({ "groupId": currentGroup._id, "userId": userToKickId })
+    }).then((response) => {
+        if(response.status === 200) {
+            return Promise.resolve(response);
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(null);
+    });
+}
+
+function sendDeleteGroupRequest() {
+    return fetch("/group/" + groupId, {
+        method: "DELETE"
     }).then((response) => {
         if(response.status === 200) {
             return Promise.resolve(response);
