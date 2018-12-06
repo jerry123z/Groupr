@@ -83,7 +83,6 @@ function displayUser(user){
 				<p><b>Name:</b> ${user.name}</p>
 				<p><b>Email:</b> ${user.email}</p>
 				<p><b>School:</b> ${user.school}</p>
-				<p><b>Last Active:</b> ${user.active}</p>
 			</div>
 			<div id = "buttons">
 				<div id = "innerWrapper">
