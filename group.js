@@ -431,9 +431,9 @@ router.delete("/:id", (req, res) => {
     })
 })
 
-router.patch("/:group_id/remove/:user_id", (req, res) => {
-    const groupId = req.params.group_id;
-    const userId = req.params.user_id;
+router.patch("/remove/", (req, res) => {
+    const groupId = req.body.groupId;
+    const userId = req.body.userId;
 
     dbDelete.deleteMemberFromGroup(groupId, userId).then(user => {
         res.send(user)

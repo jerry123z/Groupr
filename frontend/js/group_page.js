@@ -374,7 +374,7 @@ function sendMergeRequest(mergeRequestorId) {
 }
 
 function sendRemoveUserRequest(userToKickId) {
-    return fetch("/group/" + currentGroup._id + "/remove/" + userToKickId, {
+    return fetch("./group/remove/", {
         method: "PATCH",
         headers: { 'Content-Type': "application/json" },
         body: JSON.stringify({ "groupId": currentGroup._id, "userId": userToKickId })
