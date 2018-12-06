@@ -11,6 +11,14 @@
 <body>
     <div id="wrapper">
         <ul id="nav" class="sidebar navbar-nav">
+          <li id="logout-btn" class="nav-item"><a class="nav-link" href="#"><span>Logout</span></a></li>
+          <li id="profile-item" class="nav-item"><a class="nav-link" href="./profile.html"><span>Profile</span></a></li>
+          <li id="course-divider"><div idclass="dropdown-divider"></div></li>
+          <li class="nav-item">
+            <a id="add-course-link" class="nav-link" data-toggle="modal" data-target="#addModal">
+              <span> Add Course </span>
+            </a>
+          </li>
         </ul>
         <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addAssignmentLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -45,8 +53,8 @@
             <div id="window-container" class="container">
                 <div class="row">
                     <div id="header" class="col">
-                        <h1 id="username"> Andriy Dzikh </h1>
-                        <h5 id="school"> University of Toronto </h5>
+                        <h1 id="username"></h1>
+                        <h5 id="school"></h5>
                     </div>
                 </div>
 

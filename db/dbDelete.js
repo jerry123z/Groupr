@@ -59,13 +59,12 @@ function deleteGroup(groupId){
     })
 }
 
+
 function deleteMemberFromGroup(groupId, userId){
     return new Promise((resolve, reject) => {
         User.findByIdAndUpdate(userId, {$pull:{groups:groupId}},  {new: true}).then(user => {
-            console.log(user)
             return Group.findByIdAndUpdate(groupId, {$pull:{members:userId}},  {new: true})
         }).then(group => {
-            console.log(group)
             resolve(group)
         }).catch(error => {
             reject("deleteMemberFromGroup " + JSON.stringify(error))

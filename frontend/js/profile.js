@@ -1,43 +1,22 @@
-const months = [ 'January', 'February', 'March', 'April', 'May', 'June',
-'July', 'August', 'September', 'October', 'November', 'December'];
-
-// hard-coded values (REQUIRES SERVER CALL TO OBTAIN)
-const allGroups = [
-    {groupId: 1, course: "CSC309", assignment: "Project", name: "Bullish Frogs", numMembers: 4, maxNumMembers: 5},
-    {groupId: 2, course: "CSC369", assignment: "A3", name: "Reckless Rhinos", numMembers: 1, maxNumMembers: 2},
-    {groupId: 3, course: "CSC301", assignment: "Project", name: "Joyful Jaguars", numMembers: 7, maxNumMembers: 7}
-];
+const months = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", "Aug.",
+                "Sept.", "Oct.", "Nov.", "Dec."];
 const allNotifications = [
     {username: "Priya", action: "joined", group: "Bullish Frogs", datetime: new Date("October 14, 2018 18:45:12") },
     {username: "Brennan", action: "left", group: "Reckless Rhinos", datetime: new Date("October 4, 2018 11:33:12") }
 ];
-const schedule = {
-    0: [['09:00', '11:00'], ['13:00', '16:00']],
-    1: [],
-    2: [['10:00', '12:00'], ['16:00', '19:00']],
-    3: [['13:00', '18:00']],
-    4: [['08:00', '11:00'], ['12:00', '13:00'], ['18:00', '20:00']],
-    5: [],
-    6: [['09:00', '12:00']]
-}
 
 // the row which holds all group entries
 const $groupsRow = $("#all-groups-container").find(".row");
 // the row which holds all notification entries
 const $notificationsRow = $("#notifications-container").find(".row");
-// the table which holds availability information
-const $availabilityTable = $("#schedule");
 
 // Add group to "All Groups" section of page.
-// "group" is an object with keys name, numMembers, and maxNumMembers.
-function addGroup(user, group) {
-    const course = user.courses.find(elem => elem._id == group.course);
-    const assignment = user.assignments.find(elem => elem._id == group.assignment);
+function addGroup(group) {
     // create all elements needed
     const $col = $("<div>", {class: "col-md-4"});
-    const $link = $("<a>", {href: `group_page.html?groupId=${group._id}`});
+    const $link = $("<a>", {href: `group_page.html?gid=${group._id}`});
     const $container = $("<div>", {class: "all-groups-entry entry card"});
-    const $title = $("<h5>").text(`${course.name} ${assignment.name}: ${group.name}`);
+    const $title = $("<h5>").text(`${group.course.name} ${group.assignment.name}: ${group.name}`);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
     // adding all filled-in icons
     let i;
@@ -115,8 +94,14 @@ function parseBody(response) {
     }
 }
 
-function getData(user) {
+function getUserData(user) {
     return fetch("/user/full/" + user, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function getGroupData(group) {
+    return fetch("/group/full/" + group, {
         method: "GET"
     }).then(parseBody);
 }
@@ -131,27 +116,17 @@ function addMessageCard(message, row) {
 
 // On page load
 $(document).on("loggedin", function(event, user) {
-    $.urlParam = function(name){
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        if (results==null) {
-           return null;
-        }
-        return decodeURI(results[1]) || 0;
-    }
-
-    getData($.urlParam('user') || user._id).then(userData => {
+    getUserData(user._id).then(userData => {
         $('#username').text(userData.name);
         $('#school').text(userData.school.name);
         // add groups to the page
-        $.each(userData.groups, (index, group) => addGroup(user, group));
-        if(userData.groups.length == 0){
-            addMessageCard("No groups!", $groupsRow);
-        }
+        userData.groups.forEach(group => {
+            getGroupData(group._id).then(groupData => {
+                addGroup(groupData);
+            })
+        });
         // add notifiations to the page (REQUIRES SERVER CALL)
         $.each(allNotifications, (index, n) => addNotification(n));
-        if(allNotifications.length == 0){
-            addMessageCard("No notifications!", $notificationsRow);
-        }
     }).catch(error => {
         console.error(error);
     });

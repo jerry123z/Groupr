@@ -1,17 +1,12 @@
 // global arrays
 const classes = [] // Array of books owned by the library (whether they are loaned or not)
 const changeNameForm = document.querySelector('#changeNameForm');
-const changeMembersForm = document.querySelector('#changeMembersForm');
-const changeActiveForm = document.querySelector('#changeActiveForm');
-const deleteSchoolForm = document.querySelector('#deleteSchoolForm');
 var school = {}
+var group = {}
 
 window.onload = getSchoolInfo;
 
-changeMembersForm.addEventListener('submit', changeMembers);
 changeNameForm.addEventListener('submit', changeName);
-changeActiveForm.addEventListener('submit', changeActive);
-deleteSchoolForm.addEventListener('submit', deleteSchool);
 
 function deleteSchool(e){
 	e.preventDefault();
@@ -22,41 +17,53 @@ function deleteSchool(e){
 }
 
 
-function changeMembers(e){
-	e.preventDefault();
-	var members = changeMembersForm.querySelector('#newMembers').value;
-	if(!isNaN(members)){
-		school.members = members;
-		displaySchool();
-	}
-}
+
 
 function changeName(e){
 	e.preventDefault();
 	var name = changeNameForm.querySelector('#newName').value;
-	school.name = name;
-	displaySchool();
+	group.name = name;
+	fetch('/school/name/' + group._id, {
+		method: "PATCH",
+		headers: { 'Content-Type': "application/json" },
+		body: JSON.stringify({ name })
+	}).then(response => {
+		if(response.status === 200) {
+			return response.json();
+		}else{
+			throw response;
+		}
+	}).then(groupRes => {
+		group = groupRes;
+		displaySchool();
+	}).catch(error => {
+		console.log(error);
+	})
 }
 
-function changeActive(e){
-	e.preventDefault();
-	var active = changeActiveForm.querySelector('#newActive').value;
-	school.active = active;
-	displaySchool();
-}
 
 
 function getSchoolInfo(){
 	let url = window.location.search.substring(1);
 
-		let parameters = url.split("&");
-		for(var i = 0; i < parameters.length; i++){
-			split = parameters[i].split("=");
-			school[split[0]] = decodeURI(split[1]);
-		}
-		console.log(school);
-		displaySchool();
-	
+	let parameters = url.split("&");
+	for(var i = 0; i < parameters.length; i++){
+		split = parameters[i].split("=");
+		group[split[0]] = decodeURI(split[1]);
+	}
+	fetch('/school/' + group.id).then(response => {
+			if(response.status === 200) {
+					return response.json();
+			} else {
+					throw response;
+			}
+	}).then(groupRes => {
+			group = groupRes;
+			displaySchool();
+	}).catch(error => {
+			console.error(error)
+	})
+
 }
 
 
@@ -67,9 +74,8 @@ function displaySchool(){
 	<div id = "innerWrapper">
 		<div id = "schoolDisplay" class = "school-entry">
 			<div id = "schoolInfo">
-				<p><b>Name:</b> ${school.name}</p>
-				<p><b>Number of Members:</b> ${school.members}</p>
-				<p><b>Last Active:</b> ${school.active}</p>
+				<p><b>Name:</b> ${group.name}</p>
+				<p><b>Number of Members:</b> ${group.members.length}</p>
 			</div>
 		</div>
 	</div>
@@ -78,4 +84,3 @@ function displaySchool(){
 	let display = document.getElementById('allDisplays');
 	display.innerHTML = markup;
 }
-

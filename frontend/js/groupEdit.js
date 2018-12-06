@@ -1,13 +1,12 @@
 // global arrays
-var groupMembers = ['Priya', 'Jerry', 'Brennan', 'Andriy'] // Array of books owned by the library (whether they are loaned or not)
 const changeNameForm = document.querySelector('#changeNameForm');
 const deleteClassForm = document.querySelector('#deleteClassForm');
 const memberDisplayForm = document.querySelector('#membersDisplay');
 const addMemberForm = document.querySelector('#addMemberForm');
 var group = {}
-
+var groupMembers = []
 window.onload = getGroupInfo;
-
+var saveUser = {}
 changeNameForm.addEventListener('submit', changeName);
 deleteGroupForm.addEventListener('submit', deleteGroup);
 addMemberForm.addEventListener('submit', addMember);
@@ -62,13 +61,26 @@ function deleteMember(e){
 	e.preventDefault();
 	if(e.target.classList.contains('button')){
 		info = e.target.parentElement.getElementsByTagName("p");
-		console.log(info);
 		name = info[0].textContent.trim();
-		console.log(name);
-		let ind = groupMembers.findIndex(o => o == name);
-		console.log(ind)
-		groupMembers.splice(ind, 1)
-		console.log(groupMembers);
+		let ind = groupMembers.findIndex(user => user.name == name);
+		let groupId = group._id
+		let userId = groupMembers[ind]._id
+		fetch("./group/remove", {
+			method:"PATCH",
+			headers: { 'Content-Type': "application/json" },
+	        body: JSON.stringify({ groupId, userId })
+		}).then(response => {
+				if(response.status === 200) {
+						return response.json();
+				} else {
+						throw response;
+				}
+		}).then(groupRes => {
+				group = groupRes;
+				displayGroup();
+		}).catch(error => {
+				console.error(error)
+		})
 	}
 	displayMembers();
 	group.members = groupMembers.length;
@@ -77,24 +89,39 @@ function deleteMember(e){
 
 function addMember(e){
 	e.preventDefault();
-	var members = addMemberForm.querySelector('#newMember').value;
-	console.log(members)
-	groupMembers.push(members);
-	displayMembers();
+	var email = addMemberForm.querySelector('#newMember').value;
+
+	fetch('/user/email/' + email).then(response => {
+		if(response.status === 200) {
+				return response.json();
+		} else {
+				throw response;
+		}
+	}).then(user => {
+		return fetch('/group/mergeAdmin/' + user[0]._id + '/' + group._id, {
+			method: "PUT"})
+	}).then(response => {
+		if(response.status === 200) {
+				return response.json();
+		} else {
+				throw response;
+		}
+	}).then(vargroup => {
+		getGroupInfo();
+	}).catch(error => {
+		console.error(error);
+	})
 }
 
 function getGroupInfo(){
 	let url = window.location.search.substring(1);
-
 	let parameters = url.split("&");
 	for(var i = 0; i < parameters.length; i++){
 		split = parameters[i].split("=");
 		group[split[0]] = decodeURI(split[1]);
 	}
-	console.log(group);
 	fetch('/group/' + group.id).then(response => {
 			if(response.status === 200) {
-					console.log(response)
 					return response.json();
 			} else {
 					throw response;
@@ -102,19 +129,43 @@ function getGroupInfo(){
 	}).then(groupRes => {
 			group = groupRes;
 			displayGroup();
-			displayMembers();
+			getGroupMembers(group.members);
+			displayMembers()
 	}).catch(error => {
-			console.log(error)
+			console.error(error)
 	})
 
 }
 
 
+function getGroupMembers(idArray){
+	groupMembers = []
+	for(let i = 0; i<idArray.length; i++){
+		fetch('/user/'+ idArray[i], {
+			method:"GET"
+		}).then((response) => {
+			if(response.status === 200) {
+					return response.json();
+			} else {
+					throw response;
+			}
+		}).then((member) =>{
+			groupMembers.push(member)
+			displayMembers()
+		}).catch(error => {
+			console.error(error)
+		})
+	}
+	if (idArray.length == 0){
+		displayMembers()
+	}
+}
+
 function displayMembers(){
 	let display = document.getElementById('membersDisplay');
 	display.innerHTML = "<hr><h3> Member List </h3>"
 	for(var i = 0; i < groupMembers.length; i++){
-		member = groupMembers[i];
+		member = groupMembers[i].name;
 		let markup = `
 		<div id = allMembers>
 			<p class = "memberName">${member}</p>

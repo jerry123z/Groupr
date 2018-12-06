@@ -94,8 +94,12 @@ body{
 	outline: none;
 }
 
+.error{
+	color: red;
+}
+
 .instructions{
-	font-weight: bold;	
+	font-weight: bold;
 }
 
 
