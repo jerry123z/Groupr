@@ -65,7 +65,7 @@ function editCourse(id, name, schoolId){
     })
 }
 
-function editGroup(id, name, description, maxMembers){
+function editGroup(id, name, description, schedule, maxMembers){
     return new Promise((resolve, reject)=>{
         if(!(ObjectID.isValid(id)))
         {
@@ -74,6 +74,7 @@ function editGroup(id, name, description, maxMembers){
         const properties = {
             name:name,
             description:description,
+            schedule:schedule,
             maxMembers:maxMembers
         }
 

@@ -370,6 +370,24 @@ router.patch("/description/:id", (req, res) => {
     });
 })
 
+router.patch("/:id", (req, res) => {
+    const id = req.params.id
+    const groupInfo = {
+        "name": req.body.name,
+        "description": req.body.description,
+        "schedule": req.body.schedule
+    }
+
+    dbGet.getGroup(id).then(group => {
+        return dbEdit.editGroup(group._id, groupInfo.name, groupInfo.description,
+             groupInfo.schedule, group.maxMembers);
+    }).then(group => {
+        res.send(group)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
 router.delete("/:id", (req, res) => {
     const id = req.params.id
     dbDelete.deleteGroup(req.params.id).then(group => {
