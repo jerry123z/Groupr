@@ -29,14 +29,14 @@ function editUser(e){
 		name = info[0].textContent.split(":")[1].trim();
 		members = info[1].textContent.split(":")[1].trim();
 		active = info[2].textContent.split(":")[1].trim();
-		window.location.href = "groupEdit.html?name=" + name + "&members=" + members + "&active=" + active;	
+		window.location.href = "groupEdit.html?name=" + name + "&members=" + members + "&active=" + active;
 	}
 }
 
 
 function searchUser(e) {
 	e.preventDefault();
-	
+
 	document.getElementById('allDisplays').innerHTML = "";
 	let name = groupSearchForm.querySelector('#groupName').value;
 	if(name == ""){
@@ -67,7 +67,7 @@ function displayUser(group){
 		</div>
 	</div>
 	`;
-	
+
 	let display = document.getElementById('allDisplays');
 	display.innerHTML += markup;
 }
