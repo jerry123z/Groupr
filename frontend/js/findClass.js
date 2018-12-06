@@ -12,12 +12,8 @@ function editUser(e){
 	e.preventDefault();
 	if(e.target.classList.contains('button')){
 		info = e.target.parentElement.parentElement.parentElement.parentElement.getElementsByTagName("p");
-		console.log(info);
-		name = info[0].textContent.split(":")[1].trim();
+		window.location.href = "classEdit.html?id=" + info[2].textContent;
 
-		let ind = groups.findIndex(o => o.name == name);
-		console.log(name)
-		window.location.href = "classEdit.html?id=" + groups[ind]._id;
 	}
 }
 
@@ -30,10 +26,8 @@ function searchUser(e) {
 			document.getElementById('allDisplays').innerHTML = "";
 			return;
 	}
-	console.log("@@@@@");
 	fetch('/course/name/' + name).then(response => {
 			if(response.status === 200) {
-					console.log(response)
 					return response.json();
 			} else {
 					throw response;
@@ -55,6 +49,7 @@ function displayUser(varclass){
 			<div id = "classInfo">
 				<p><b>Name:</b> ${varclass.name}</p>
 				<p><b>Number of Members:</b> ${varclass.members.length}</p>
+				<p hidden>${varclass._id}</p>
 			</div>
 			<div id = "buttons">
 				<div id = "innerWrapper">
