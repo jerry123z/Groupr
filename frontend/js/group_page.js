@@ -376,10 +376,8 @@ function sendMergeRequest(mergeRequestorId) {
 }
 
 function sendRemoveUserRequest(userToKickId) {
-    return fetch("./group/remove/", {
-        method: "PATCH",
-        headers: { 'Content-Type': "application/json" },
-        body: JSON.stringify({ "groupId": currentGroup._id, "userId": userToKickId })
+    return fetch("/group/" + groupId + "/remove/" + userToKickId, {
+        method: "PATCH"
     }).then((response) => {
         if(response.status === 200) {
             return Promise.resolve(response);
