@@ -3,10 +3,58 @@ const classes = [] // Array of books owned by the library (whether they are loan
 const classSearchForm = document.querySelector('#classSearchForm');
 const editUserForm = document.querySelector('#allDisplays');
 
-let groups = [];
+let schoolsArray = []
 
 classSearchForm.addEventListener('input', searchUser);
 editUserForm.addEventListener('click', editUser);
+createCourseForm.addEventListener('submit', addCourse);
+
+function create_signup_schools(schools) {
+    schools.forEach(school => {
+        $("#create-school").append($("<option></option>").val(school._id).text(school.name));
+    });
+}
+
+$('document').ready(function () {
+	fetch('/school', {
+		method: "GET",
+		headers: { 'Content-Type': "application/json" }
+	}).then((response) => {
+		if(response.status === 200) {
+			return response.json();
+		} else {
+			throw response;
+		}
+	}).then(json => {
+		create_signup_schools(json);
+	}).catch(error => {
+		console.log(error)
+	})
+})
+
+function addCourse(e){
+	e.preventDefault();
+	var name = createCourseForm.querySelector('#newCourseName').value;
+	var school = createCourseForm.querySelector('#create-school').value;
+	console.log(school)
+	fetch('/course/'+school, {
+		method: "POST",
+		headers: { 'Content-Type': "application/json" },
+		body: JSON.stringify({ name })
+	}).then(response => {
+		if(response.status === 200) {
+			return response.json();
+		}else{
+			throw response;
+		}
+	}).then(groupRes => {
+		if (document.getElementById("createResponse").hasAttribute("hidden")){
+        	document.getElementById("createResponse").removeAttribute("hidden")
+		}
+	}).catch(error => {
+		document.getElementById("createError").innerHTML = error
+	})
+}
 
 function editUser(e){
 	e.preventDefault();

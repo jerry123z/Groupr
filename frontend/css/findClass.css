@@ -78,6 +78,19 @@ body{
 	cursor: pointer;
 }
 
+.buttonAdd{
+	display: inline-block;
+	border: 3px solid #5f7898;
+	border-radius: 5px;
+	outline: none;
+}
+
+.buttonAdd:hover {
+	background-color: #EEEEEE;
+	color: black;
+	cursor: pointer;
+}
+
 
 .searchTerm {
 	margin-left: 25px;
@@ -87,5 +100,5 @@ body{
 }
 
 .instructions{
-	font-weight: bold;	
+	font-weight: bold;
 }
