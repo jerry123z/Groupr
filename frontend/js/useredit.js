@@ -4,6 +4,7 @@ const changeNameForm = document.querySelector('#changeNameForm');
 const changeEmailForm = document.querySelector('#changeEmailForm');
 const changeSchoolForm = document.querySelector('#changeSchoolForm');
 const deleteUserForm = document.querySelector('#deleteUserForm');
+const promoteForm = document.querySelector('#promoteForm')
 var userId
 var user
 
@@ -14,6 +15,29 @@ changeNameForm.addEventListener('submit', changeName);
 changeSchoolForm.addEventListener('submit', changeSchool);
 deleteUserForm.addEventListener('submit', deleteUser);
 document.querySelector('#logout').addEventListener('click', logout);
+promoteForm.addEventListener('submit', promoteUser);
+
+
+function promoteUser(e){
+	e.preventDefault();
+	fetch("/user/admin/"+userId, {
+		method:"PATCH",
+		headers: { 'Content-Type': "application/json" },
+		body: JSON.stringify({ isAdmin:true })
+	}).then(response => {
+		if(response.status === 200) {
+				return response.json();
+		} else {
+				throw response;
+		}
+	}).then(json => {
+		if (document.getElementById("promoteResponse").hasAttribute("hidden")){
+			document.getElementById("GiveAdmin").setAttribute("hidden", true)
+		}
+	}).catch(error => {
+		console.error(error)
+	})
+}
 
 function deleteUser(e){
 	e.preventDefault();
@@ -72,6 +96,7 @@ function changeEmail(e){
 		}
 		getUserInfo()
 	}).catch(error => {
+		console.error(error)
 	})
 }
 
@@ -175,4 +200,7 @@ function displayUser(){
 
 	let display = document.getElementById('allDisplays');
 	display.innerHTML = markup;
+	if (user.isAdmin){
+		document.getElementById("GiveAdmin").setAttribute("hidden", true)
+	}
 }

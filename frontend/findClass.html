@@ -54,14 +54,17 @@
 
 				<div id = "allDisplays">
 				</div>
+                <hr>
                 <div id = "createCourse">
                     <p class="instructions">Create a new Course</p>
                     <form id='createCourseForm'>
                         <p id="createResponse" hidden>Course created</p>
                         <p id="createError"></p>
-                        <input id='newCourseName' type="text" class="searchTerm" placeholder="Name">
                         <div class="form-group">
-                            <select class="form-control" id="create-school"></select>
+                            <input id='newCourseName' type="text" class="searchTerm" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <select class="searchDropdown" id="create-school"></select>
                         </div>
                         <input type = "submit" class = "buttonAdd" value = "Create">
                     </form>
