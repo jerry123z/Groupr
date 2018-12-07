@@ -8,6 +8,29 @@ let groups =[];
 userSearchForm.addEventListener('input', searchUser);
 editSchoolForm.addEventListener('click', editSchool);
 editSchoolForm.addEventListener('click', findClass);
+createSchoolForm.addEventListener('submit', addSchool);
+
+function addSchool(e){
+	e.preventDefault();
+	var name = createSchoolForm.querySelector('#newSchoolName').value;
+	fetch('/school', {
+		method: "POST",
+		headers: { 'Content-Type': "application/json" },
+		body: JSON.stringify({ name })
+	}).then(response => {
+		if(response.status === 200) {
+			return response.json();
+		}else{
+			throw response;
+		}
+	}).then(groupRes => {
+		if (document.getElementById("createResponse").hasAttribute("hidden")){
+        	document.getElementById("createResponse").removeAttribute("hidden")
+		}
+	}).catch(error => {
+		console.log(error);
+	})
+}
 
 function editSchool(e){
 	e.preventDefault();
