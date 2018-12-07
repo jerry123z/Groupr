@@ -6,21 +6,31 @@ var users = [];
 
 userSearchForm.addEventListener('input', searchUser);
 editUserForm.addEventListener('click', editUser);
+document.querySelector('#logout').addEventListener('click', logout);
 
 function editUser(e){
 	e.preventDefault();
 	if(e.target.classList.contains('button')){
 		info = e.target.parentElement.parentElement.parentElement.parentElement.getElementsByTagName("p");
-		name = info[0].textContent.split(":")[1].trim();
 		email = info[1].textContent.split(":")[1].trim();
-		school = info[2].textContent.split(":")[1].trim();
-		active = info[3].textContent.split(":")[1].trim();
+
 
 		let ind = users.findIndex(o => o.email == email);
 		window.location.href = "userEdit.html?id=" + users[ind]._id;
 	}
 }
-
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
+}
 function searchUser(e) {
 	e.preventDefault();
 	document.getElementById('allDisplays').innerHTML = "";

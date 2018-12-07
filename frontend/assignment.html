@@ -26,7 +26,7 @@
               <div class="modal-dialog" role="document">
                   <div class="modal-content">
                       <div class="modal-header">
-                          <h5 class="modal-title" id="addModalLabel">Add Assignment</h5>
+                          <h5 class="modal-title" id="addModalLabel">Add Course</h5>
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                           </button>
@@ -53,10 +53,12 @@
 
             <div id="content-wrapper">
 
-                <div class='assignment-block'>
-                    <div id='assignment-name'></div>
-                </div>
-                <div id="window-container" class="shadow-above">
+              <div class="row">
+                  <div id="header" class="col">
+                      <h1 id="assignment-header"> </h1>
+                  </div>
+              </div>
+                <div id="window-container">
                     <div id="page-container" class="container">
                         <!-- user group info -->
                         <div class="row">
@@ -103,7 +105,7 @@
                                 <label for="name-input"> Group Name: </label>
                                 <input id="name-input" type="text" required> </input>
                                 <label for="desc-input"> Group Description/Requirements (optional):</label>
-                                <textarea id="reqs-input" rows="5" cols="30"> </textarea>
+                                <textarea id="desc-input" rows="5" cols="30"> </textarea>
                                 <label for="schedule"> Group Meeting Schedule (optional): </label>
                                 <div id="schedule">
                                   <!-- schedule injected here -->

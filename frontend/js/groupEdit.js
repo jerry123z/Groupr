@@ -1,4 +1,5 @@
 // global arrays
+const email_regex = /[A-Za-z0-9\._]+@[A-Za-z0-9\._]+/;
 const changeNameForm = document.querySelector('#changeNameForm');
 const deleteClassForm = document.querySelector('#deleteClassForm');
 const memberDisplayForm = document.querySelector('#membersDisplay');
@@ -11,6 +12,7 @@ changeNameForm.addEventListener('submit', changeName);
 deleteGroupForm.addEventListener('submit', deleteGroup);
 addMemberForm.addEventListener('submit', addMember);
 memberDisplayForm.addEventListener('click', deleteMember);
+document.querySelector('#logout').addEventListener('click', logout);
 
 function deleteGroup(e){
 	e.preventDefault();
@@ -20,21 +22,28 @@ function deleteGroup(e){
 	document.getElementById("group").innerHTML = markup;
 }
 
-
-
-
-function changeMembers(e){
-	e.preventDefault();
-	var members = changeMembersForm.querySelector('#newMembers').value;
-	if(!isNaN(members)){
-		group.members = members;
-		displayGroup();
-	}
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
 }
-
 function changeName(e){
 	e.preventDefault();
 	var name = changeNameForm.querySelector('#newName').value;
+
+	if (name.length == 0) {
+		if (document.getElementById("nameError").hasAttribute("hidden")){
+        	document.getElementById("nameError").removeAttribute("hidden")
+			return
+		}
+    }
 	group.name = name;
 	fetch('/group/name/' + group._id, {
 		method: "PATCH",
@@ -48,11 +57,13 @@ function changeName(e){
 		}
 	}).then(groupRes => {
 		group = groupRes;
+		if (!document.getElementById("nameError").hasAttribute("hidden")){
+        	document.getElementById("nameError").setAttribute("hidden", true);
+		}
 		displayGroup();
 	}).catch(error => {
 		console.log(error);
 	})
-
 }
 
 
@@ -65,10 +76,8 @@ function deleteMember(e){
 		let ind = groupMembers.findIndex(user => user.name == name);
 		let groupId = group._id
 		let userId = groupMembers[ind]._id
-		fetch("./group/remove", {
-			method:"PATCH",
-			headers: { 'Content-Type': "application/json" },
-	        body: JSON.stringify({ groupId, userId })
+		return fetch("/group/" + groupId + "/remove/" + userId, {
+			method:"PATCH"
 		}).then(response => {
 				if(response.status === 200) {
 						return response.json();
@@ -78,6 +87,8 @@ function deleteMember(e){
 		}).then(groupRes => {
 				group = groupRes;
 				displayGroup();
+				getGroupMembers(group.members)
+				displayMembers();
 		}).catch(error => {
 				console.error(error)
 		})
@@ -90,6 +101,18 @@ function deleteMember(e){
 function addMember(e){
 	e.preventDefault();
 	var email = addMemberForm.querySelector('#newMember').value;
+
+	if (!email_regex.test(email)) {
+		if (document.getElementById("emailError").hasAttribute("hidden")){
+        	document.getElementById("emailError").removeAttribute("hidden")
+			return
+		}
+    } else if (email.length == 0) {
+		if (document.getElementById("emailError").hasAttribute("hidden")){
+        	document.getElementById("emailError").removeAttribute("hidden")
+			return
+		}
+    }
 
 	fetch('/user/email/' + email).then(response => {
 		if(response.status === 200) {
@@ -107,6 +130,9 @@ function addMember(e){
 				throw response;
 		}
 	}).then(vargroup => {
+		if (!(document.getElementById("emailError").hasAttribute("hidden"))){
+			document.getElementById("emailError").setAttribute("hidden", true);
+		}
 		getGroupInfo();
 	}).catch(error => {
 		console.error(error);
@@ -114,6 +140,7 @@ function addMember(e){
 }
 
 function getGroupInfo(){
+	
 	let url = window.location.search.substring(1);
 	let parameters = url.split("&");
 	for(var i = 0; i < parameters.length; i++){

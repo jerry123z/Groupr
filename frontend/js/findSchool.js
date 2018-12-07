@@ -8,6 +8,32 @@ let groups =[];
 userSearchForm.addEventListener('input', searchUser);
 editSchoolForm.addEventListener('click', editSchool);
 editSchoolForm.addEventListener('click', findClass);
+document.querySelector('#logout').addEventListener('click', logout);
+
+createSchoolForm.addEventListener('submit', addSchool);
+
+function addSchool(e){
+	e.preventDefault();
+	var name = createSchoolForm.querySelector('#newSchoolName').value;
+	fetch('/school', {
+		method: "POST",
+		headers: { 'Content-Type': "application/json" },
+		body: JSON.stringify({ name })
+	}).then(response => {
+		if(response.status === 200) {
+			return response.json();
+		}else{
+			throw response;
+		}
+	}).then(groupRes => {
+		if (document.getElementById("createResponse").hasAttribute("hidden")){
+        	document.getElementById("createResponse").removeAttribute("hidden")
+		}
+	}).catch(error => {
+		console.log(error);
+	})
+}
+
 
 function editSchool(e){
 	e.preventDefault();
@@ -16,6 +42,19 @@ function editSchool(e){
 
 		window.location.href = "schoolEdit.html?id=" + info[2].textContent;
 	}
+}
+
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
 }
 
 function findClass(e){
@@ -70,9 +109,6 @@ function displayUser(school){
 			<div id = "buttons">
 				<div id = "innerWrapper">
 					<button class = "button">Edit</button>
-				</div>
-				<div id = "innerWrapper">
-					<button class = "findClassButton">FindClass</button>
 				</div>
 			</div>
 		</div>

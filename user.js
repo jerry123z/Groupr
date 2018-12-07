@@ -13,6 +13,7 @@ const dbGet = require('./db/dbGet.js');
 const dbCreate = require('./db/dbCreate.js');
 const dbLogin = require('./db/dbLogin.js');
 const dbEdit = require('./db/dbEdit.js');
+const dbDelete = require('./db/dbDelete.js');
 
 const {getArrData, obfuscateUser} = require("./routeUtil.js");
 
@@ -243,12 +244,61 @@ router.patch("/admin/:id", (req, res) => {
 
 
 router.get("/email/:email", (req, res) => {
-	console.log(req.params.email);
 	dbGet.getUserByPartialEmail(req.params.email).then((users) => {
 		res.send(users);
 	}).catch((error) => {
 		res.status(400).send(error);
 	});
 });
+
+
+//Delete user
+router.delete("/:id", (req, res) => {
+    const id = req.params.id
+    let ownedGroups = [];
+    dbGet.getUser(id).then((user)=>{
+        return new Promise(function(resolve, reject) {
+            for(let i = 0; i< user.groups.length; i++){
+                //find groups they are an owner is of
+                dbGet.getGroup(user.groups[i]).then(group => {
+                    if (group.owner == id){
+                        ownedGroups.push(group._id)
+                    }
+                    if (i == user.groups.length-1){
+                        resolve(ownedGroups)
+                    }
+                }).catch(error =>{
+                    reject(error)
+                })
+            }
+            if (user.groups.length == 0){
+                resolve(ownedGroups)
+            }
+        })
+    }).then((groups) =>{
+        return new Promise(function(resolve, reject) {
+            if (groups.length == 0){
+                resolve(groups)
+            }
+            for(let i = 0; i < groups.length; i++){
+                dbEdit.newGroupOwnerOrDelete(groups[i], id).then(group =>{
+                    if (i == groups.length-1){
+                        resolve(groups)
+                    }
+                }).catch(error =>{
+                    reject(error)
+                })
+            }
+        })
+    }).then(groups=>{
+        console.log(id)
+        return dbDelete.deleteUser(id)
+    }).then(user=>{
+        console.log(user)
+        res.send(user)
+    }).catch(error => {
+        res.status(400).send(error)
+    })
+})
 
 module.exports = router

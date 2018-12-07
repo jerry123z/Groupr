@@ -4,9 +4,11 @@ const mongoose = require('mongoose');
 const { Token, User, School, Course, Assignment, Group } = require('../models.js');
 const bcrypt = require('bcryptjs');
 const dbGet = require('./dbGet.js');
+const dbDelete = require('./dbDelete.js');
 
 // Connect to mongo database.
-mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Groupr'
+mongoose.connect(mongoURI, { useNewUrlParser: true});
 
 function editUser(id, email, name, schoolId, isAdmin){
     return new Promise((resolve, reject)=>{
@@ -66,7 +68,7 @@ function editCourse(id, name, schoolId){
     })
 }
 
-function editGroup(id, name, description, maxMembers){
+function editGroup(id, name, description, schedule, maxMembers){
     return new Promise((resolve, reject)=>{
         if(!(ObjectID.isValid(id)))
         {
@@ -75,6 +77,7 @@ function editGroup(id, name, description, maxMembers){
         const properties = {
             name:name,
             description:description,
+            schedule:schedule,
             maxMembers:maxMembers
         }
 
@@ -86,9 +89,57 @@ function editGroup(id, name, description, maxMembers){
     })
 }
 
+//helper function
+function assignNewOwner(groupId, ownerId){
+    return new Promise((resolve, reject) => {
+        if(!(ObjectID.isValid(id)))
+        {
+            reject("editGroup: Invalid id provided: " + id);
+        }
+        const properties = {
+            owner:ownerId
+        }
+        Group.findByIdAndUpdate(id, {$set:properties}, {new: true}).then( group =>{
+            resolve(group)
+        }).catch((error) => {
+            reject(error)
+        })
+    })
+}
+
+
+//Call this right before deleting a user who is the owner
+function newGroupOwnerOrDelete(groupId, ownerId){
+    return new Promise((resolve, reject) => {
+        if(!(ObjectID.isValid(groupId))){
+            reject("newGroupOwner: Invalid groupId provided: " + groupId);
+        } else if (!(ObjectID.isValid(ownerId))) {
+            reject("newGroupOwner: Invalid ownerId provided: " + ownerId);
+        }
+        Group.findById(groupId).then((group)=>{
+            console.log(group)
+            if (group.members.length == 1 && group.members[0] == ownerId){
+                return dbDelete.deleteGroup(groupId)
+            } else {
+                for(let i = 0; i < group.memebers; i++){
+                    if (group.members[i] != ownerId){
+                        return assignNewOwner(groupId, group.memebers[i])
+                    }
+                }
+            }
+        }).then((group)=>{
+            resolve(group)
+        }).catch(error =>{
+            reject(error)
+        })
+    })
+}
+
 module.exports = {
     editUser,
 	editSchool,
 	editCourse,
-	editGroup
+	editGroup,
+    assignNewOwner,
+    newGroupOwnerOrDelete
 }

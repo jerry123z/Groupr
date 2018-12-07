@@ -13,6 +13,14 @@
 	display: inline-block;
 }
 
+#createAssignment{
+	float: left;
+	display: inline-block;
+	width: 300px;
+	margin-top: 15px;
+	margin-right: 100px;
+
+}
 
 #header{
 	display: flex;
@@ -95,7 +103,7 @@ body{
 }
 
 .instructions{
-	font-weight: bold;	
+	font-weight: bold;
 }
 
 
@@ -103,6 +111,10 @@ body{
 	margin-top: 15px;
 	background-color: #f1f2fa;
 	margin-bottom: 20px;
+}
+
+.error{
+	color: red;
 }
 
 .big-button{
@@ -115,6 +127,7 @@ body{
 	width: 130px;
 	height: 50px;
 }
+
 
 .big-button:hover {
 	background-color: #EEEEEE;

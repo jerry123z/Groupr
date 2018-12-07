@@ -77,7 +77,13 @@ router.post("/", (req, res) => {
 
 
 router.get("/name/:name", (req, res) => {
-	dbGet.getSchoolByPartialName(req.params.name).then((names) => {
+    dbLogin.verifyAdminRequest(req).then(valid => {
+        if(!valid)
+        {
+            throw "Admin not logged in!";
+        }
+        return dbGet.getSchoolByPartialName(req.params.name)
+    }).then((names) => {
 		res.send(names);
 	}).catch((error) => {
 		res.status(400).send(error);
@@ -88,7 +94,14 @@ router.get("/name/:name", (req, res) => {
 router.patch("/name/:id", (req, res) => {
 	const id = req.params.id
     const name = req.body.name
-    dbGet.getSchool(req.params.id).then(school => {
+
+    dbLogin.verifyAdminRequest(req).then(valid => {
+        if(!valid)
+        {
+            throw "Admin not logged in!";
+        }
+        dbGet.getSchool(req.params.id);
+    }).then(school => {
         return dbEdit.editSchool(id, name)
     }).then(school => {
         res.send(school)

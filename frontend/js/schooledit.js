@@ -7,6 +7,7 @@ var group = {}
 window.onload = getSchoolInfo;
 
 changeNameForm.addEventListener('submit', changeName);
+document.querySelector('#logout').addEventListener('click', logout);
 
 function deleteSchool(e){
 	e.preventDefault();
@@ -16,6 +17,19 @@ function deleteSchool(e){
 	document.getElementById("school").innerHTML = markup;
 }
 
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
+}
+
 
 
 
@@ -23,6 +37,12 @@ function changeName(e){
 	e.preventDefault();
 	var name = changeNameForm.querySelector('#newName').value;
 	group.name = name;
+	if (name.length == 0) {
+		if (document.getElementById("nameError").hasAttribute("hidden")){
+        	document.getElementById("nameError").removeAttribute("hidden")
+			return
+		}
+    }
 	fetch('/school/name/' + group._id, {
 		method: "PATCH",
 		headers: { 'Content-Type': "application/json" },
@@ -35,6 +55,9 @@ function changeName(e){
 		}
 	}).then(groupRes => {
 		group = groupRes;
+		if (!document.getElementById("nameError").hasAttribute("hidden")){
+        	document.getElementById("nameError").setAttribute("hidden", true);
+		}
 		displaySchool();
 	}).catch(error => {
 		console.log(error);
@@ -51,6 +74,7 @@ function getSchoolInfo(){
 		split = parameters[i].split("=");
 		group[split[0]] = decodeURI(split[1]);
 	}
+
 	fetch('/school/' + group.id).then(response => {
 			if(response.status === 200) {
 					return response.json();

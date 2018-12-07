@@ -13,13 +13,12 @@ changeEmailForm.addEventListener('submit', changeEmail);
 changeNameForm.addEventListener('submit', changeName);
 changeSchoolForm.addEventListener('submit', changeSchool);
 deleteUserForm.addEventListener('submit', deleteUser);
+document.querySelector('#logout').addEventListener('click', logout);
 
 function deleteUser(e){
 	e.preventDefault();
 
-	//TODO implement this
-	/*
-	fetch("/user/"+userId, {method:"DELETE"}.then(user => {
+	fetch("/user/"+userId, {method:"DELETE"}).then(user => {
 		let markup = `
 		<p><b>User successfully deleted</b></p>
 		`
@@ -27,10 +26,20 @@ function deleteUser(e){
 	}).catch(error => {
 		console.error(error)
 	})
-	*/
 }
 
-
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
+}
 function changeEmail(e){
 	e.preventDefault();
 	var email = changeEmailForm.querySelector('#newEmail').value;
