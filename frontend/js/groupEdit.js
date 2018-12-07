@@ -22,7 +22,8 @@ function deleteGroup(e){
 	document.getElementById("group").innerHTML = markup;
 }
 
-function logout() {
+function logout(e) {
+	e.preventDefault();
     fetch("/login", {
         method: "DELETE"
     }).then(response => {
@@ -140,7 +141,7 @@ function addMember(e){
 }
 
 function getGroupInfo(){
-	
+
 	let url = window.location.search.substring(1);
 	let parameters = url.split("&");
 	for(var i = 0; i < parameters.length; i++){

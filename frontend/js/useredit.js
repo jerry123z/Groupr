@@ -28,7 +28,8 @@ function deleteUser(e){
 	})
 }
 
-function logout() {
+function logout(e) {
+	e.preventDefault();
     fetch("/login", {
         method: "DELETE"
     }).then(response => {

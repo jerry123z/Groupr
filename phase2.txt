@@ -85,3 +85,8 @@ Routes:
         Logs a user in with the email and password in the body.
     DELETE /login
         Logs out the current user.
+
+Admin Functionality:
+Logging in with an admin account sends the user to the admin portion of the website. Using the nav bar they can search for any user, class, group, or school. Searching for one will filter by email for user or name for the rest.
+
+They can then edit their choice of user, class, group, or school by clicking on the edit button next to it. This will take them to a new edit page. 
