@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const { Token, User, School, Course, Assignment, Group } = require('../models.js');
 
 // Connect to mongo database.
-mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Groupr'
+mongoose.connect(mongoURI, { useNewUrlParser: true});
 
 function getUser(id) {
     return new Promise((resolve, reject) => {

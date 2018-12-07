@@ -4,7 +4,8 @@ const { Token, User, School, Course, Assignment, Group } = require('../models.js
 const bcrypt = require('bcryptjs');
 const dbGet = require('./dbGet.js');
 
-mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Groupr'
+mongoose.connect(mongoURI, { useNewUrlParser: true});
 
 
 function deleteCourseFromSchool(schoolId, courseId){

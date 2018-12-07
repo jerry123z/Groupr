@@ -6,7 +6,8 @@ const bcrypt = require('bcryptjs');
 const dbGet = require('./dbGet.js');
 
 // Connect to mongo database.
-mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Groupr'
+mongoose.connect(mongoURI, { useNewUrlParser: true});
 
 function createUser(email, password, name, schoolId, isAdmin) {
     // We start with looking up the school to ensure it is valid.
