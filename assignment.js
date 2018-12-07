@@ -46,10 +46,12 @@ router.post("/:school_id/:course_id", (req, res) => {
         if(!valid) {
             throw "Admin not logged in!";
         }
+        console.log(49)
         return dbCreate.createAssignment(assignment.name, assignment.school,
             assignment.course, assignment.maxMembers)
     })
     .then(assignment => {
+        console.log(54)
         dbGet.getCourse(assignment.course).then(course => {
             course._doc.assignments.push(assignment._id);
             course.save();

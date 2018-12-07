@@ -48,9 +48,19 @@
                     <div id = "allDisplays">
                     </div>
 
-                    <div id = "deleteClass">
-                        <form id = "deleteClassForm">
-                            <input type = "submit" class = "big-button" class = "button" value = "Delete Class">
+
+                    <div id = "createAssignment">
+                        <p class="instructions">Create a new assignment</p>
+                        <form id='createAssignmentForm'>
+                            <p id="createResponse" hidden>Assignment created</p>
+                            <p id="createError"></p>
+                            <div class="form-group">
+                                <input id='newAssignmentName' type="text" class="searchTerm" placeholder="Name">
+                            </div>
+                            <div class="form-group">
+                            <input id='newAssignmentMembers' type="text" class="searchTerm" placeholder="Max Members">
+                        </div>
+                            <input type = "submit" class = "button" value = "Create">
                         </form>
                     </div>
                 </div>
@@ -65,16 +75,6 @@
                             <input type = "submit" class = "button" value = "Change">
                         </form>
                     </div>
-
-                    <div id = "changeMembers" class = "editValue">
-                        <p class = "instructions">Enter a new number</p>
-                        <form id = "changeMembersForm">
-                            <input id = "newMembers" type = "text" class = "searchTerm" placeholder = "Number of Members">
-                            <input type = "submit" class = "button" value = "Change">
-                        </form>
-                    </div>
-
-
 
                 </div>
             </div>

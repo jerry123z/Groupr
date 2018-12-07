@@ -2,6 +2,7 @@
 const classes = [] // Array of books owned by the library (whether they are loaned or not)
 const classSearchForm = document.querySelector('#classSearchForm');
 const editUserForm = document.querySelector('#allDisplays');
+const createCourseForm = document.querySelector('#createCourseForm')
 
 let schoolsArray = []
 
