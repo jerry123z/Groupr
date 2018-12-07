@@ -28,9 +28,33 @@ function authenticate(email, password) {
     });
 }
 
+function adminAuthenticate(email, password) {
+    let user;
+    return User.findOne({email}).then(userRet => {
+        user = userRet;
+        return bcrypt.compare(password, user.passHash);
+    }, error => {
+        throw "Find user: " + error;
+    }).then(isValid => {
+        if(!isValid)
+        {
+            throw "bcrypt compare: Invalid password";
+        }
+        if (user.isAdmin == false){
+            throw "user is not an admin"
+        }
+        // Generate a salt as the token.
+        return bcrypt.genSalt();
+    }, error => {
+        throw "bcrypt compare: " + error;
+    }).then(token => {
+        return new Token({tokenHash: token, user: user._id}).save();
+    });
+}
+
 function verifyRequest(req) {
     if(!req.cookies.auth
-        || !req.cookies.auth.token 
+        || !req.cookies.auth.token
         || !ObjectID.isValid(req.cookies.auth.user))
     {
         return new Promise((resolve, reject) => {
@@ -44,7 +68,7 @@ function verifyRequest(req) {
 
 function verifyAdminRequest(req) {
     if(!req.cookies.auth
-        || !req.cookies.auth.token 
+        || !req.cookies.auth.token
         || !ObjectID.isValid(req.cookies.auth.user))
     {
         return new Promise((resolve, reject) => {
@@ -78,7 +102,7 @@ function verify(tokenHash, user) {
 
 function clearToken(req, res) {
     if(!req.cookies.auth
-        || !req.cookies.auth.token 
+        || !req.cookies.auth.token
         || !ObjectID.isValid(req.cookies.auth.user))
     {
         return new Promise((resolve, reject) => {
@@ -107,6 +131,7 @@ function clearUserTokens(user) {
 
 module.exports = {
     authenticate,
+    adminAuthenticate,
     verifyRequest,
     verify,
     verifyAdminRequest,

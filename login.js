@@ -52,6 +52,20 @@ router.post("/", (req, res) => {
     });
 });
 
+router.get("/admin", (req, res) =>{
+    dbLogin.verifyAdminRequest(req).then(userId => {
+        if(userId) {
+            return dbGet.getUser(userId);
+        } else {
+            throw "Bad token";
+        }
+    }).then(user => {
+        res.send(obfuscateUser(user));
+    }).catch(error => {
+        res.status(400).send("Invalid authentication: " + error);
+    });
+})
+
 router.delete("/", (req, res) => {
     dbLogin.clearToken(req, res).then(() => {
         res.send("Logged out.");
