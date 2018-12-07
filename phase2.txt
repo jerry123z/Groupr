@@ -1,14 +1,14 @@
-Heroku Link : https://fierce-falls-85016.herokuapp.com/
-
+Website URL: https://fierce-falls-85016.herokuapp.com/
 
 All users begin at the log in screen. Users can log in by typing their email and password if they have an account. If they do not, they can sign up be selecting "New Registration" and then entering their email, password, name and then selecting which school they go to.
 Once logged in, regular users will see their profile page. Here they can see all the groups they are a part of.
 On the side bar, users can log out as well as see a list of all of their courses. If they are not enrolled in any courses, they can add one by looking up its name. // TODO: Put example courses to join.
 Each course, once clicked on, will have a list of assignments that you will be a part of. Clicking on these will take you to the assignment page. Here you can see a list of all groups in the class. Clicking on any of these will take you to their respective group page.
-If you do not have a group, the header card will recommend you to create a group. Here you enter a name, and a description. The description explains what kind of teammates you are looking for in your team.
+If you do not have a group, the header card will recommend you to create a group. Here you enter a name, a description, and an availability sheet. The description explains what kind of teammates you are looking for in your team. The availability shows when your group would like to meet.
 Once your group is created, the assignment page will show you details about your group. Clicking on your group will take you to the group page.
 On the group page, if you are part of the group, you can leave the group at any point by clicking the "Leave Group" button.
-If you are not part of the group, you can request to join the group.
+If you are not part of the group, you can request to join the group. If you are the owner of a group in the same assignment, this will request your group to be merged.
+If you are the owner of the group, you can edit the group as well as see all the requests to your group. Clicking on any of these requests will show a dialog box to merge their group (or user) into your group. As the owner you can also kick teammates from your group.
 
 
 Admin Functionality:
