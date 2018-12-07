@@ -371,7 +371,13 @@ router.get("/:id", (req, res) => {
 });
 
 router.get("/name/:name", (req, res) => {
-	dbGet.getGroupByPartialName(req.params.name).then(groups =>{
+    dbLogin.verifyAdminRequest(req).then(valid => {
+        if(!valid)
+        {
+            throw "Admin not logged in!";
+        }
+        return dbGet.getGroupByPartialName(req.params.name);
+    }).then(groups =>{
 		res.send(groups);
 	}).catch((error) => {
 		res.status(400).send(error);

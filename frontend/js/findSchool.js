@@ -8,6 +8,8 @@ let groups =[];
 userSearchForm.addEventListener('input', searchUser);
 editSchoolForm.addEventListener('click', editSchool);
 editSchoolForm.addEventListener('click', findClass);
+document.querySelector('#logout').addEventListener('click', logout);
+
 createSchoolForm.addEventListener('submit', addSchool);
 
 function addSchool(e){
@@ -32,6 +34,7 @@ function addSchool(e){
 	})
 }
 
+
 function editSchool(e){
 	e.preventDefault();
 	if(e.target.classList.contains('button')){
@@ -39,6 +42,19 @@ function editSchool(e){
 
 		window.location.href = "schoolEdit.html?id=" + info[2].textContent;
 	}
+}
+
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
 }
 
 function findClass(e){

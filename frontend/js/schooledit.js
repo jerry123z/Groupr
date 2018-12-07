@@ -7,6 +7,7 @@ var group = {}
 window.onload = getSchoolInfo;
 
 changeNameForm.addEventListener('submit', changeName);
+document.querySelector('#logout').addEventListener('click', logout);
 
 function deleteSchool(e){
 	e.preventDefault();
@@ -14,6 +15,19 @@ function deleteSchool(e){
 	<p><b>School successfully deleted</b></p>
 	`
 	document.getElementById("school").innerHTML = markup;
+}
+
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
 }
 
 
@@ -60,7 +74,7 @@ function getSchoolInfo(){
 		split = parameters[i].split("=");
 		group[split[0]] = decodeURI(split[1]);
 	}
-	
+
 	fetch('/school/' + group.id).then(response => {
 			if(response.status === 200) {
 					return response.json();

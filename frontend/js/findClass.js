@@ -8,6 +8,9 @@ let schoolsArray = []
 
 classSearchForm.addEventListener('input', searchUser);
 editUserForm.addEventListener('click', editUser);
+
+document.querySelector('#logout').addEventListener('click', logout);
+
 createCourseForm.addEventListener('submit', addCourse);
 
 function create_signup_schools(schools) {
@@ -57,6 +60,7 @@ function addCourse(e){
 	})
 }
 
+
 function editUser(e){
 	e.preventDefault();
 	if(e.target.classList.contains('button')){
@@ -66,6 +70,18 @@ function editUser(e){
 	}
 }
 
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
+}
 
 function searchUser(e) {
 	e.preventDefault();

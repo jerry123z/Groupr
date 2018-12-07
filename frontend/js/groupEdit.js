@@ -12,6 +12,7 @@ changeNameForm.addEventListener('submit', changeName);
 deleteGroupForm.addEventListener('submit', deleteGroup);
 addMemberForm.addEventListener('submit', addMember);
 memberDisplayForm.addEventListener('click', deleteMember);
+document.querySelector('#logout').addEventListener('click', logout);
 
 function deleteGroup(e){
 	e.preventDefault();
@@ -21,7 +22,18 @@ function deleteGroup(e){
 	document.getElementById("group").innerHTML = markup;
 }
 
-
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
+}
 function changeName(e){
 	e.preventDefault();
 	var name = changeNameForm.querySelector('#newName').value;
@@ -128,6 +140,7 @@ function addMember(e){
 }
 
 function getGroupInfo(){
+	
 	let url = window.location.search.substring(1);
 	let parameters = url.split("&");
 	for(var i = 0; i < parameters.length; i++){

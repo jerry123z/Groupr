@@ -93,6 +93,20 @@ function getClassInfo(){
 }
 
 
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
+}
+
+
 function displayClass(){
 	let markup = `
 	<div id = "innerWrapper">
