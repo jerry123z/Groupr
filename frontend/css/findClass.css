@@ -99,6 +99,14 @@ body{
 	outline: none;
 }
 
+.searchDropdown {
+	width: 180px;
+	margin-left: 25px;
+	border: 3px solid #5f7898;
+	border-radius: 5px;
+	outline: none;
+}
+
 .instructions{
 	font-weight: bold;
 }

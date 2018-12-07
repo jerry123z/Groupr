@@ -19,7 +19,8 @@ function editUser(e){
 		window.location.href = "userEdit.html?id=" + users[ind]._id;
 	}
 }
-function logout() {
+function logout(e) {
+	e.preventDefault();
     fetch("/login", {
         method: "DELETE"
     }).then(response => {
