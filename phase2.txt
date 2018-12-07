@@ -1,3 +1,6 @@
+Heroku Link : https://fierce-falls-85016.herokuapp.com/
+
+
 All users begin at the log in screen. Users can log in by typing their email and password if they have an account. If they do not, they can sign up be selecting "New Registration" and then entering their email, password, name and then selecting which school they go to.
 Once logged in, regular users will see their profile page. Here they can see all the groups they are a part of.
 On the side bar, users can log out as well as see a list of all of their courses. If they are not enrolled in any courses, they can add one by looking up its name. // TODO: Put example courses to join.
@@ -6,6 +9,20 @@ If you do not have a group, the header card will recommend you to create a group
 Once your group is created, the assignment page will show you details about your group. Clicking on your group will take you to the group page.
 On the group page, if you are part of the group, you can leave the group at any point by clicking the "Leave Group" button.
 If you are not part of the group, you can request to join the group.
+
+
+Admin Functionality:
+Logging in with an admin account sends the user to the admin portion of the website. Using the nav bar they can search for any user, class, group, or school. Searching for one will filter by email for user or name for the rest. They can then edit their choice of user, class, group, or school by clicking on the edit button next to it. 
+
+
+On the School page accessed by the nav bar the admin can add a new school or find an existing school. To add a new school, type in the name of the school and click add. To search for a school, start typing the name of the school in the search bar and it will filter schools with that name. Upon filtering, you can click the edit button next to a school to edit that school. In this page you change the name of the school.
+
+On the Class page accessed by the nav bar the admin can add a new class or find an existing class. To add a new class, select the school from the dropdown and type in a new name. Then click add. To search for a class, start typing the name of the class in the search bar and it will filter class by name. Upon filtering, you can click the edit button next to a class to edit that class. In this page you have 2 options. You can create a new assignment for a class and change the name of the class. 
+
+On the User page accessed by the nav bar the admin can add a new user or find an existing user. To search for a user, start typing the name of the user in the search bar and it will filter schools with that name. Upon filtering, you can click the edit button next to a user to edit that user. In this page you change the name of the user.
+
+On the Group page accessed by the nav bar the admin can add a new group or find an existing group. To add a new group, type in the name of the group and click add. To search for a group, start typing the name of the group in the search bar and it will filter schools with that name. Upon filtering, you can click the edit button next to a group to edit that group. In this page you change the name of the group.
+
 
 Routes:
     GET /school
@@ -95,7 +112,3 @@ Routes:
     DELETE /login
         Logs out the current user.
 
-Admin Functionality:
-Logging in with an admin account sends the user to the admin portion of the website. Using the nav bar they can search for any user, class, group, or school. Searching for one will filter by email for user or name for the rest.
-
-They can then edit their choice of user, class, group, or school by clicking on the edit button next to it. This will take them to a new edit page. 
