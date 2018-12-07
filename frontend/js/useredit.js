@@ -13,6 +13,7 @@ changeEmailForm.addEventListener('submit', changeEmail);
 changeNameForm.addEventListener('submit', changeName);
 changeSchoolForm.addEventListener('submit', changeSchool);
 deleteUserForm.addEventListener('submit', deleteUser);
+document.querySelector('#logout').addEventListener('click', logout);
 
 function deleteUser(e){
 	e.preventDefault();
@@ -27,7 +28,18 @@ function deleteUser(e){
 	})
 }
 
-
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
+}
 function changeEmail(e){
 	e.preventDefault();
 	var email = changeEmailForm.querySelector('#newEmail').value;

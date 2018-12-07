@@ -7,6 +7,7 @@ let groups = [];
 
 classSearchForm.addEventListener('input', searchUser);
 editUserForm.addEventListener('click', editUser);
+document.querySelector('#logout').addEventListener('click', logout);
 
 function editUser(e){
 	e.preventDefault();
@@ -17,6 +18,18 @@ function editUser(e){
 	}
 }
 
+function logout() {
+    fetch("/login", {
+        method: "DELETE"
+    }).then(response => {
+        console.log(response)
+        if(response.status == 200) {
+            window.location.replace("./login.html");
+        }
+    }).catch(error => {
+        console.error(error);
+    });
+}
 
 function searchUser(e) {
 	e.preventDefault();
