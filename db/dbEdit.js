@@ -7,7 +7,8 @@ const dbGet = require('./dbGet.js');
 const dbDelete = require('./dbDelete.js');
 
 // Connect to mongo database.
-mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Groupr'
+mongoose.connect(mongoURI, { useNewUrlParser: true});
 
 function editUser(id, email, name, schoolId, isAdmin){
     return new Promise((resolve, reject)=>{
@@ -67,7 +68,7 @@ function editCourse(id, name, schoolId){
     })
 }
 
-function editGroup(id, name, description, maxMembers){
+function editGroup(id, name, description, schedule, maxMembers){
     return new Promise((resolve, reject)=>{
         if(!(ObjectID.isValid(id)))
         {
@@ -76,6 +77,7 @@ function editGroup(id, name, description, maxMembers){
         const properties = {
             name:name,
             description:description,
+            schedule:schedule,
             maxMembers:maxMembers
         }
 

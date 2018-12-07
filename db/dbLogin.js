@@ -5,7 +5,8 @@ const bcrypt = require('bcryptjs');
 const { Token, User } = require('../models.js');
 
 // Connect to mongo database.
-mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Groupr'
+mongoose.connect(mongoURI, { useNewUrlParser: true});
 
 function authenticate(email, password) {
     let user;
@@ -30,7 +31,7 @@ function authenticate(email, password) {
 
 function verifyRequest(req) {
     if(!req.cookies.auth
-        || !req.cookies.auth.token 
+        || !req.cookies.auth.token
         || !ObjectID.isValid(req.cookies.auth.user))
     {
         return new Promise((resolve, reject) => {
@@ -44,7 +45,7 @@ function verifyRequest(req) {
 
 function verifyAdminRequest(req) {
     if(!req.cookies.auth
-        || !req.cookies.auth.token 
+        || !req.cookies.auth.token
         || !ObjectID.isValid(req.cookies.auth.user))
     {
         return new Promise((resolve, reject) => {
@@ -78,7 +79,7 @@ function verify(tokenHash, user) {
 
 function clearToken(req, res) {
     if(!req.cookies.auth
-        || !req.cookies.auth.token 
+        || !req.cookies.auth.token
         || !ObjectID.isValid(req.cookies.auth.user))
     {
         return new Promise((resolve, reject) => {

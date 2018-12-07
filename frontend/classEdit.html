@@ -34,6 +34,11 @@
 					<span>Group</span>
 				</a>
 			</li>
+            <li class="nav-item">
+                <a class="nav-link" href="findClass.html">
+                    <span>Class</span>
+                </a>
+            </li>
         </ul>
 
         <div id="content-wrapper">
@@ -47,7 +52,6 @@
                 <div id = "displayDelete">
                     <div id = "allDisplays">
                     </div>
-
 
                     <div id = "createAssignment">
                         <p class="instructions">Create a new assignment</p>
@@ -63,6 +67,7 @@
                             <input type = "submit" class = "button" value = "Create">
                         </form>
                     </div>
+
                 </div>
 
 
@@ -70,6 +75,7 @@
 
                     <div id = "ChangeName" class = "editValue">
                         <p class = "instructions">Enter a new name</p>
+                        <p class = "error" id="nameError" hidden>Invalid name</p>
                         <form id = "changeNameForm">
                             <input id = "newName" type = "text" class = "searchTerm" placeholder = "New Name">
                             <input type = "submit" class = "button" value = "Change">

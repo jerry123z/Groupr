@@ -95,7 +95,7 @@ body{
 }
 
 .instructions{
-	font-weight: bold;	
+	font-weight: bold;
 }
 
 
@@ -103,6 +103,10 @@ body{
 	margin-top: 15px;
 	background-color: #f1f2fa;
 	margin-bottom: 20px;
+}
+
+.error{
+	color: red;
 }
 
 .big-button{

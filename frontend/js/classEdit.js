@@ -3,6 +3,7 @@ const classes = [] // Array of books owned by the library (whether they are loan
 const changeNameForm = document.querySelector('#changeNameForm');
 const changeCodeForm = document.querySelector('#changeCodeForm');
 const createAssignmentForm = document.querySelector('#createAssignmentForm');
+
 var varclass = {}
 var course = {}
 window.onload = getClassInfo;
@@ -35,11 +36,18 @@ function addAssignment(e){
 	})
 }
 
+
 function changeName(e){
 	e.preventDefault();
 	var name = changeNameForm.querySelector('#newName').value;
-	course.name = name;
-	fetch('/course/name/' + course._id, {
+	group.name = name;
+	if (name.length == 0) {
+		if (document.getElementById("nameError").hasAttribute("hidden")){
+        	document.getElementById("nameError").removeAttribute("hidden")
+			return;
+		}
+  }
+	fetch('/course/name/' + group._id, {
 		method: "PATCH",
 		headers: { 'Content-Type': "application/json" },
 		body: JSON.stringify({ name })
@@ -50,7 +58,10 @@ function changeName(e){
 			throw response;
 		}
 	}).then(groupRes => {
-		course = groupRes;
+		if (!document.getElementById("nameError").hasAttribute("hidden")){
+        	document.getElementById("nameError").setAttribute("hidden", true);
+		}
+		group = groupRes;
 		displayClass();
 	}).catch(error => {
 		console.log(error);
