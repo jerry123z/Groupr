@@ -18,7 +18,7 @@ $(document).on("loggedin", function(event, user) {
 
     // set assignment title
     getAssignmentData(assignmentId).then(assignmentData => {
-        $("#assignment-name").html(`${assignmentData.course.name} - ${assignmentData.name}`);
+        $("#assignment-header").html(`${assignmentData.course.name}: ${assignmentData.name}`);
     });
 
     // set user group info, or display "create a group" message if user does
@@ -172,7 +172,7 @@ function setUserGroup(group) {
             $numMembersContainer.append($icon);
         }
         // setting link href appropriately
-        $("#group-link").attr("href", `group_page.html?groupId=${group._id}`);
+        $("#group-link").attr("href", `group_page.html?gid=${group._id}`);
         const membersList = group.members.map(member => `<li> ${member.name} </li>`);
         $("#group-members-container").find("ul").append(membersList.join(""));
     }

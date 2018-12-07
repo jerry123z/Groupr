@@ -65,17 +65,13 @@ function insertNavHTML(courses, assignments){
         let alist = $( '<ul class="list-unstyled dropdown-menu show"></ul>' );
 
         // Add assignments to course subsection
-        let assignmentCount = 0;
-        assignments.forEach(assignment => {
-            if (assignment.course == course._id) {
-                assignmentCount++;
+        course.assignments.forEach(assignment => {
                 let link = "./assignment.html?aid=" + assignment._id;
                 let assignmentItem = $('<li><a class="dropdown-item" href="' + link + '">' + assignment.name + '</a></li>');
                 alist.append(assignmentItem);
-            }
         });
         // Add message if course has no assignments
-        if (assignmentCount == 0) {
+        if (course.assignments.length == 0) {
             alist.append('<li><a class="dropdown-item"> No Assignments Yet!</a></li>');
         }
         // Add course item to DOM
