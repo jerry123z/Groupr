@@ -1,56 +1,9 @@
-
-const groupRequests = [
-    {name: "Hip Hippos", _id: Math.floor(Math.random() * 1000000), numMembers: 2, members: ["Larry", "Velma"]},
-    {name: "Peckish Penguins", _id: Math.floor(Math.random() * 1000000), numMembers: 1, members: ["Jacob"]},
-    {name: "Sinewy Centaurs", _id: Math.floor(Math.random() * 1000000), numMembers: 5, members: ["Tyler", "Skyler", "Ashley", "Sassie", "Bessy"]},
-    {name: "Diligent Dingos", _id: Math.floor(Math.random() * 1000000), numMembers: 4, members: ["Harry", "Berry", "Mary", "Carrie"]},
-    {name: "Witty Walruses", _id: Math.floor(Math.random() * 1000000), numMembers: 3, members: ["Dawn", "Ron", 'John']},
-    {name: "Sagacious Squids", _id: Math.floor(Math.random() * 1000000), numMembers: 1, members: ["Tony"]}
-];
-
-const user = {
-    name: "Andriy",
-    _id: "z9827398276398",
-    school: "jnksnv0s9v9823",
-    courses: ["nlkajoia882"],
-    assignments: ["092hfahoifao"],
-    groups: ["mkanmln89090"]
-};
-const owner = {
-    name: "Brennan",
-    _id: "z9827398276398",
-    school: "jnksnv0s9v9823",
-    courses: ["nlkajoia882"],
-    assignments: ["092hfahoifao"],
-    groups: ["mkanmln89090"]
-};
-
-const userGroup = {
-    _id: "mkanmln89090",
-    school: "jnksnv0s9v9823",
-    course: "nlkajoia882",
-    assignment: "092hfahoifao",
-    name: "Bullish Frogs",
-    numMembers: 4,
-    members: [
-        {name: "Priya", _id: "ah98fchq39809qfy", school: "jnksnv0s9v9823", courses: ["nlkajoia882"], assignments: ["092hfahoifao"], groups: ["mkanmln89090"]},
-        {name: "Jerry", _id: "la02ha08fh980a", school: "jnksnv0s9v9823", courses: ["nlkajoia882"], assignments: ["092hfahoifao"], groups: ["mkanmln89090"]},
-        {name: "Andriy", _id: "pa982ya9igaf", school: "jnksnv0s9v9823", courses: ["nlkajoia882"], assignments: ["092hfahoifao"], groups: ["mkanmln89090"]},
-        {name: "Brennan", _id: "z9827398276398", school: "jnksnv0s9v9823", courses: ["nlkajoia882"], assignments: ["092hfahoifao"], groups: ["mkanmln89090"]}
-    ],
-    requirements: ["Available Mon/Wed/Fri mornings", "Willing to work 8 hours/week"],
-    availability: {
-        0: [['09:00', '11:00'], ['13:00', '16:00']],
-        1: [],
-        2: [['10:00', '12:00'], ['16:00', '19:00']],
-        3: [['13:00', '18:00']],
-        4: [['08:00', '11:00'], ['12:00', '13:00'], ['18:00', '20:00']],
-        5: [],
-        6: [['09:00', '12:00']]
-    }
-}
-const maxNumMembers = 6;
-
+// the id of the group associated with this page
+let groupId;
+// the id of the current user
+let userId;
+// the information about the group associated with this page
+let currentGroup;
 // the row which holds all group entries
 const $requestsRow = $("#requests-container").find(".row");
 
@@ -61,6 +14,7 @@ function setUserGroup(group, user) {
         $("#group-container").remove();
     } else {
         $("#group-name").text(group.name);
+        $("#course_and_assignment_names").text(`${group.course.name}: ${group.assignment.name}`);
         const $numMembersContainer = $("#number-members-container");
         // adding all filled-in icons
         let i;
@@ -77,8 +31,11 @@ function setUserGroup(group, user) {
         }
         // Add the member list. Also put a crown next to the owner and make the user blue.
         const membersList = group.members.map(member => {
-            const kick = user._id == group.owner ? `<img data-uid='${member._id}' class='member_kick' src='content/kick.png'>` : ``;
+            let kick = member._id != group.owner ? `<img data-uid='${member._id}' class='member_kick' src='content/kick.png'>` : ``;
             const crown = member._id == group.owner ? `<img class='member_crown' src='content/crown.png'>` : ``;
+            if (userId != group.owner) {
+                kick = ``;
+            }
             return member._id == user._id ? $(`<li class='member_you'> ${member.name} ${crown} ${kick} </li>`) : $(`<li> ${member.name} ${crown} ${kick} </li>`);
         });
         // Attach the member list.
@@ -87,11 +44,16 @@ function setUserGroup(group, user) {
         $(".member_kick").click(event => {
             const button = $(event.target);
             const uid = button.data('uid');
-            console.log("Request sent!");
+            getUserData(uid).then(user => {
+                $("#warning-message").text(`Are you sure you'd like to kick ${user.name}?`)
+                $("#warningModal").attr("userId", user._id);
+                $("#warningModal").modal("show");
+            });
         });
-        
+
         // Attach the requirement list.
         $("#posting_requirements").text(group.description);
+        // Add appropriate buttons to the page
         if(group.members.find((member) => member._id == user._id))
         {
             $('#requestJoinButton').remove();
@@ -99,9 +61,14 @@ function setUserGroup(group, user) {
                 $('#leaveGroupButton').removeClass('btn-danger')
                     .addClass('btn-secondary');
             });
+            if (user._id != group.owner) {
+                $('#editGroupButton').remove();
+            }
         }
         else
         {
+            $('#requests-header').remove();
+            $('#editGroupButton').remove();
             $('#leaveGroupButton').remove();
             $('#requestJoinButton').click(event => {
                 $('#requestJoinButton').removeClass('btn-primary')
@@ -112,10 +79,9 @@ function setUserGroup(group, user) {
 }
 
 // Add request to "Requests" section of page.
-// "group" is an object with keys name and numMembers.
-function addRequest(group) {
+function addRequestGroup(group) {
     const $col = $("<div>", {class: "col-md-4"});
-    const $container = $("<div>", {class: "requests-entry group-entry group-entry-hover card"});
+    const $container = $("<div>", {class: "requests-entry group-entry group-entry-hover card group"});
     const $title = $("<h5>").text(group.name);
     const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
 
@@ -142,17 +108,63 @@ function addRequest(group) {
     $requestsRow.append($col);
 }
 
+function addRequestUser(user) {
+    const $col = $("<div>", {class: "col-md-4"});
+    const $container = $("<div>", {class: "requests-entry group-entry group-entry-hover card user"});
+    const $title = $("<h5>").text(user.name);
+    const $numMembersContainer = $("<div>", {class: "num-group-members-container"});
+
+    const $icon = $("<img>", {class: "small-user-icon",
+                              src: "content/person_filled.png"});
+    $numMembersContainer.append($icon);
+
+    $container.attr('data-toggle', 'modal');
+    $container.attr('data-target', '#requestModal');
+    $container.attr('data-uid', user._id);
+
+    $container.append($title);
+    $container.append($numMembersContainer);
+    $col.append($container);
+    $requestsRow.append($col);
+}
+
 function setupMergeModal(user)
 {
     $('#requestModal').on('show.bs.modal', event => {
-        const button = $(event.relatedTarget);
-        const gid = button.data('gid');
-        openMergeModal(group.requests.find(group => group._id == gid), user);
+        const $button = $(event.relatedTarget);
+        if ($button.hasClass("group")) {
+            const gid = $button.data('gid');
+            getGroupData(gid).then(group => {
+                openMergeModalGroup(group);
+            });
+        } else {
+            const uid = $button.data('uid');
+            getUserData(uid).then(user => {
+                openMergeModalUser(user);
+            });
+        }
     });
 }
 
-function openMergeModal(group, user) {
+function openMergeModalUser(user) {
+    $("#requestModalLabel").text("");
+    $("#requestModalLabel").attr("requestor-id", user._id)
+    const $numMembersContainer = $("#request-members-icons");
+    $numMembersContainer.empty();
+    // Add the user name to members list
+    const userListItem = `<li> ${user.name} </li>`;
+    // Attach the member list.
+    const $memberContainer = $("#request-members").find("ul");
+    $memberContainer.empty();
+    $memberContainer.append(userListItem);
+
+    let $icon = $("<img>", {class: "big-user-icon", src:"content/person_filled.png"});
+    $numMembersContainer.append($icon);
+}
+
+function openMergeModalGroup(group) {
     $("#requestModalLabel").text(group.name);
+    $("#requestModalLabel").attr("requestor-id", group._id)
     $("#requestModalLabel").attr('href', "group_page.html?gid=" + group._id);
     const $numMembersContainer = $("#request-members-icons");
     $numMembersContainer.empty();
@@ -171,8 +183,7 @@ function openMergeModal(group, user) {
     }
     // Add the member list. Also put a crown next to the owner and make the user blue.
     const membersList = group.members.map(member => {
-        const crown = member._id == group.owner ? `<img class='member_crown' src='content/crown.png'>` : ``;
-        return member._id == user._id ? `<li class='member_you'> ${member} ${crown} </li>` : `<li> ${member} ${crown} </li>`;
+        return `<li> ${member.name} </li>`;
     });
     // Attach the member list.
     const $memberContainer = $("#request-members").find("ul");
@@ -180,36 +191,27 @@ function openMergeModal(group, user) {
     $memberContainer.append(membersList.join(""));
 }
 
+$("#submit-merge").click(() => {
+    const mergeRequestorId = $("#requestModalLabel").attr("requestor-id");
+    closeMergeRequest(mergeRequestorId).then(response => {
+        // Refresh page on success
+        location.reload();
+    }).catch(error => {
+        console.log(error);
+    });
+});
+
 function addAvailability(group)
 {
     // add schedule to the page
-    $("#schedule").dayScheduleSelector({
+    $(".schedule").dayScheduleSelector({
         startTime: '08:00',
         endTime: '24:00',
         interval: 60
     });
-    $("#schedule").data('artsy.dayScheduleSelector').deserialize(group.availability);
-}
-
-function setupEditNameButton(group)
-{
-    const $group_name = $('#group_name');
-    const $group_name_edit = $('.group_name_edit');
-    const $editable_group_name = $('#editable_group_name');
-    $editable_group_name.css('display', 'none');
-    $('#group_name_edit_btn').click(event => {
-        $group_name.css('display', 'none');
-        $group_name_edit.css('display', 'none');
-        $editable_group_name.val($group_name.text());
-        $editable_group_name.css('display', 'inline-block');
-    });
-
-    $editable_group_name.on('change', event => {
-        $group_name.text($editable_group_name.val());
-        $group_name.css('display', 'inline-block');
-        $group_name_edit.css('display', 'inline-block');
-        $editable_group_name.css('display', 'none');
-    });
+    if (group.schedule) {
+        $(".schedule").data('artsy.dayScheduleSelector').deserialize(group.schedule);
+    }
 }
 
 function parseBody(response) {
@@ -223,33 +225,203 @@ function parseBody(response) {
     }
 }
 
-function getData(group) {
+function getGroupData(group) {
     return fetch("/group/full/" + group, {
         method: "GET"
     }).then(parseBody);
 }
 
+function getUserData(user) {
+    return fetch("/user/full/" + user, {
+        method: "GET"
+    }).then(parseBody);
+}
+
+function setGroupId() {
+    let url = new URL(window.location.href);
+    groupId = url.searchParams.get("gid");
+}
+
+function setUserId(user) {
+    userId = user._id;
+}
+
+// Fill in input values with current group info on edit modal open
+$('#editModal').on('show.bs.modal', event => {
+    $("#name-input").attr("value", currentGroup.name);
+    $("#desc-input").text(currentGroup.description);
+    $("#group-form-schedule").data('artsy.dayScheduleSelector').deserialize(currentGroup.schedule);
+});
+
+$("#submit-group").click((e) => {
+    const name = $("#name-input").val();
+    const description = $("#desc-input").val();
+    const schedule = $("#group-form-schedule").data('artsy.dayScheduleSelector').serialize();
+    sendEditGroupRequest(name, description, schedule).then(res => {
+        // refresh page on success
+        location.reload();
+    }).catch(error => {
+        console.error("Error editing group");
+    });
+});
+
+// Display error/success message to user
+function displayRequestMessage(message, color) {
+    $("#req-message").css("color", color);
+    $("#req-message").text(message);
+}
+
+$("#requestJoinButton").click(() => {
+    getUserData(userId).then(user => {
+        let toMerge;
+        const groupToMerge = user.groups.find(group => {
+            return group.assignment == currentGroup.assignment._id;
+        });
+        groupToMerge ? toMerge = groupToMerge._id : toMerge = user._id;
+        sendMergeRequest(toMerge).then(res => {
+            displayRequestMessage("Sent your request to join!", "green");
+        }).catch(err => {
+            displayRequestMessage("Error sending your request.", "red");
+        })
+    });
+});
+
+function removeMemberFromHTML(uid) {
+    $(`#group-members-container ul li img[data-uid="${uid}"]`).parent().remove();
+}
+
+// Action on confirming within the warning modal
+$("#confirm-btn").click(() => {
+    // If the warning modal is warning before user leaves group
+    if ($("#warningModal").hasClass("leave")) {
+        // Delete the group is the user is the owner
+        if(userId == currentGroup.owner) {
+            sendDeleteGroupRequest().then(res => {
+                window.location.replace("./profile.html");
+            }).catch(err => {
+                console.log(err);
+            });
+        // Otherwise, simply delete the user
+        } else {
+            sendRemoveUserRequest(userId).then(res => {
+                window.location.replace("./profile.html");
+            }).catch(err => {
+                console.log(err);
+            });
+        }
+    // If the warning modal is warning before kicking a user
+    } else {
+        const uid = $("#warningModal").attr("userId")
+        sendRemoveUserRequest(uid).then(res => {
+            removeMemberFromHTML(uid);
+            $("#warningModal").modal("hide");
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+})
+
+//Action on clicking the "leave group" button
+$("#leaveGroupButton").click(() => {
+    getGroupData(groupId).then(group => {
+        $("#warning-message").text(`Are you sure you'd like to leave ${group.name}?`)
+        $("#warningModal").addClass("leave")
+        $("#warningModal").modal("show");
+    });
+});
+
+
+function sendEditGroupRequest(name, description, schedule) {
+    return fetch("/group/" + groupId, {
+        method: "PATCH",
+        headers: { 'Content-Type': "application/json" },
+        body: JSON.stringify({ name, description, schedule })
+    }).then((response) => {
+        if(response.status === 200) {
+            return Promise.resolve(response);
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(error);
+    });
+}
+
+function closeMergeRequest(mergeRequestorId) {
+    return fetch("/group/merge/" + mergeRequestorId + "/" + groupId, {
+        method: "PUT"
+    }).then((response) => {
+        if(response.status === 200) {
+            return Promise.resolve(response);
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(error);
+    });
+}
+
+function sendMergeRequest(mergeRequestorId) {
+    return fetch("/group/merge/" + mergeRequestorId + "/" + groupId, {
+        method: "POST"
+    }).then((response) => {
+        if(response.status === 200) {
+            return Promise.resolve(response);
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(null);
+    });
+}
+
+function sendRemoveUserRequest(userToKickId) {
+    return fetch("/group/" + groupId + "/remove/" + userToKickId, {
+        method: "PATCH"
+    }).then((response) => {
+        if(response.status === 200) {
+            return Promise.resolve(response);
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(null);
+    });
+}
+
+function sendDeleteGroupRequest() {
+    return fetch("/group/" + groupId, {
+        method: "DELETE"
+    }).then((response) => {
+        if(response.status === 200) {
+            return Promise.resolve(response);
+        } else {
+            return Promise.reject(null);
+        }
+    }).catch(error => {
+        return Promise.reject(null);
+    });
+}
+
 // Populate page with information on page load
 $(document).on('loggedin', function(event, user) {
-    $.urlParam = function(name){
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        if (results==null) {
-           return null;
-        }
-        return decodeURI(results[1]) || 0;
-    }
-    if(!$.urlParam["gid"]) {
+    setGroupId();
+    setUserId(user);
+    // if gid is not in url, redirect user to profile page
+    if(!groupId) {
         window.location.replace("./profile.html");
         return;
     }
 
-    getData($.urlParam["gid"]).then(data => {
+    getGroupData(groupId).then(group => {
+        currentGroup = group;
         setUserGroup(group, user);
-        for (let i = 0; i < group.requests.length; i++) {
-            addRequest(group.requests[i]);
-        }
         addAvailability(group);
-        setupMergeModal(user);
-        setupEditNameButton(group);
+        if (user._id == group.owner) {
+            group.requests.forEach(request => {
+                request.isUser ? addRequestUser(request.id) : addRequestGroup(request.id);
+            });
+            setupMergeModal(user);
+        }
     });
 });

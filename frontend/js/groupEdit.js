@@ -64,10 +64,8 @@ function deleteMember(e){
 		let ind = groupMembers.findIndex(user => user.name == name);
 		let groupId = group._id
 		let userId = groupMembers[ind]._id
-		fetch("./group/remove", {
-			method:"PATCH",
-			headers: { 'Content-Type': "application/json" },
-	        body: JSON.stringify({ groupId, userId })
+		return fetch("/group/" + groupId + "/remove/" + userId, {
+			method:"PATCH"
 		}).then(response => {
 				if(response.status === 200) {
 						return response.json();
@@ -77,6 +75,8 @@ function deleteMember(e){
 		}).then(groupRes => {
 				group = groupRes;
 				displayGroup();
+				getGroupMembers(group.members)
+				displayMembers();
 		}).catch(error => {
 				console.error(error)
 		})

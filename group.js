@@ -181,6 +181,8 @@ router.delete("/merge/:mergeRequestor/:mergeTarget", (req, res) => {
         return dbGet.getGroup(req.params.mergeRequestor);
     }).then(group => {
         if(!group) {
+            console.log(userId)
+            console.log(req.params.mergeRequestor)
             if(userId != req.params.mergeRequestor) {
                 throw "Cannot request merge as non user!";
             }
@@ -308,9 +310,6 @@ function mergeUser(req, res, target, promise) {
         }
         return dbGet.getAssignment(target.assignment);
     }).then(assignment => {
-    //    if(assignment.groups.find(el => user.groups.find(el2 => el.toString() == el2.toString()))) {
-    //        throw "User cannot be merged because they are already in a group!";
-    //    }
         target._doc.members.push(requestor._id);
         target.requests = target._doc.requests.filter(el => el.id.toString() != requestor._id.toString());
         // For every member in the requesting team, find the idea of the requestor in their groups list
@@ -405,6 +404,24 @@ router.patch("/description/:id", (req, res) => {
     });
 })
 
+router.patch("/:id", (req, res) => {
+    const id = req.params.id
+    const groupInfo = {
+        "name": req.body.name,
+        "description": req.body.description,
+        "schedule": req.body.schedule
+    }
+
+    dbGet.getGroup(id).then(group => {
+        return dbEdit.editGroup(group._id, groupInfo.name, groupInfo.description,
+             groupInfo.schedule, group.maxMembers);
+    }).then(group => {
+        res.send(group)
+    }).catch(error => {
+        res.status(400).send(error);
+    });
+})
+
 router.delete("/:id", (req, res) => {
     const id = req.params.id
     dbDelete.deleteGroup(req.params.id).then(group => {
@@ -414,9 +431,9 @@ router.delete("/:id", (req, res) => {
     })
 })
 
-router.patch("/remove/", (req, res) => {
-    const groupId = req.body.groupId;
-    const userId = req.body.userId;
+router.patch("/:group_id/remove/:user_id", (req, res) => {
+    const groupId = req.params.group_id;
+    const userId = req.params.user_id;
 
     dbDelete.deleteMemberFromGroup(groupId, userId).then(user => {
         res.send(user)

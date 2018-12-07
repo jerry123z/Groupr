@@ -1,0 +1,87 @@
+Routes:
+    GET /school
+        Gets a JSON array of all schools in the system
+    GET /school/:id
+        Gets a JSON object of the school with a Mongo id of :id
+    GET /school/full/:id
+        Gets a JSON object of the school with a Mongo id of :id, except all ids in the object are expanded (only 1 depth)
+    GET /school/name/:name
+        Gets an array of JSON object of the school with a name that partially matches :name
+    POST /school
+        Creates a new school with its name taken from the JSON object passed through the body.
+    PATCH /school/name/:id
+        Edits the school with Mongo id :id, assigning its name to name field of the JSON object passed through the body.
+
+    GET /course
+        Gets a list of all courses in the system.
+    GET /course/:id
+        Gets a JSON object of the course with a Mongo id of :id
+    GET /course/full/:id
+        Gets a JSON object of the course with a Mongo id of :id, except all ids in the object are expanded (only 1 depth).
+    GET /course/name/:name
+        Gets an array of JSON object of the course with a name that partially matches :name
+    POST /course/:school_id
+        Creates a new course in the school with id :school_id, using the body which has a name field.
+
+    GET /assignment/:id
+        Gets a JSON object of the assignment with id :id
+    GET /assignment/full/:id
+        Gets a JSON object of the assignment with id :id, except all ids in the object are expanded (only 1 depth).
+    POST /assignment/:school_id/:course_id
+        Creates a new assignment in the provided school and course, using the body with fields name and maxMembers
+
+    GET /group/assignment/:assignment_id
+        Gets a list of JSON objects that holds all groups for the provided assignment.
+    GET /group/:id
+        Gets a JSON object of the group with the provided :id
+    GET /group/full/:id
+        Gets a JSON object of the group with the provided :id, except all ids in the object are expanded (only 1 depth).
+    GET /group/name/:name
+        Gets a group by its name (but only partially)
+    POST /group/:assignment_id
+        Creates a new group in the assignment with id :assignment_id. The owner and only member is the currently logged in user. Uses the body with a name, description, and maxMembers field.
+    PATCH /group/name/:id
+        Replaces old group name with new group name.
+    PATCH /group/description/:id
+        Replaces old group description with new group description.
+    PATCH /group/:group_id/remove/:user_id
+        Removes a user from a group by group id and user id.
+    PATCH /group/add
+        Adds a user to a group by group id and user id.
+    DELETE /group/:id
+        Deletes a group by its id.
+
+    POST /group/merge/:mergeRequestor/:mergeTarget
+        Creates a request so that mergeRequestor requests to merge with mergeTarget. mergeTarget must be a group, mergeRequestor can be either a user of a group. Must be logged in as mergeRequestor or the owner of mergeRequestor to do this.
+    PUT /group/merge/:mergeRequestor/:mergeTarget
+        Accepts a merge request and merge both groups and users
+    DELETE /group/merge/:mergeRequestor/:mergeTarget
+        Delete a merge request
+
+    POST /user
+        Creates a new user and returns a log in token to the request.
+    GET /user/:id
+        Gets an obfuscated user object (some fields are filtered like passHash).
+    GET /user/full/:id
+        Gets an obfuscated user object (some fields are filtered like passHash), where all ids are expected by one level
+    GET /user/email/:email
+        Searches the list of users for users with emails similar to :email.
+    PATCH /user/course/:user_id/:course_id
+        Adds course_id to user_id's list of courses.
+    PATCH /user/group/:user_id/:group_id
+        Adds group_id to user_id's list of groups.
+    PATCH /user/name/:id
+        Replaces the specified user's name with the new one.
+    PATCH /user/email/:id
+        Replaces the specified user's email with the new one.
+    PATCH /user/school/:id
+        Replaces the specified user's school with the new one.
+    PATCH /user/admin/:id
+        Replaces the specified user's admin status with the new one.
+
+    GET /login
+        Tests if the user is currently logged in.
+    POST /login
+        Logs a user in with the email and password in the body.
+    DELETE /login
+        Logs out the current user.
