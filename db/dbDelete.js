@@ -4,7 +4,8 @@ const { Token, User, School, Course, Assignment, Group } = require('../models.js
 const bcrypt = require('bcryptjs');
 const dbGet = require('./dbGet.js');
 
-mongoose.connect('mongodb://localhost:27017/Groupr', { useNewUrlParser: true});
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Groupr'
+mongoose.connect(mongoURI, { useNewUrlParser: true});
 
 
 function deleteCourseFromSchool(schoolId, courseId){
@@ -33,30 +34,24 @@ function deleteGroup(groupId){
     let saveGroup;
     let saveAssignment;
     let saveUsers;
-    return new Promise((resolve, reject) => {
-        Group.findById(groupId).then(group => {
-            saveGroup = group
-            return Assignment.findById(saveGroup.assignment)
-        }).then((assignment) => {
-            saveAssignment = assignment
-
-        }).then((assignment) => {
-            return promise =  User.find({
-                '_id': { $in:saveGroup.members}
-            }).exec()
-        }).then((users) => {
-            saveUsers = users
-            return User.updateMany({'_id': { $in:saveGroup.members}}, {$pull:{groups:groupId}})
-        }).then((user) => {
-            return Assignment.findByIdAndUpdate(saveAssignment._id, {$pull:{groups:groupId}})
-        }).then((assignment) => {
-            Group.findByIdAndRemove(groupId).then((group)=>{
-                resolve(group)
-            })
-        }).catch(error => {
-            reject("deleteCourse: " + JSON.stringify(error));
-        });
-    })
+    return Group.findById(groupId).then(group => {
+        saveGroup = group
+        return Assignment.findById(saveGroup.assignment)
+    }).then((assignment) => {
+        saveAssignment = assignment
+        return promise =  User.find({
+            '_id': { $in:saveGroup.members}
+        }).exec()
+    }).then((users) => {
+        saveUsers = users;
+        return User.updateMany({'_id': { $in:saveGroup.members}}, {$pull:{groups:groupId}})
+    }).then((user) => {
+        return Assignment.findByIdAndUpdate(saveAssignment._id, {$pull:{groups:groupId}})
+    }).then((assignment) => {
+        return Group.findByIdAndRemove(groupId);
+    }).catch(error => {
+        throw "deleteCourse: " + JSON.stringify(error);
+    });
 }
 
 
