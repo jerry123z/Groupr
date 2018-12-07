@@ -1,24 +1,8 @@
 // global arrays
-const users = [] // Array of books owned by the library (whether they are loaned or not)
 const userSearchForm = document.querySelector('#userSearchForm');
 const editUserForm = document.querySelector('#allDisplays');
 
-
-
-class User {
-	constructor(name, email, school, active) {
-		this.name = name;
-		this.email = email;
-		this.school = school;
-		this.active = active;
-	}
-}
-
-users.push(new User('Andriy', 'andriy123@gmail.com', 'University of Toronto', 'Jan 1, 2018'));
-users.push(new User('Brennan', 'brennan@gmail.com', 'University of Toronto', 'Jan 2, 2018'));
-users.push(new User('Priya', 'priya123@gmail.com', 'University of Toronto', 'Jan 3, 2018'));
-users.push(new User('Jerry', 'jerry123@gmail.com', 'University of Toronto', 'Jan 4, 2018'));
-users.push(new User('Priya2', 'priya222@gmail.com', 'University of Toronto', 'Jan 5, 2018'));
+var users = [];
 
 userSearchForm.addEventListener('input', searchUser);
 editUserForm.addEventListener('click', editUser);
@@ -27,30 +11,67 @@ function editUser(e){
 	e.preventDefault();
 	if(e.target.classList.contains('button')){
 		info = e.target.parentElement.parentElement.parentElement.parentElement.getElementsByTagName("p");
-		console.log(info);
-		name = info[0].textContent.split(":")[1].trim();
 		email = info[1].textContent.split(":")[1].trim();
-		school = info[2].textContent.split(":")[1].trim();
-		active = info[3].textContent.split(":")[1].trim();
-		window.location.href = "userEdit.html?name=" + name + "&email=" + email + "&school=" + school + "&active=" + active;	
+
+
+		let ind = users.findIndex(o => o.email == email);
+		window.location.href = "userEdit.html?id=" + users[ind]._id;
 	}
 }
 
 function searchUser(e) {
 	e.preventDefault();
-	
 	document.getElementById('allDisplays').innerHTML = "";
 	let email = userSearchForm.querySelector('#userEmail').value;
 	if(email == ""){
-		document.getElementById('allDisplays').innerHTML = "";
-		return;
+			document.getElementById('allDisplays').innerHTML = "";
+			return;
 	}
-	for(var i = 0; i < users.length; i++){
-		if(users[i].email.includes(email)){
-			displayUser(users[i]);
-		}
-	}
+	searchUsers(email)
 }
+
+function searchUsers(email) {
+	fetch('/user/email/' + email).then(response => {
+			if(response.status === 200) {
+					return response.json();
+			} else {
+					throw response;
+			}
+	}).then(userArray => {
+		users = userArray
+		return userArray
+	}).then(userArray => {
+		return getSchoolNames(userArray) //race condition
+	}).then(userArray => {
+
+		userArray.forEach(u => displayUser(u))
+	}).catch(error => {
+		console.error(error)
+	})
+}
+
+
+function getSchoolNames(userArray){
+	return new Promise(function(resolve, reject) {
+		for(let i = 0; i< userArray.length; i++){
+			fetch('/school/' + userArray[i].school).then(response => {
+					if(response.status === 200) {
+							return response.json();
+					} else {
+							throw response;
+					}
+			}).then((schoolObj) => {
+				userArray[i].school = schoolObj.name
+				if (i == userArray.length-1){
+					resolve(userArray)
+				}
+			}).catch(error => {
+				reject(error)
+			})
+		}
+	})
+}
+
 
 function displayUser(user){
 	let markup = `
@@ -60,7 +81,6 @@ function displayUser(user){
 				<p><b>Name:</b> ${user.name}</p>
 				<p><b>Email:</b> ${user.email}</p>
 				<p><b>School:</b> ${user.school}</p>
-				<p><b>Last Active:</b> ${user.active}</p>
 			</div>
 			<div id = "buttons">
 				<div id = "innerWrapper">
@@ -72,7 +92,7 @@ function displayUser(user){
 		</div>
 	</div>
 	`;
-	
+
 
 	let display = document.getElementById('allDisplays');
 	display.innerHTML += markup;

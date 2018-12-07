@@ -21,8 +21,11 @@ $('document').ready(function () {
             });
         }
     }).then((json) => {
-        if(json) {
+        if(json && json.isAdmin == false) {
             window.location.replace("./profile.html?user=" + json._id);
+            return null;
+        } else if(json && json.isAdmin == true) {
+            window.location.replace("./findGroup.html");
             return null;
         }
         return fetch('/school', {
@@ -76,7 +79,11 @@ $('#login-form').submit(function (e) {
             throw response;
         }
     }).then(json => {
-        window.location.replace("./profile.html?user=" + json._id);
+        if (json.isAdmin == false){
+            window.location.replace("./profile.html?user=" + json._id);
+        } else {
+            window.location.replace("./findGroup.html");
+        }
     }).catch(error => {
         console.log(error);
     });

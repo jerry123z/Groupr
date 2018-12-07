@@ -50,10 +50,12 @@ function obfuscateUser(user) {
     const userObj = {
         _id: user._id,
         name: user.name,
+        email: user.email,
         school: user.school,
         courses: user.courses,
         assignments: user.assignments,
-        groups: user.groups
+        groups: user.groups,
+        isAdmin: user.isAdmin
     };
     return userObj;
 }

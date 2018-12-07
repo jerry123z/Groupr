@@ -14,7 +14,7 @@ function deleteCourseFromSchool(schoolId, courseId){
 		}).catch(error => {
 			reject("removeCourse: " + JSON.stringify(error));
 		});
-	})		
+	})
 }
 
 function deleteCourse(courseId){
@@ -59,16 +59,26 @@ function deleteGroup(groupId){
     })
 }
 
+
 function deleteMemberFromGroup(groupId, userId){
     return new Promise((resolve, reject) => {
         User.findByIdAndUpdate(userId, {$pull:{groups:groupId}},  {new: true}).then(user => {
-            console.log(user)
             return Group.findByIdAndUpdate(groupId, {$pull:{members:userId}},  {new: true})
         }).then(group => {
-            console.log(group)
             resolve(group)
         }).catch(error => {
             reject("deleteMemberFromGroup " + JSON.stringify(error))
+        })
+    })
+}
+
+function deleteUser(userId){
+    console.log(userId)
+    return new Promise((resolve, reject) => {
+        User.findByIdAndRemove(userId).then(user =>{
+            resolve(user)
+        }).catch((error)=>{
+            reject(error)
         })
     })
 }
@@ -77,5 +87,6 @@ module.exports = {
     deleteCourseFromSchool,
     deleteCourse,
     deleteGroup,
-    deleteMemberFromGroup
+    deleteMemberFromGroup,
+    deleteUser
 }
