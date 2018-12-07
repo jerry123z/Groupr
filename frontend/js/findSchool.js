@@ -110,9 +110,6 @@ function displayUser(school){
 				<div id = "innerWrapper">
 					<button class = "button">Edit</button>
 				</div>
-				<div id = "innerWrapper">
-					<button class = "findClassButton">FindClass</button>
-				</div>
 			</div>
 		</div>
 	</div>
